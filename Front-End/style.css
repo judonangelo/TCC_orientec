@@ -1,0 +1,423 @@
+/* =============================================
+   style.css — Orientec
+   Estilos globais compartilhados por todas as páginas
+   ============================================= */
+
+/* ── Reset global ── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+/* =============================================
+   index.html — Header
+   ============================================= */
+.header {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.btn-intranet {
+    background-color: rgba(26, 40, 83, 0.8);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn-intranet:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =============================================
+   index.html — Container e seções
+   ============================================= */
+.container {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.quem-somos {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.quem-somos:hover {
+    transform: translateY(-5px);
+}
+
+.quem-somos h2 {
+    color: #0c3470;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.quem-somos p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #666;
+}
+
+.sobre {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.sobre:hover {
+    transform: translateY(-5px);
+}
+
+.sobre h2 {
+    color: #0c3470;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.sobre p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+
+/* =============================================
+   index.html — Seção de acesso / login
+   ============================================= */
+.acessoLogin {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.login-section {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-section h2 {
+    color: #0c3470;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.btn-login {
+    background-color: #0c3470;
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =============================================
+   index.html — Footer
+   ============================================= */
+.footer {
+    background-color: #0c3470;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+
+/* =============================================
+   login.html / intranet.html — Body centralizado
+   ============================================= */
+body.page-login {
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* =============================================
+   login.html / intranet.html — Container do formulário
+   ============================================= */
+.login-container {
+    background: white;
+    border-radius: 15px;
+    padding: 50px;
+    width: 450px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.login-container:hover {
+    transform: translateY(-5px);
+}
+
+.login-container h2 {
+    color: #0c3470;
+    margin-bottom: 10px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.subtitulo {
+    color: #666;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+
+/* ── Logo ── */
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo h1 {
+    color: #0c3470;
+    font-size: 32px;
+}
+
+.logo p {
+    color: #666;
+    font-size: 12px;
+}
+
+
+/* ── Campos do formulário ── */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #0c3470;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0c3470;
+    box-shadow: 0 0 5px rgba(12, 52, 112, 0.3);
+}
+
+
+/* ── Link "Esqueci minha senha" ── */
+.esqueci-senha {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+a {
+    color: #0c3470;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+
+a:hover {
+    text-decoration: underline;
+    color: #1a4a8a;
+}
+
+
+
+
+/* ── Botões ── */
+.btn-entrar {
+    width: 100%;
+    background-color: #0c3470;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-entrar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-voltar {
+    width: 100%;
+    background-color: transparent;
+    color: #0c3470;
+    border: 2px solid #0c3470;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-voltar:hover {
+    background-color: #0c3470;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ── Mensagens de feedback ── */
+.mensagem {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+}
+
+.mensagem.erro {
+    background-color: #ffe6e6;
+    color: #d32f2f;
+    border: 1px solid #ffcccc;
+    display: block;
+}
+
+.mensagem.sucesso {
+    background-color: #e6f4ea;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+    display: block;
+}
+
+.mensagem.info {
+    background-color: #e3f2fd;
+    color: #0c3470;
+    border: 1px solid #bbdef5;
+    display: block;
+}
+
+
+/* =============================================
+   login.html / intranet.html — Modal "Recuperar Senha"
+   ============================================= */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    color: #0c3470;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-enviar {
+    flex: 1;
+    background-color: #0c3470;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-cancelar {
+    flex: 1;
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}

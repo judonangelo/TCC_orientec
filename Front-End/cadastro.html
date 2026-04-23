@@ -1,73 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="cadastro.css">
-    <title>Cadastro de Usuário</title>
+    <title>Login - Orientec</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div id="cadastrar">
-        <h1>Cadastro de usuário</h1>
-        <label for="inp_email">Insira seu email</label>
-        <br>
-        <input type="email" id="inp_email">
-        <br>
-        <label for="inp_senha">Insira a senha</label>
-        <br>
-        <input type="password" id="inp_senha">
-        <br>
-        <button id="btn_cadastrar">Cadastrar</button>
+
+<body class="page-login">
+    <div class="login-container">
+        <div class="logo">
+            <h1>Orientec</h1>
+            <p>Orientação de Carreira com Teste Vocacional</p>
+        </div>
+
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Insira seu E-mail</label>
+                <input type="text" id="email" placeholder="Digite seu e-mail" required>
+            </div>
+            <div class="form-group">
+                <label>Insira sua senha</label>
+                <input type="password" id="senha" placeholder="Digite sua senha" required>
+            </div>
+
+            <button type="submit" class="btn-entrar">Cadastrar</button>
+            <button type="button" class="btn-voltar" onclick="window.location.href='index.html'">Voltar para Home</button>
+            <a href="login.html">Já tem uma conta? Login </a>
+        </form>
+        <div id="mensagem" class="mensagem"></div>
     </div>
-
-    
-    <br>
-    <br>
-
-    <div id="atualizar">
-        <h1>Atualizar</h1>
-        <label for="upd_id">Insira o id</label>
-        <br>
-        <input type="number" id="upd_id">
-        <br>
-        <label for="upd_email">Insira o novo email</label>
-        <br>
-        <input type="email" id="upd_email">
-        <br>
-        <label for="upd_senha">Insira a nova senha</label>
-        <br>
-        <input type="password" id="upd_senha">
-        <br>
-        <button id="btn_atualizar">Atualizar</button>
-    </div>
-
-    <br>
-    <br>
-
-    
-    <div id="deletar_usuario">
-        <h1>Deletar</h1>
-        <label for="inp_deletar">Insira o id</label>
-        <br>
-        <input type="number" id="inp_deletar">
-        <br>
-        <button id="btn_deletar">Deletar</button>
-    </div>
-
-    <br>
-    <br>
-
-    <div id="ver_usuarios">
-        <h1>Ver usuários</h1>
-        <button id="btn_ver">Ler o banco</button>
-        <div id="ver"></div>
-    </div>
-
-    <br>
-    <br>
-
-    <a href="index.html">Voltar à página inicial</a>
-
 </body>
-    <script src="script.js"></script>
+<script>
+    //cadastrar
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault(); 
+
+        const email = document.getElementById("email").value;
+        const senha = document.getElementById("senha").value;
+        const mensagemDiv = document.getElementById("mensagem");
+
+        try {
+            const resposta = await fetch("http://localhost:3000/cadastro", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, senha })
+            });
+
+            const dados = await resposta.json();
+
+            if (resposta.ok) {
+                mensagemDiv.className = "mensagem sucesso";
+                mensagemDiv.textContent = "Usuário cadastrado com sucesso!";
+                document.getElementById("loginForm").reset();
+            } else {
+                mensagemDiv.className = "mensagem erro";
+                mensagemDiv.textContent = dados.message || "Erro ao cadastrar.";
+            }
+
+        } catch (erro) {
+            mensagemDiv.className = "mensagem erro";
+            mensagemDiv.textContent = "Erro de conexão com o servidor.";
+            console.error(erro);
+        }
+    });
+</script>
+
 </html>
