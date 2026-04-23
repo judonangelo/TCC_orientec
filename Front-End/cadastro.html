@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cadastro.css">
+    <title>Cadastro de Usuário</title>
+</head>
+<body>
+    <div id="cadastrar">
+        <h1>Cadastro de usuário</h1>
+        <label for="inp_email">Insira seu email</label>
+        <br>
+        <input type="email" id="inp_email">
+        <br>
+        <label for="inp_senha">Insira a senha</label>
+        <br>
+        <input type="password" id="inp_senha">
+        <br>
+        <button id="btn_cadastrar">Cadastrar</button>
+    </div>
+
+    
+    <br>
+    <br>
+
+    <div id="atualizar">
+        <h1>Atualizar</h1>
+        <label for="upd_id">Insira o id</label>
+        <br>
+        <input type="number" id="upd_id">
+        <br>
+        <label for="upd_email">Insira o novo email</label>
+        <br>
+        <input type="email" id="upd_email">
+        <br>
+        <label for="upd_senha">Insira a nova senha</label>
+        <br>
+        <input type="password" id="upd_senha">
+        <br>
+        <button id="btn_atualizar">Atualizar</button>
+    </div>
+
+    <br>
+    <br>
+
+    
+    <div id="deletar_usuario">
+        <h1>Deletar</h1>
+        <label for="inp_deletar">Insira o id</label>
+        <br>
+        <input type="number" id="inp_deletar">
+        <br>
+        <button id="btn_deletar">Deletar</button>
+    </div>
+
+    <br>
+    <br>
+
+    <div id="ver_usuarios">
+        <h1>Ver usuários</h1>
+        <button id="btn_ver">Ler o banco</button>
+        <div id="ver"></div>
+    </div>
+
+    <br>
+    <br>
+
+    <a href="index.html">Voltar à página inicial</a>
+
+</body>
+    <script src="script.js"></script>
+</html>

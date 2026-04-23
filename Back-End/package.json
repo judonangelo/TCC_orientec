@@ -1,0 +1,23 @@
+{
+  "name": "tcc_backend",
+  "version": "1.0.0",
+  "description": "O back end do projeto de tcc",
+  "license": "ISC",
+  "author": "João Victor Piacenza de Oliveira Andrade e Julia Donangelo Alves Carneiro",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mysql2": "^3.18.2",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

@@ -1,0 +1,201 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API TCC - Gerenciamento de Usuários",
+      "description": "API REST para cadastro, consulta, atualização e remoção de usuários.",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Servidor local de desenvolvimento"
+      }
+    ],
+    "paths": {
+      "/cadastrar_user": {
+        "post": {
+          "summary": "Cadastrar novo usuário",
+          "description": "Cria um novo usuário com e-mail e senha. O nível é definido automaticamente como 'user'.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["email", "senha"],
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "usuario@email.com"
+                    },
+                    "senha": {
+                      "type": "string",
+                      "example": "minhasenha123"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Usuário cadastrado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "fieldCount": { "type": "integer", "example": 0 },
+                      "affectedRows": { "type": "integer", "example": 1 },
+                      "insertId": { "type": "integer", "example": 5 },
+                      "serverStatus": { "type": "integer", "example": 2 },
+                      "warningCount": { "type": "integer", "example": 0 },
+                      "message": { "type": "string", "example": "" },
+                      "changedRows": { "type": "integer", "example": 0 }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro interno no servidor"
+            }
+          }
+        }
+      },
+      "/ver_usuarios": {
+        "get": {
+          "summary": "Listar todos os usuários",
+          "description": "Retorna todos os usuários cadastrados no banco de dados.",
+          "responses": {
+            "200": {
+              "description": "Lista de usuários retornada com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": 1 },
+                        "email": { "type": "string", "example": "usuario@email.com" },
+                        "senha": { "type": "string", "example": "minhasenha123" },
+                        "nivel": { "type": "string", "example": "user" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro interno no servidor"
+            }
+          }
+        }
+      },
+      "/atualizar_usuarios": {
+        "put": {
+          "summary": "Atualizar dados de um usuário",
+          "description": "Atualiza o e-mail e a senha de um usuário existente com base no ID informado.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id", "email", "senha"],
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "novo@email.com"
+                    },
+                    "senha": {
+                      "type": "string",
+                      "example": "novasenha456"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Usuário atualizado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "fieldCount": { "type": "integer", "example": 0 },
+                      "affectedRows": { "type": "integer", "example": 1 },
+                      "insertId": { "type": "integer", "example": 0 },
+                      "serverStatus": { "type": "integer", "example": 2 },
+                      "warningCount": { "type": "integer", "example": 0 },
+                      "message": { "type": "string", "example": "(Rows matched: 1  Changed: 1  Warnings: 0" },
+                      "changedRows": { "type": "integer", "example": 1 }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro interno no servidor"
+            }
+          }
+        }
+      },
+      "/deletar_usuarios": {
+        "delete": {
+          "summary": "Deletar um usuário",
+          "description": "Remove um usuário do banco de dados com base no ID informado.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id"],
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Usuário deletado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "fieldCount": { "type": "integer", "example": 0 },
+                      "affectedRows": { "type": "integer", "example": 1 },
+                      "insertId": { "type": "integer", "example": 0 },
+                      "serverStatus": { "type": "integer", "example": 2 },
+                      "warningCount": { "type": "integer", "example": 0 },
+                      "message": { "type": "string", "example": "" },
+                      "changedRows": { "type": "integer", "example": 0 }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro interno no servidor"
+            }
+          }
+        }
+      }
+    }
+  }
