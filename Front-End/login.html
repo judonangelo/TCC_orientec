@@ -27,7 +27,7 @@
                 <input type="password" id="senha" placeholder="Digite sua senha" required>
             </div>
             <div class="esqueci-senha">
-                <a href="#" onclick="abrirModalRecuperarSenha()">Esqueci minha senha</a>
+                <a href="alterar_senha.html">Esqueci minha senha</a>
             </div>
             <button type="submit" class="btn-entrar">Entrar</button>
             <button type="button" class="btn-voltar" onclick="window.location.href='index.html'">Voltar para
@@ -75,7 +75,8 @@
                     mensagemDiv.textContent = "Login realizado com sucesso!";
 
                     // 1. Salva o token no navegador do usuário
-                    localStorage.setItem("tokenOrientec", dados.token);
+                    localStorage.setItem('tokenOrientec', dados.token);
+                    localStorage.setItem('emailUsuario', email);   
 
                     // 2. Aguarda 1 segundo (para o usuário ler a mensagem) e muda de página
                     setTimeout(() => {

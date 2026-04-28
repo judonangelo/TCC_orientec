@@ -1,11 +1,11 @@
 require('dotenv').config()
-const express = require ('express')
+const express = require('express')
 const cors = require('cors')
 const server = express()
 server.use(cors())
 server.use(express.json())
 const pool = require('./db.js')
-const swaggerUi = require('swagger-ui-express') 
+const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./swagger.json')
 const api_chave = process.env.API_CHAVE;
 const jwt = require('jsonwebtoken');
@@ -20,10 +20,10 @@ const bcrypt = require('bcrypt');
 
 const PORT = process.env.PORT
 
-server.use('/api-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-server.listen(PORT,()=>{
-    console.log(`Server rodando no http://localhost:${PORT}/`)
+server.listen(PORT, () => {
+  console.log(`Server rodando no http://localhost:${PORT}/`)
 })
 
 //rota de cadastro, confere se ja tem email, criptografa a senha e cadastra
@@ -60,18 +60,20 @@ server.post("/login", async (req, res) => {
     const [conferir] = await pool.execute(`SELECT email FROM usuarios WHERE email = ?`, [email])
     if (conferir.length > 0) {
       const [resultado] = await pool.execute(`SELECT * FROM usuarios WHERE email = ? `, [email])
+
+
       const validou = await bcrypt.compare(senha, resultado[0].senha)
-      
+
       if (validou == false) {
         return res.status(401).json({ "mensagem": "Usuário ou senha inválido!" })
       }
-      
+
       const token = jwt.sign({
         email: email,
       }, api_chave, {
         expiresIn: "1h"
       })
-      
+
       res.json({ "mensagem": "Acesso Liberado", "token": token })
     } else {
       return res.json({ "mensagem": "Nenhum e-mail encontrado!" })
@@ -82,9 +84,33 @@ server.post("/login", async (req, res) => {
   }
 })
 
+server.put("/trocar_senha", async (req, res) => {
+  try {
+    const { email, senha } = req.body;
 
 
+    const senhaCriptografada = await bcrypt.hash(senha, 10);
 
+
+    await pool.query('UPDATE usuarios SET senha = ? WHERE email = ?', [senhaCriptografada, email]);
+
+    res.json({ mensagem: "Senha alterada com sucesso!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao alterar senha" });
+  }
+});
+
+server.get("/ver_perfil", async (req, res) => {
+  try {
+    const { email } = req.query
+    const [resultado] = await pool.query('SELECT * FROM usuarios WHERE email = ?',[email])
+    res.json(resultado[0] || {})
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ mensagem: "Erro ao buscar perfil" })
+  }
+});
 
 
 
@@ -133,31 +159,31 @@ server.post("/login", async (req, res) => {
 
 
 
-server.get("/ver_usuarios",async(req,res)=>{
-    try {
-        const [resultado] = await pool.query(`Select * from usuarios`)
-        res.send(resultado)
-    } catch (error) {
-        console.log(error)
-    }
+server.get("/ver_usuarios", async (req, res) => {
+  try {
+    const [resultado] = await pool.query(`Select * from usuarios`)
+    res.send(resultado)
+  } catch (error) {
+    console.log(error)
+  }
 })
 
-server.put("/atualizar_usuarios",async(req,res)=>{
-    try {
-        const {id,email,senha} = req.body
-        const [resultado] = await pool.query(`Update usuarios set email = "${email}", senha = "${senha}" where id = ${id}`)
-        res.send(resultado)
-    } catch (error) {
-        console.log(error)
-    }
+server.put("/atualizar_usuarios", async (req, res) => {
+  try {
+    const { id, email, senha } = req.body
+    const [resultado] = await pool.query(`Update usuarios set email = "${email}", senha = "${senha}" where id = ${id}`)
+    res.send(resultado)
+  } catch (error) {
+    console.log(error)
+  }
 })
 
-server.delete("/deletar_usuarios",async(req,res)=>{
-    try {
-        const {id} = req.body
-        const [resultado] = await pool.query(`Delete from usuarios where id = ${id}`)
-        res.send(resultado)
-    } catch (error) {
-        console.log(error)
-    }
+server.delete("/deletar_usuarios", async (req, res) => {
+  try {
+    const { id } = req.body
+    const [resultado] = await pool.query(`Delete from usuarios where id = ${id}`)
+    res.send(resultado)
+  } catch (error) {
+    console.log(error)
+  }
 })

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trocar Senha - Orientec</title>
+    <link rel="stylesheet" href="CSS/global.css">
+    <link rel="stylesheet" href="CSS/login.css"> 
+</head>
+<body class="page-login">
+
+    <div class="login-container">
+        <div class="logo">
+            <h1>Orientec</h1>
+            <p>Orientação de Carreira com Teste Vocacional</p>
+        </div>
+
+        <h2 style="text-align:center; color:#0c3470; margin-bottom:20px;">Redefinir Senha</h2>
+
+        <form id="formTrocarSenha">
+            <div class="form-group">
+                <label>E-mail cadastrado</label>
+                <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            </div>
+            <div class="form-group">
+                <label>Nova senha</label>
+                <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label>Confirmar nova senha</label>
+                <input type="password" id="confirmarSenha" placeholder="Repita a nova senha" required>
+            </div>
+
+            <button type="submit" class="btn-entrar">Alterar Senha</button>
+            <button type="button" class="btn-voltar" onclick="window.location.href='login.html'">Voltar para Login</button>
+        </form>
+
+    </div>
+
+<script>
+    const API_BASE = 'http://localhost:3000';
+
+    document.getElementById('formTrocarSenha').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value.trim();
+        const novaSenha = document.getElementById('novaSenha').value;
+        const confirmarSenha = document.getElementById('confirmarSenha').value;
+
+        if (!email || !novaSenha || !confirmarSenha) {
+            alert('Preencha todos os campos.');
+            return;
+        }
+        if (novaSenha.length < 6) {
+            alert('A nova senha deve ter no mínimo 6 caracteres.');
+            return;
+        }
+        if (novaSenha !== confirmarSenha) {
+            alert('As senhas não coincidem.');
+            return;
+        }
+
+        try {
+            const resposta = await fetch(`${API_BASE}/trocar_senha`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha: novaSenha })
+            });
+
+            const dados = await resposta.json();
+
+            if (resposta.ok) {
+                alert(dados.mensagem || 'Senha alterada com sucesso!');
+                document.getElementById('formTrocarSenha').reset();
+            } else {
+                alert(dados.mensagem || 'Erro ao alterar senha.');
+            }
+        } catch (erro) {
+            alert('Erro de conexão com o servidor.');
+            console.error(erro);
+        }
+    });
+</script>
+</body>
+</html>
