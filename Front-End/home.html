@@ -1,133 +1,428 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orientec - Página Principal</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Orientec – Início</title>
+    <link rel="stylesheet" href="CSS/global.css">
+    <link rel="stylesheet" href="CSS/home.css">
+
 </head>
+
 <body>
 
-    <!-- Header de Navegação -->
-    <header class="main-header">
-        <div class="header-container">
-            <div class="logo-area">
-                <h1 class="logo-text">Orientec</h1>
-            </div>
-            
-            <nav class="nav-menu">
-                <ul>
-                    <li><a href="home.html" class="active">Home</a></li>
-                    <li><a href="#quem-somos">Quem Somos</a></li>
-                    <li><a href="#sobre">Sobre Nós</a></li>
-                    <li><a href="#servicos">Serviços</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
+    <!-- ═══════════════════════════════
+     HEADER
+═══════════════════════════════ -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="home.html" class="logo">Orien<span>tec</span></a>
+
+            <nav class="nav">
+                <a href="home.html" class="active">Início</a>
+                <a href="#quem-somos">Quem Somos</a>
+                <a href="#servicos">Serviços</a>
+                <a href="#contato">Contato</a>
             </nav>
 
-            <button class="btn-logout" onclick="logout()">Sair</button>
-            
+            <div class="header-end">
+                <button class="icon-btn" title="Notificações"></button>
+
+                <div class="avatar-wrap" id="avatarWrap">
+                    <button class="avatar-btn" onclick="toggleDropdown()">
+                        <div class="avatar-circle" id="headerInitials">??</div>
+                        <span class="avatar-name" id="headerName">Usuário</span>
+                        <span class="avatar-arrow">▼</span>
+                    </button>
+
+                    <div class="dropdown">
+                        <div class="dropdown-header">
+                            <strong id="dropName">–</strong>
+                            <span id="dropEmail">–</span>
+                        </div>
+                        <button class="dropdown-item" onclick="openProfile()"> &nbsp;Meu Perfil</button>
+                        <div class="dropdown-sep"></div>
+                        <button class="dropdown-item danger" onclick="logout()"> &nbsp;Sair</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Conteúdo Principal -->
-    <main class="container">
-        
-        <section class="hero-section">
-            <h2>Descubra a Carreira dos Seus Sonhos</h2>
-            <p>Faça nosso teste vocacional e encontre o caminho profissional ideal para você</p>
-            <button class="btn-comecar" onclick="window.location.href=''">Comece Agora</button>
-        </section>
+    <!-- ═══════════════════════════════
+     MAIN
+═══════════════════════════════ -->
+    <main class="page">
 
-        <section id="quem-somos" class="quem-somos">
-            <h2>Quem Somos</h2>
-            <p>
-                A Orientec nasceu com o propósito de revolucionar a forma como as pessoas escolhem suas profissões. 
-                Nosso objetivo é ajudar estudantes a encontrarem o curso ideal através do nosso teste vocacional inteligente. 
-                Oferecemos uma plataforma completa com análise detalhada, relatório personalizado de perfil profissional 
-                e recomendações de carreira alinhadas aos seus interesses e habilidades.
-            </p>
-        </section>
-
-        <section id="sobre" class="sobre">
-            <h2>Sobre Nós</h2>
-            <p>
-                Nossa empresa nasceu com o propósito de revolucionar o mercado digital. Acreditamos que cada pessoa 
-                possui talentos únicos, e nosso papel é iluminar o caminho para que esses talentos sejam transformados 
-                em uma carreira sólida, de sucesso e realização pessoal.
-            </p>
-        </section>
-
-        <section id="servicos" class="servicos">
-            <h2>Nossos Serviços</h2>
-            <div class="servicos-grid">
-                <div class="servico-card">
-                    <h3>Teste Vocacional</h3>
-                    <p>Avaliação completa de perfil profissional com análise de personalidade</p>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-text">
+                <p class="hero-eyebrow">Bem-vindo(a) de volta</p>
+                <h1 id="heroTitle">Olá, <em>Usuário</em>!<br>Pronto para descobrir<br>seu caminho?</h1>
+                <p>Continue sua jornada vocacional. Seu futuro profissional começa com a escolha certa — e estamos aqui
+                    para ajudar.</p>
+                <button class="btn-primary" onclick="window.location.href=''">▶ &nbsp;Fazer o Teste Vocacional</button>
+            </div>
+            <div class="hero-visual">
+                <div class="stat-pill">
+                    <strong>98%</strong>
+                    <span>Satisfação</span>
                 </div>
-                <div class="servico-card">
-                    <h3>Orientação Personalizada</h3>
-                    <p>Acompanhamento individual com especialistas em carreira</p>
-                </div>
-                <div class="servico-card">
-                    <h3>Relatório Detalhado</h3>
-                    <p>Análise aprofundada com recomendações de cursos e profissões</p>
+                <div class="stat-pill">
+                    <strong>5k+</strong>
+                    <span>Orientados</span>
                 </div>
             </div>
         </section>
 
-        <section id="contato" class="contato-section">
-            <h2>Entre em Contato</h2>
-            <p>Está com dúvidas? Entre em contato conosco</p>
-            <div class="contato-info">
-                <p>📧 contato@orientec.com.br</p>
-                <p>📱 (21) 99999-9999</p>
+
+        <!-- SERVIÇOS -->
+        <section id="servicos">
+            <h2 class="section-title">Nossos Serviços</h2>
+            <p class="section-sub">Tudo que você precisa para encontrar sua carreira ideal</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon-wrap">🧠</div>
+                    <h3>Teste Vocacional</h3>
+                    <p>Avaliação completa de personalidade e perfil profissional com análise inteligente dos seus
+                        interesses e habilidades.</p>
+                    <span class="service-link">Começar agora →</span>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon-wrap">🎯</div>
+                    <h3>Orientação Personalizada</h3>
+                    <p>Acompanhamento individual com especialistas em carreira que irão guiar suas decisões
+                        profissionais.</p>
+                    <span class="service-link">Agendar sessão →</span>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon-wrap">📋</div>
+                    <h3>Relatório Detalhado</h3>
+                    <p>Análise aprofundada com recomendações personalizadas de cursos, profissões e caminhos de
+                        carreira.</p>
+                    <span class="service-link">Ver exemplo →</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUEM SOMOS + SOBRE -->
+        <div id="quem-somos" class="info-row">
+            <div class="info-card">
+                <span class="tag">Quem Somos</span>
+                <h2>Revolucionando a escolha profissional</h2>
+                <p>A Orientec nasceu com o propósito de transformar a forma como as pessoas escolhem suas profissões.
+                    Nossa plataforma combina tecnologia e análise humana para ajudar estudantes a encontrarem o curso
+                    ideal.</p>
+            </div>
+            <div class="info-card">
+                <span class="tag">Nossa Missão</span>
+                <h2>Iluminando caminhos únicos</h2>
+                <p>Acreditamos que cada pessoa possui talentos únicos. Nosso papel é revelar esses talentos e
+                    transformá-los em uma carreira sólida, de sucesso e realização pessoal — um passo de cada vez.</p>
+            </div>
+        </div>
+
+        <!-- CONTATO -->
+        <section id="contato" class="contact-card">
+            <div>
+                <h2>Ficou com dúvidas?</h2>
+                <p>Nossa equipe está pronta para te ajudar a encontrar o caminho certo.</p>
+            </div>
+            <div class="contact-info">
+                <div class="contact-chip">📧 &nbsp;contato@orientec.com.br</div>
+                <div class="contact-chip">📱 &nbsp;(21) 99999-9999</div>
             </div>
         </section>
 
     </main>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Orientec</h3>
-                <p>Orientação de Carreira com Teste Vocacional</p>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <strong>Orientec</strong>
+                <p>Orientação de carreira e teste vocacional inteligente para quem quer construir um futuro sólido.</p>
             </div>
-            <div class="footer-section">
-                <h4>Links Rápidos</h4>
-                <a href="index.html">Home</a>
-                <a href="#">Quem Somos</a>
-                <a href="#">Sobre Nós</a>
+            <div class="footer-col">
+                <h4>Links</h4>
+                <a href="home.html">Início</a>
+                <a href="#quem-somos">Quem Somos</a>
+                <a href="#servicos">Serviços</a>
             </div>
-            <div class="footer-section">
+            <div class="footer-col">
                 <h4>Contato</h4>
                 <p>contato@orientec.com.br</p>
                 <p>(21) 99999-9999</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© 2026 Orientec - Todos os direitos reservados</p>
-        </div>
+        <div class="footer-bottom">© 2026 Orientec — Todos os direitos reservados</div>
     </footer>
 
-</body>
+    <!-- ═══════════════════════════════
+     PROFILE PANEL OVERLAY
+═══════════════════════════════ -->
+    <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
 
-<script>
-        // Assim que a página carrega, ele procura o token salvo
-        const token = localStorage.getItem("tokenOrientec");
+    <aside class="profile-panel" id="profilePanel">
+        <!-- Panel Header -->
+        <div class="panel-header">
+            <button class="panel-close" onclick="closePanel()">✕</button>
+            <div class="panel-avatar" id="panelInitials">??</div>
+            <div class="panel-user-name" id="panelName">Carregando...</div>
+            <div class="panel-user-email" id="panelEmail">–</div>
+        </div>
 
-        // Se o token não existir (ou seja, o usuário não passou pelo login)
+        <div class="panel-body">
+
+            <!-- ── INFORMAÇÕES DO PERFIL ── -->
+            <div id="sectionInfo">
+                <p class="panel-section-title">Informações da Conta</p>
+
+                <!-- Modo leitura -->
+                <div id="viewMode">
+                    <div class="info-field">
+                        <label>Nome completo</label>
+                        <span id="viewName">–</span>
+                    </div>
+                    <div class="info-field">
+                        <label>E-mail</label>
+                        <span id="viewEmail">–</span>
+                    </div>
+                    <div class="info-field">
+                        <label>Telefone</label>
+                        <span id="viewPhone">–</span>
+                    </div>
+                    <div class="info-field">
+                        <label>Membro desde</label>
+                        <span id="viewSince">–</span>
+                    </div>
+                    <br>
+                    <button class="btn-save" onclick="toggleEdit(true)">✏️ &nbsp;Editar Informações</button>
+                </div>
+
+                <!-- Modo edição -->
+                <div id="editMode" class="edit-fields">
+                    <div class="feedback-msg" id="editMsg"></div>
+
+                    <label class="form-label">Nome completo</label>
+                    <input class="form-input" type="text" id="editName" placeholder="Seu nome completo">
+
+                    <label class="form-label">E-mail</label>
+                    <input class="form-input" type="email" id="editEmail" placeholder="seu@email.com">
+
+                    <label class="form-label">Telefone</label>
+                    <input class="form-input" type="tel" id="editPhone" placeholder="(00) 00000-0000">
+
+                    <button class="btn-save" onclick="saveInfo()">💾 &nbsp;Salvar Alterações</button>
+                    <button class="btn-outline" onclick="toggleEdit(false)">Cancelar</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- ── TROCAR SENHA ── -->
+            <div id="sectionPw">
+                <p class="panel-section-title">Segurança</p>
+
+                <div class="feedback-msg" id="pwMsg"></div>
+
+                <label class="form-label">Senha atual</label>
+                <input class="form-input" type="password" id="pwCurrent" placeholder="••••••••">
+
+                <label class="form-label">Nova senha</label>
+                <input class="form-input" type="password" id="pwNew" placeholder="••••••••"
+                    oninput="checkStrength(this.value)">
+
+                <div class="strength-bar">
+                    <div class="strength-fill" id="strengthFill"></div>
+                </div>
+
+                <label class="form-label">Confirmar nova senha</label>
+                <input class="form-input" type="password" id="pwConfirm" placeholder="••••••••">
+
+                <button class="btn-save" onclick="changePassword()">🔒 &nbsp;Atualizar Senha</button>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- ── SAIR ── -->
+            <button class="btn-danger-outline" onclick="logout()">↩ &nbsp;Sair da conta</button>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════
+     SCRIPT
+═══════════════════════════════ -->
+    <script>
+        /* ── Auth Guard ── */
+        const token = localStorage.getItem('tokenOrientec');
         if (!token) {
-            alert("Acesso restrito! Por favor, faça login para continuar.");
-            // Chuta o usuário de volta para a tela de login
-            window.location.href = "login.html"; // Coloque o nome exato do seu arquivo de login aqui
+            alert('Acesso restrito! Por favor, faça login para continuar.');
+            window.location.href = 'login.html';
         }
-        
-        // Dica bônus: Função de Logout (caso você queira colocar um botão "Sair" no futuro)
+
+        /* ── Carrega dados do usuário do localStorage ──
+           Adapte as chaves conforme seu back-end salva após o login */
+        const userData = {
+            name: localStorage.getItem('nomeUsuario') || 'Usuário',
+            email: localStorage.getItem('emailUsuario') || 'usuario@email.com',
+            phone: localStorage.getItem('telefoneUsuario') || '–',
+            since: localStorage.getItem('membroDesde') || '2026',
+        };
+
+        /* ── Preenche interface ── */
+        function initUI() {
+            const firstName = userData.name.split(' ')[0];
+            const initials = userData.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+
+            document.getElementById('heroTitle').innerHTML =
+                `Olá, <em>${firstName}</em>!<br>Pronto para descobrir<br>seu caminho?`;
+
+            document.getElementById('headerInitials').textContent = initials;
+            document.getElementById('headerName').textContent = firstName;
+            document.getElementById('dropName').textContent = userData.name;
+            document.getElementById('dropEmail').textContent = userData.email;
+
+            document.getElementById('panelInitials').textContent = initials;
+            document.getElementById('panelName').textContent = userData.name;
+            document.getElementById('panelEmail').textContent = userData.email;
+
+            document.getElementById('viewName').textContent = userData.name;
+            document.getElementById('viewEmail').textContent = userData.email;
+            document.getElementById('viewPhone').textContent = userData.phone;
+            document.getElementById('viewSince').textContent = userData.since;
+
+            document.getElementById('editName').value = userData.name;
+            document.getElementById('editEmail').value = userData.email;
+            document.getElementById('editPhone').value = userData.phone !== '–' ? userData.phone : '';
+        }
+        initUI();
+
+        /* ── Dropdown do avatar ── */
+        function toggleDropdown() {
+            document.getElementById('avatarWrap').classList.toggle('open');
+        }
+        document.addEventListener('click', e => {
+            if (!document.getElementById('avatarWrap').contains(e.target))
+                document.getElementById('avatarWrap').classList.remove('open');
+        });
+
+        /* ── Painel lateral ── */
+        function openProfile() {
+            document.getElementById('avatarWrap').classList.remove('open');
+            scrollToSection('sectionInfo');
+            openPanel();
+        }
+        function openPanel(section) {
+            document.getElementById('avatarWrap').classList.remove('open');
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('profilePanel').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            if (section === 'pw') {
+                setTimeout(() => {
+                    document.getElementById('sectionPw').scrollIntoView({ behavior: 'smooth' });
+                }, 350);
+            }
+        }
+        function closePanel() {
+            document.getElementById('overlay').classList.remove('open');
+            document.getElementById('profilePanel').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 350);
+        }
+
+        /* ── Edição de perfil ── */
+        function toggleEdit(editing) {
+            document.getElementById('viewMode').style.display = editing ? 'none' : 'block';
+            document.getElementById('editMode').style.display = editing ? 'block' : 'none';
+            document.getElementById('editMsg').className = 'feedback-msg';
+            document.getElementById('editMsg').textContent = '';
+        }
+
+        function saveInfo() {
+            const name = document.getElementById('editName').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            const msg = document.getElementById('editMsg');
+
+            if (!name || !email) {
+                msg.textContent = 'Nome e e-mail são obrigatórios.';
+                msg.className = 'feedback-msg error';
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                msg.textContent = 'Informe um e-mail válido.';
+                msg.className = 'feedback-msg error';
+                return;
+            }
+
+            /* Salva localmente — substitua por chamada à sua API */
+            localStorage.setItem('nomeUsuario', name);
+            localStorage.setItem('emailUsuario', email);
+            localStorage.setItem('telefoneUsuario', phone || '–');
+            userData.name = name; userData.email = email; userData.phone = phone || '–';
+            initUI();
+
+            msg.textContent = 'Informações salvas com sucesso!';
+            msg.className = 'feedback-msg success';
+            setTimeout(() => toggleEdit(false), 1800);
+        }
+
+        /* ── Trocar senha ── */
+        function checkStrength(pw) {
+            const fill = document.getElementById('strengthFill');
+            let score = 0;
+            if (pw.length >= 8) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/[0-9]/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+            const pct = ['0%', '25%', '50%', '75%', '100%'][score];
+            const color = ['#ef4444', '#f59e0b', '#f59e0b', '#10b981', '#10b981'][score];
+            fill.style.width = pct;
+            fill.style.background = color;
+        }
+
+        function changePassword() {
+            const current = document.getElementById('pwCurrent').value;
+            const newPw = document.getElementById('pwNew').value;
+            const confirm = document.getElementById('pwConfirm').value;
+            const msg = document.getElementById('pwMsg');
+
+            if (!current || !newPw || !confirm) {
+                msg.textContent = 'Preencha todos os campos.';
+                msg.className = 'feedback-msg error';
+                return;
+            }
+            if (newPw.length < 8) {
+                msg.textContent = 'A nova senha deve ter no mínimo 8 caracteres.';
+                msg.className = 'feedback-msg error';
+                return;
+            }
+            if (newPw !== confirm) {
+                msg.textContent = 'As senhas não coincidem.';
+                msg.className = 'feedback-msg error';
+                return;
+            }
+
+            /* Substitua pela chamada à sua API de troca de senha */
+            msg.textContent = 'Senha alterada com sucesso!';
+            msg.className = 'feedback-msg success';
+            document.getElementById('pwCurrent').value = '';
+            document.getElementById('pwNew').value = '';
+            document.getElementById('pwConfirm').value = '';
+            document.getElementById('strengthFill').style.width = '0%';
+        }
+
+        /* ── Logout ── */
         function logout() {
-            localStorage.removeItem("tokenOrientec");
-            window.location.href = "index.html";
+            localStorage.removeItem('tokenOrientec');
+            window.location.href = 'index.html';
         }
     </script>
+</body>
+
 </html>
