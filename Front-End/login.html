@@ -29,7 +29,8 @@
                 <a href="#" onclick="abrirModalRecuperarSenha()">Esqueci minha senha</a>
             </div>
             <button type="submit" class="btn-entrar">Entrar</button>
-            <button type="button" class="btn-voltar" onclick="window.location.href='index.html'">Voltar para Home</button>
+            <button type="button" class="btn-voltar" onclick="window.location.href='index.html'">Voltar para
+                Home</button>
             <a href="cadastro.html">Não possui cadastro?</a>
         </form>
         <div id="mensagem" class="mensagem"></div>
@@ -71,7 +72,15 @@
                 if (resposta.ok) {
                     mensagemDiv.className = "mensagem sucesso";
                     mensagemDiv.textContent = "Login realizado com sucesso!";
-                    // window.location.href = "dashboard.html";
+
+                    // 1. Salva o token no navegador do usuário
+                    localStorage.setItem("tokenOrientec", dados.token);
+
+                    // 2. Aguarda 1 segundo (para o usuário ler a mensagem) e muda de página
+                    setTimeout(() => {
+                        window.location.href = "home.html"; // Coloque aqui o nome exato do arquivo da sua página principal
+                    }, 1000);
+
                 } else {
                     mensagemDiv.className = "mensagem erro";
                     mensagemDiv.textContent = dados.mensagem || "Usuário ou senha incorretos.";

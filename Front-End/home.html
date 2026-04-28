@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orientec - Página Principal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header de Navegação -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <h1 class="logo-text">Orientec</h1>
+            </div>
+            
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="#quem-somos">Quem Somos</a></li>
+                    <li><a href="#sobre">Sobre Nós</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+            
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container">
+        
+        <section class="hero-section">
+            <h2>Descubra a Carreira dos Seus Sonhos</h2>
+            <p>Faça nosso teste vocacional e encontre o caminho profissional ideal para você</p>
+            <button class="btn-comecar" onclick="window.location.href='cadastro.html'">Comece Agora</button>
+        </section>
+
+        <section id="quem-somos" class="quem-somos">
+            <h2>Quem Somos</h2>
+            <p>
+                A Orientec nasceu com o propósito de revolucionar a forma como as pessoas escolhem suas profissões. 
+                Nosso objetivo é ajudar estudantes a encontrarem o curso ideal através do nosso teste vocacional inteligente. 
+                Oferecemos uma plataforma completa com análise detalhada, relatório personalizado de perfil profissional 
+                e recomendações de carreira alinhadas aos seus interesses e habilidades.
+            </p>
+        </section>
+
+        <section id="sobre" class="sobre">
+            <h2>Sobre Nós</h2>
+            <p>
+                Nossa empresa nasceu com o propósito de revolucionar o mercado digital. Acreditamos que cada pessoa 
+                possui talentos únicos, e nosso papel é iluminar o caminho para que esses talentos sejam transformados 
+                em uma carreira sólida, de sucesso e realização pessoal.
+            </p>
+        </section>
+
+        <section id="servicos" class="servicos">
+            <h2>Nossos Serviços</h2>
+            <div class="servicos-grid">
+                <div class="servico-card">
+                    <h3>Teste Vocacional</h3>
+                    <p>Avaliação completa de perfil profissional com análise de personalidade</p>
+                </div>
+                <div class="servico-card">
+                    <h3>Orientação Personalizada</h3>
+                    <p>Acompanhamento individual com especialistas em carreira</p>
+                </div>
+                <div class="servico-card">
+                    <h3>Relatório Detalhado</h3>
+                    <p>Análise aprofundada com recomendações de cursos e profissões</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="contato-section">
+            <h2>Entre em Contato</h2>
+            <p>Está com dúvidas? Entre em contato conosco</p>
+            <div class="contato-info">
+                <p>📧 contato@orientec.com.br</p>
+                <p>📱 (21) 99999-9999</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Orientec</h3>
+                <p>Orientação de Carreira com Teste Vocacional</p>
+            </div>
+            <div class="footer-section">
+                <h4>Links Rápidos</h4>
+                <a href="index.html">Home</a>
+                <a href="#">Quem Somos</a>
+                <a href="#">Sobre Nós</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contato</h4>
+                <p>contato@orientec.com.br</p>
+                <p>(21) 99999-9999</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Orientec - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+</body>
+
+<script>
+        // Assim que a página carrega, ele procura o token salvo
+        const token = localStorage.getItem("tokenOrientec");
+
+        // Se o token não existir (ou seja, o usuário não passou pelo login)
+        if (!token) {
+            alert("Acesso restrito! Por favor, faça login para continuar.");
+            // Chuta o usuário de volta para a tela de login
+            window.location.href = "login.html"; // Coloque o nome exato do seu arquivo de login aqui
+        }
+        
+        // Dica bônus: Função de Logout (caso você queira colocar um botão "Sair" no futuro)
+        function sair() {
+            localStorage.removeItem("tokenOrientec");
+            window.location.href = "login.html";
+        }
+    </script>
+</html>

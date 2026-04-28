@@ -29,8 +29,8 @@
                 <a href="#" onclick="abrirModalRecuperarSenha()">Esqueci minha senha</a>
             </div>
             <button type="submit" class="btn-entrar">Entrar</button>
-            <button type="button" class="btn-voltar" onclick="window.location.href='index.html'">Voltar para Home</button>
-            <a class="sem_cadastro" href="cadastro.html">Não possui cadastro?</a>
+            <button type="button" class="btn-voltar" onclick="window.location.href='index.html'">Voltar para
+                Home</button>
         </form>
         <div id="mensagem" class="mensagem"></div>
     </div>
@@ -71,7 +71,15 @@
                 if (resposta.ok) {
                     mensagemDiv.className = "mensagem sucesso";
                     mensagemDiv.textContent = "Login realizado com sucesso!";
-                    // window.location.href = "dashboard.html";
+
+                    // 1. Guarda o token exclusivo da intranet
+                    localStorage.setItem("tokenIntranet", dados.token);
+
+                    // 2. Aguarda 1 segundo e manda pro dashboard
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html"; // Coloque o nome exato do seu arquivo dashboard
+                    }, 1000);
+
                 } else {
                     mensagemDiv.className = "mensagem erro";
                     mensagemDiv.textContent = dados.mensagem || "Usuário ou senha incorretos.";

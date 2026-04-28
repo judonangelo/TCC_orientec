@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Orientec</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-body">
+
+    <!-- Header do Dashboard -->
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <h1 class="logo-text">Orientec</h1>
+                <p class="logo-subtitle">Painel Administrativo</p>
+            </div>
+
+            <div class="user-area">
+                <span class="user-info">Bem-vindo, Administrador</span>
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar + Conteúdo Principal -->
+    <div class="dashboard-container">
+
+        <!-- Sidebar de Navegação -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="sidebar-link active" data-section="usuarios">👥 Usuários</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="cursos">📚 Cursos</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="relatorios">📊 Relatórios</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="configuracoes">⚙️ Configurações</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+
+            <!-- Seção de Usuários -->
+            <section id="usuarios-section" class="content-section active">
+                <div class="section-header">
+                    <h2>Gerenciamento de Usuários</h2>
+                    <button class="btn-primary" onclick="abrirModalUsuario()">+ Novo Usuário</button>
+                </div>
+
+                <!-- Tabela de Usuários -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Perfil</th>
+                                <th>Data de Cadastro</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuarios-table-body">
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="usuarios-mensagem" class="mensagem"></div>
+            </section>
+
+            <!-- Seção de Cursos -->
+            <section id="cursos-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gerenciamento de Cursos</h2>
+                    <button class="btn-primary" onclick="abrirModalCurso()">+ Novo Curso</button>
+                </div>
+
+                <!-- Tabela de Cursos -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome do Curso</th>
+                                <th>Área</th>
+                                <th>Duração</th>
+                                <th>Vagas</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cursos-table-body">
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="cursos-mensagem" class="mensagem"></div>
+            </section>
+
+            <!-- Seção de Relatórios -->
+            <section id="relatorios-section" class="content-section">
+                <div class="section-header">
+                    <h2>Relatórios do Sistema</h2>
+                </div>
+
+                <div class="relatorios-grid">
+                    <div class="relatorio-card">
+                        <h3>Total de Usuários</h3>
+                        <p class="relatorio-numero" id="total-usuarios">0</p>
+                    </div>
+                    <div class="relatorio-card">
+                        <h3>Total de Cursos</h3>
+                        <p class="relatorio-numero" id="total-cursos">0</p>
+                    </div>
+                    <div class="relatorio-card">
+                        <h3>Usuários Ativos</h3>
+                        <p class="relatorio-numero" id="usuarios-ativos">0</p>
+                    </div>
+                    <div class="relatorio-card">
+                        <h3>Cursos Ativos</h3>
+                        <p class="relatorio-numero" id="cursos-ativos">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Configurações -->
+            <section id="configuracoes-section" class="content-section">
+                <div class="section-header">
+                    <h2>Configurações do Sistema</h2>
+                </div>
+
+                <div class="config-form">
+                    <h3>Configurações Gerais</h3>
+                    <div class="form-group">
+                        <label>Nome do Sistema</label>
+                        <input type="text" id="config-nome-sistema" value="Orientec" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail de Contato</label>
+                        <input type="email" id="config-email" value="contato@orientec.com.br" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="config-telefone" value="(21) 99999-9999" class="form-control">
+                    </div>
+                    <button class="btn-primary" onclick="salvarConfiguracoes()">Salvar Configurações</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modal de Usuário -->
+    <div id="modal-usuario" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-usuario-titulo">Novo Usuário</h3>
+            <form id="form-usuario">
+                <input type="hidden" id="usuario-id">
+
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="usuario-nome" placeholder="Digite o nome completo" required>
+                </div>
+
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="usuario-email" placeholder="Digite o e-mail" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="usuario-senha" placeholder="Digite a senha">
+                </div>
+
+                <div class="form-group">
+                    <label>Perfil</label>
+                    <select id="usuario-perfil" required>
+                        <option value="">Selecione o perfil</option>
+                        <option value="admin">Administrador</option>
+                        <option value="aluno">Aluno</option>
+                        <option value="orientador">Orientador</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="usuario-status" required>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-primary">Salvar</button>
+                    <button type="button" class="btn-cancelar" onclick="fecharModalUsuario()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Curso -->
+    <div id="modal-curso" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-curso-titulo">Novo Curso</h3>
+            <form id="form-curso">
+                <input type="hidden" id="curso-id">
+
+                <div class="form-group">
+                    <label>Nome do Curso</label>
+                    <input type="text" id="curso-nome" placeholder="Digite o nome do curso" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Área</label>
+                    <select id="curso-area" required>
+                        <option value="">Selecione a área</option>
+                        <option value="tecnologia">Tecnologia</option>
+                        <option value="saude">Saúde</option>
+                        <option value="humanas">Ciências Humanas</option>
+                        <option value="exatas">Ciências Exatas</option>
+                        <option value="biologicas">Ciências Biológicas</option>
+                        <option value="artes">Artes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Duração (semestres)</label>
+                    <input type="number" id="curso-duracao" placeholder="Duração em semestres" required min="1">
+                </div>
+
+                <div class="form-group">
+                    <label>Número de Vagas</label>
+                    <input type="number" id="curso-vagas" placeholder="Número de vagas" required min="1">
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="curso-descricao" rows="4" placeholder="Descrição do curso" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="curso-status" required>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-primary">Salvar</button>
+                    <button type="button" class="btn-cancelar" onclick="fecharModalCurso()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="modal-confirmacao" class="modal">
+        <div class="modal-content modal-pequeno">
+            <h3>Confirmar Exclusão</h3>
+            <p>Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.</p>
+            <div class="modal-buttons">
+                <button class="btn-excluir" id="btn-confirmar-exclusao">Excluir</button>
+                <button class="btn-cancelar" onclick="fecharModalConfirmacao()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // ============================================
+        // PROTEÇÃO DE ROTA (Verifica se está logado)
+        // ============================================
+        const token = localStorage.getItem("tokenIntranet");
+
+        if (!token) {
+            alert("Acesso Negado! Área restrita a administradores.");
+            window.location.href = "login_intranet.html"; // Mude para o nome do seu arquivo de login da intranet
+        }
+
+        // ============================================
+        // Dados em memória (simulando banco de dados)
+        // ============================================
+        let usuarios = [
+            { id: 1, nome: "João Silva", email: "joao@email.com", perfil: "aluno", data_cadastro: "2024-01-15", status: "ativo" },
+            { id: 2, nome: "Maria Santos", email: "maria@email.com", perfil: "orientador", data_cadastro: "2024-02-20", status: "ativo" },
+            { id: 3, nome: "Pedro Costa", email: "pedro@email.com", perfil: "admin", data_cadastro: "2024-03-10", status: "ativo" }
+        ];
+
+        let cursos = [
+            { id: 1, nome: "Ciência da Computação", area: "tecnologia", duracao: 8, vagas: 50, status: "ativo" },
+            { id: 2, nome: "Medicina", area: "saude", duracao: 12, vagas: 30, status: "ativo" },
+            { id: 3, nome: "Direito", area: "humanas", duracao: 10, vagas: 40, status: "ativo" }
+        ];
+
+        let proximoIdUsuario = 4;
+        let proximoIdCurso = 4;
+        let itemParaExcluir = null;
+        let tipoExclusao = null;
+
+        // ============================================
+        // Navegação do Sidebar
+        // ============================================
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Remove active de todos os links
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+
+                // Mostra a seção correspondente
+                const section = this.dataset.section;
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`${section}-section`).classList.add('active');
+            });
+        });
+
+        // ============================================
+        // Funções de Usuários
+        // ============================================
+        function carregarUsuarios() {
+            const tbody = document.getElementById('usuarios-table-body');
+            tbody.innerHTML = '';
+
+            usuarios.forEach(usuario => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${usuario.id}</td>
+                    <td>${usuario.nome}</td>
+                    <td>${usuario.email}</td>
+                    <td><span class="badge badge-${usuario.perfil}">${usuario.perfil}</span></td>
+                    <td>${usuario.data_cadastro}</td>
+                    <td><span class="status status-${usuario.status}">${usuario.status}</span></td>
+                    <td class="acoes">
+                        <button class="btn-editar" onclick="editarUsuario(${usuario.id})">Editar</button>
+                        <button class="btn-excluir" onclick="confirmarExclusaoUsuario(${usuario.id})">Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            atualizarRelatorios();
+        }
+
+        function abrirModalUsuario(usuario = null) {
+            document.getElementById('modal-usuario').style.display = 'flex';
+
+            if (usuario) {
+                document.getElementById('modal-usuario-titulo').textContent = 'Editar Usuário';
+                document.getElementById('usuario-id').value = usuario.id;
+                document.getElementById('usuario-nome').value = usuario.nome;
+                document.getElementById('usuario-email').value = usuario.email;
+                document.getElementById('usuario-senha').value = '';
+                document.getElementById('usuario-senha').required = false;
+                document.getElementById('usuario-perfil').value = usuario.perfil;
+                document.getElementById('usuario-status').value = usuario.status;
+            } else {
+                document.getElementById('modal-usuario-titulo').textContent = 'Novo Usuário';
+                document.getElementById('form-usuario').reset();
+                document.getElementById('usuario-id').value = '';
+                document.getElementById('usuario-senha').required = true;
+            }
+        }
+
+        function fecharModalUsuario() {
+            document.getElementById('modal-usuario').style.display = 'none';
+            document.getElementById('form-usuario').reset();
+        }
+
+        function editarUsuario(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            if (usuario) {
+                abrirModalUsuario(usuario);
+            }
+        }
+
+        function confirmarExclusaoUsuario(id) {
+            itemParaExcluir = id;
+            tipoExclusao = 'usuario';
+            document.getElementById('modal-confirmacao').style.display = 'flex';
+        }
+
+        function excluirUsuario(id) {
+            usuarios = usuarios.filter(u => u.id !== id);
+            carregarUsuarios();
+            mostrarMensagem('usuarios-mensagem', 'Usuário excluído com sucesso!', 'sucesso');
+        }
+
+        // ============================================
+        // Funções de Cursos
+        // ============================================
+        function carregarCursos() {
+            const tbody = document.getElementById('cursos-table-body');
+            tbody.innerHTML = '';
+
+            cursos.forEach(curso => {
+                const tr = document.createElement('tr');
+                const areaNome = {
+                    'tecnologia': 'Tecnologia',
+                    'saude': 'Saúde',
+                    'humanas': 'Ciências Humanas',
+                    'exatas': 'Ciências Exatas',
+                    'biologicas': 'Ciências Biológicas',
+                    'artes': 'Artes'
+                };
+
+                tr.innerHTML = `
+                    <td>${curso.id}</td>
+                    <td>${curso.nome}</td>
+                    <td>${areaNome[curso.area]}</td>
+                    <td>${curso.duracao} semestres</td>
+                    <td>${curso.vagas}</td>
+                    <td><span class="status status-${curso.status}">${curso.status}</span></td>
+                    <td class="acoes">
+                        <button class="btn-editar" onclick="editarCurso(${curso.id})">Editar</button>
+                        <button class="btn-excluir" onclick="confirmarExclusaoCurso(${curso.id})">Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            atualizarRelatorios();
+        }
+
+        function abrirModalCurso(curso = null) {
+            document.getElementById('modal-curso').style.display = 'flex';
+
+            if (curso) {
+                document.getElementById('modal-curso-titulo').textContent = 'Editar Curso';
+                document.getElementById('curso-id').value = curso.id;
+                document.getElementById('curso-nome').value = curso.nome;
+                document.getElementById('curso-area').value = curso.area;
+                document.getElementById('curso-duracao').value = curso.duracao;
+                document.getElementById('curso-vagas').value = curso.vagas;
+                document.getElementById('curso-descricao').value = curso.descricao || '';
+                document.getElementById('curso-status').value = curso.status;
+            } else {
+                document.getElementById('modal-curso-titulo').textContent = 'Novo Curso';
+                document.getElementById('form-curso').reset();
+                document.getElementById('curso-id').value = '';
+            }
+        }
+
+        function fecharModalCurso() {
+            document.getElementById('modal-curso').style.display = 'none';
+            document.getElementById('form-curso').reset();
+        }
+
+        function editarCurso(id) {
+            const curso = cursos.find(c => c.id === id);
+            if (curso) {
+                abrirModalCurso(curso);
+            }
+        }
+
+        function confirmarExclusaoCurso(id) {
+            itemParaExcluir = id;
+            tipoExclusao = 'curso';
+            document.getElementById('modal-confirmacao').style.display = 'flex';
+        }
+
+        function excluirCurso(id) {
+            cursos = cursos.filter(c => c.id !== id);
+            carregarCursos();
+            mostrarMensagem('cursos-mensagem', 'Curso excluído com sucesso!', 'sucesso');
+        }
+
+        // ============================================
+        // Modal de Confirmação
+        // ============================================
+        function fecharModalConfirmacao() {
+            document.getElementById('modal-confirmacao').style.display = 'none';
+            itemParaExcluir = null;
+            tipoExclusao = null;
+        }
+
+        document.getElementById('btn-confirmar-exclusao').addEventListener('click', function () {
+            if (tipoExclusao === 'usuario') {
+                excluirUsuario(itemParaExcluir);
+            } else if (tipoExclusao === 'curso') {
+                excluirCurso(itemParaExcluir);
+            }
+            fecharModalConfirmacao();
+        });
+
+        // ============================================
+        // Formulários
+        // ============================================
+        document.getElementById('form-usuario').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const id = document.getElementById('usuario-id').value;
+            const nome = document.getElementById('usuario-nome').value;
+            const email = document.getElementById('usuario-email').value;
+            const senha = document.getElementById('usuario-senha').value;
+            const perfil = document.getElementById('usuario-perfil').value;
+            const status = document.getElementById('usuario-status').value;
+
+            if (id) {
+                // Editar
+                const index = usuarios.findIndex(u => u.id === parseInt(id));
+                if (index !== -1) {
+                    usuarios[index] = { ...usuarios[index], nome, email, perfil, status };
+                    if (senha) {
+                        usuarios[index].senha = senha;
+                    }
+                    mostrarMensagem('usuarios-mensagem', 'Usuário atualizado com sucesso!', 'sucesso');
+                }
+            } else {
+                // Novo
+                const novoUsuario = {
+                    id: proximoIdUsuario++,
+                    nome,
+                    email,
+                    senha,
+                    perfil,
+                    data_cadastro: new Date().toISOString().split('T')[0],
+                    status
+                };
+                usuarios.push(novoUsuario);
+                mostrarMensagem('usuarios-mensagem', 'Usuário cadastrado com sucesso!', 'sucesso');
+            }
+
+            carregarUsuarios();
+            fecharModalUsuario();
+        });
+
+        document.getElementById('form-curso').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const id = document.getElementById('curso-id').value;
+            const nome = document.getElementById('curso-nome').value;
+            const area = document.getElementById('curso-area').value;
+            const duracao = document.getElementById('curso-duracao').value;
+            const vagas = document.getElementById('curso-vagas').value;
+            const descricao = document.getElementById('curso-descricao').value;
+            const status = document.getElementById('curso-status').value;
+
+            if (id) {
+                // Editar
+                const index = cursos.findIndex(c => c.id === parseInt(id));
+                if (index !== -1) {
+                    cursos[index] = { ...cursos[index], nome, area, duracao: parseInt(duracao), vagas: parseInt(vagas), descricao, status };
+                    mostrarMensagem('cursos-mensagem', 'Curso atualizado com sucesso!', 'sucesso');
+                }
+            } else {
+                // Novo
+                const novoCurso = {
+                    id: proximoIdCurso++,
+                    nome,
+                    area,
+                    duracao: parseInt(duracao),
+                    vagas: parseInt(vagas),
+                    descricao,
+                    status
+                };
+                cursos.push(novoCurso);
+                mostrarMensagem('cursos-mensagem', 'Curso cadastrado com sucesso!', 'sucesso');
+            }
+
+            carregarCursos();
+            fecharModalCurso();
+        });
+
+        // ============================================
+        // Relatórios
+        // ============================================
+        function atualizarRelatorios() {
+            document.getElementById('total-usuarios').textContent = usuarios.length;
+            document.getElementById('total-cursos').textContent = cursos.length;
+            document.getElementById('usuarios-ativos').textContent = usuarios.filter(u => u.status === 'ativo').length;
+            document.getElementById('cursos-ativos').textContent = cursos.filter(c => c.status === 'ativo').length;
+        }
+
+        // ============================================
+        // Funções Auxiliares
+        // ============================================
+        function mostrarMensagem(elementoId, texto, tipo) {
+            const elemento = document.getElementById(elementoId);
+            elemento.textContent = texto;
+            elemento.className = `mensagem ${tipo}`;
+            setTimeout(() => {
+                elemento.className = 'mensagem';
+                elemento.textContent = '';
+            }, 3000);
+        }
+
+        function salvarConfiguracoes() {
+            const nome = document.getElementById('config-nome-sistema').value;
+            const email = document.getElementById('config-email').value;
+            const telefone = document.getElementById('config-telefone').value;
+
+            // Aqui você pode fazer uma chamada API para salvar
+            alert('Configurações salvas com sucesso!');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                // Remove o crachá (token) do navegador
+                localStorage.removeItem("tokenIntranet");
+
+                // Redireciona de volta para o login
+                window.location.href = 'login_intranet.html'; // Mude para o nome da página de login correta
+            }
+        }
+
+        // ============================================
+        // Inicialização
+        // ============================================
+        carregarUsuarios();
+        carregarCursos();
+
+        // Fechar modais ao clicar fora
+        window.addEventListener('click', function (e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
