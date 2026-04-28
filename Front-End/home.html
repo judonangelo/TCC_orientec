@@ -17,13 +17,15 @@
             
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="home.html" class="active">Home</a></li>
                     <li><a href="#quem-somos">Quem Somos</a></li>
                     <li><a href="#sobre">Sobre Nós</a></li>
                     <li><a href="#servicos">Serviços</a></li>
                     <li><a href="#contato">Contato</a></li>
                 </ul>
             </nav>
+
+            <button class="btn-logout" onclick="logout()">Sair</button>
             
         </div>
     </header>
@@ -34,7 +36,7 @@
         <section class="hero-section">
             <h2>Descubra a Carreira dos Seus Sonhos</h2>
             <p>Faça nosso teste vocacional e encontre o caminho profissional ideal para você</p>
-            <button class="btn-comecar" onclick="window.location.href='cadastro.html'">Comece Agora</button>
+            <button class="btn-comecar" onclick="window.location.href=''">Comece Agora</button>
         </section>
 
         <section id="quem-somos" class="quem-somos">
@@ -123,9 +125,9 @@
         }
         
         // Dica bônus: Função de Logout (caso você queira colocar um botão "Sair" no futuro)
-        function sair() {
+        function logout() {
             localStorage.removeItem("tokenOrientec");
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         }
     </script>
 </html>
