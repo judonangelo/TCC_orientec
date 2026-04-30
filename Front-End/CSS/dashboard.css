@@ -30,12 +30,14 @@
 .logo-area {
     text-align: left;
 }
+
 .logo-area .logo-text {
     color: white;
     font-size: 28px;
     margin: 0;
     font-weight: 700;
 }
+
 .logo-area .logo-subtitle {
     color: #a8c8f0;
     font-size: 12px;
@@ -47,10 +49,12 @@
     align-items: center;
     gap: 20px;
 }
+
 .user-info {
     font-size: 14px;
     color: #a8c8f0;
 }
+
 .btn-logout {
     background-color: rgba(255, 255, 255, 0.2);
     color: white;
@@ -124,8 +128,15 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .section-header {
@@ -245,6 +256,7 @@
     font-weight: 500;
     transition: all 0.3s;
 }
+
 .btn-editar:hover {
     background-color: #1976D2;
     transform: translateY(-1px);
@@ -261,6 +273,7 @@
     font-weight: 500;
     transition: all 0.3s;
 }
+
 .btn-excluir:hover {
     background-color: #d32f2f;
     transform: translateY(-1px);
@@ -277,6 +290,7 @@
     font-size: 14px;
     transition: all 0.3s;
 }
+
 .btn-primary:hover {
     background-color: #1a4a8a;
     transform: translateY(-2px);
@@ -298,9 +312,11 @@
     text-align: center;
     transition: transform 0.3s;
 }
+
 .relatorio-card:hover {
     transform: translateY(-5px);
 }
+
 .relatorio-card h3 {
     color: #0c3470;
     margin-bottom: 15px;
@@ -321,6 +337,7 @@
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
     max-width: 600px;
 }
+
 .config-form h3 {
     color: #0c3470;
     margin-bottom: 25px;
@@ -330,6 +347,45 @@
 /* ── Modal pequeno (confirmação) ── */
 .modal-pequeno {
     max-width: 400px;
+}
+
+/* ─────────────────────────────────────
+   MODAL DE CURSO – duas colunas e scroll
+   ───────────────────────────────────── */
+#modal-curso .modal-content {
+    max-height: 85vh;
+    /* altura máxima: 85% da tela */
+    overflow-y: auto;
+    /* barra de rolagem vertical quando necessário */
+    width: 90%;
+    max-width: 800px;
+    /* um pouco mais largo que o modal padrão */
+    padding: 30px;
+}
+
+/* Grid de duas colunas para os campos */
+.modal-campos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+    /* espaço apenas entre as colunas */
+}
+
+/* Campos que devem ocupar as duas colunas */
+.modal-campos-grid .campo-largo {
+    grid-column: span 2;
+}
+
+/* Ajuste fino para o espaçamento interno */
+.modal-campos-grid .form-group {
+    margin-bottom: 15px;
+}
+
+/* Botões do modal continuam com display flex */
+#modal-curso .modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 /* ── Responsivo do dashboard ── */
@@ -342,35 +398,42 @@
         width: 100%;
         padding: 15px 0;
     }
-    
+
     .sidebar-nav ul {
         display: flex;
         overflow-x: auto;
     }
-    
+
     .sidebar-link {
         padding: 10px 15px;
         white-space: nowrap;
         border-left: none;
         border-bottom: 3px solid transparent;
     }
-    
+
     .sidebar-link.active {
         border-left: none;
         border-bottom-color: #0c3470;
     }
-    
+
     .section-header {
         flex-direction: column;
         gap: 15px;
         text-align: center;
     }
-    
+
     .relatorios-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .acoes {
         flex-direction: column;
+    }
+
+    .modal-campos-grid {
+        grid-template-columns: 1fr;   /* empilha os campos */
+    }
+    .modal-campos-grid .campo-largo {
+        grid-column: span 1;          /* remove o span extra */
     }
 }

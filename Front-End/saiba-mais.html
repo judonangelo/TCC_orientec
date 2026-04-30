@@ -20,7 +20,7 @@
                 <a href="home.html#servicos">Serviços</a>
                 <a href="home.html#contato">Contato</a>
             </nav>
-            <button class="btn-perfil" onclick="window.location.href='home.html'">Perfil</button>
+            <button class="btn-perfil" onclick="window.location.href='home.html'">Usuário</button>
         </div>
     </header>
 
@@ -35,94 +35,78 @@
     </footer>
 
     <script>
+        const API_URL = "http://localhost:3000";
 
-        const cursosDetalhados = {
-            1: {
-                nome: "Desenvolvimento de Sistemas",
-                duracao: "4 semestres (2 anos)",
-                cargaHoraria: "1200 horas",
-                mercado: "O setor de tecnologia está em plena expansão. Profissionais formados podem atuar em empresas de software, startups, fintechs, e-commerce, agências digitais, setor bancário, indústrias e como freelancers. A demanda por desenvolvedores é altíssima em todo o país, com muitas vagas para trabalho remoto.",
-                salario: "R$ 2.500 a R$ 6.000 ",
-                perfil: "Ideal para quem gosta de resolver problemas, tem raciocínio lógico, gosta de tecnologia, inovação e trabalhar em equipe.",
-                descricao:"Mergulhe no universo da programação e crie sites, aplicativos e softwares que transformam o dia a dia das pessoas. Você aprenderá lógica de programação, linguagens como JavaScript, Python, bancos de dados e metodologias ágeis. O curso estimula o raciocínio lógico e a resolução criativa de problemas, capacitando você a desenvolver sistemas completos, do front-end ao back-end. Prepare-se para o mercado de tecnologia, um dos que mais crescem no mundo."
-            },
-            2: {
-                nome: "Química",
-                duracao: "4 semestres (2 anos)",
-                cargaHoraria: "1200 horas",
-                mercado: "O técnico em Química é essencial em indústrias químicas, petroquímicas, farmacêuticas, alimentícias, de cosméticos, laboratórios de análises clínicas e ambientais, estações de tratamento de água e efluentes, além de órgãos de fiscalização ambiental.",
-                salario: "R$ 2.200 a R$ 4.500",
-                perfil: "Pessoas com curiosidade científica, atenção a detalhes, responsabilidade, organização e interesse por laboratório.",
-                descricao:"Explore o fascinante mundo das transformações químicas e suas aplicações industriais e científicas. Você aprenderá técnicas de análise laboratorial, controle de qualidade, química orgânica e inorgânica, além de boas práticas de laboratório. O curso une teoria e experimentação, desenvolvendo sua capacidade de observação, precisão e pensamento crítico. Com essa formação, poderá atuar em indústrias farmacêuticas, alimentícias, cosméticas e institutos de pesquisa."
-            },
-            3: {
-                nome: "Administração",
-                duracao: "4 semestres (2 anos)",
-                cargaHoraria: "1200 horas",
-                mercado: "O administrador técnico pode atuar em qualquer tipo de empresa: indústria, comércio, serviços, organizações do terceiro setor, concursos públicos (agente administrativo), ou abrir seu próprio negócio. É uma formação muito versátil.",
-                salario: "R$ 2.000 a R$ 4.000",
-                perfil: "Pessoas com habilidades de liderança, comunicação, organização, visão sistêmica e que gostam de resolver problemas.",
-                descricao:"Desenvolva uma visão estratégica de negócios e aprenda a gerenciar recursos, pessoas e processos com eficiência. O curso aborda finanças, marketing, recursos humanos, logística e empreendedorismo, sempre com foco na tomada de decisão. Por meio de estudos de caso e projetos práticos, você exercitará liderança, comunicação e planejamento. Ao final, estará pronto para atuar em empresas de qualquer porte ou abrir seu próprio negócio com confiança."
-            },
-            4: {
-                nome: "Logística",
-                duracao: "4 semestres (2 anos)",
-                cargaHoraria: "1200 horas",
-                mercado: "Com o crescimento do e-commerce e das operações globais, a logística tornou-se estratégica. O profissional pode atuar em transportadoras, empresas de armazenagem, indústrias, varejo, portos, aeroportos, operadores logísticos, consultorias.",
-                salario: "R$ 2.200 a R$ 4.800",
-                perfil: "Pessoas organizadas, que gostam de planejamento, têm raciocínio analítico e sabem lidar com prazos.",
-                descricao:"Descubra como os produtos chegam até você e torne-se um especialista em planejar, executar e controlar cadeias de suprimentos. Você aprenderá sobre gestão de estoques, modais de transporte, distribuição, compras e custos logísticos. O curso enfatiza a organização, a visão sistêmica e a resolução de problemas reais do mercado. Com essa formação, você estará apto a atuar em transportadoras, centros de distribuição, indústrias e comércio eletrônico."
-            },
-            5: {
-                nome: "Eletroeletrônica",
-                duracao: "4 semestres (2 anos)",
-                cargaHoraria: "1200 horas",
-                mercado: "A indústria 4.0 torna o técnico em eletroeletrônica indispensável. Atua em manutenção industrial, automação predial, empresas de energia renovável (solar, eólica), telecomunicações, eletrodomésticos, montadoras, sistemas de segurança eletrônica.",
-                salario: "R$ 2.500 a R$ 5.500",
-                perfil: "Pessoas que gostam de entender como as coisas funcionam, têm habilidade manual, raciocínio lógico e atenção à segurança.",
-                descricao:"Aprenda a dominar circuitos elétricos, eletrônica analógica e digital, máquinas elétricas e sistemas de automação. Você desenvolverá habilidades para instalar, manter e reparar equipamentos industriais, painéis de comando e sistemas de energia. O curso une teoria e prática em laboratórios equipados, preparando você para atuar em indústrias, concessionárias de energia e empresas de manutenção. Com foco em tecnologia limpa e eficiência energética, você sairá apto a projetar soluções inteligentes para o mundo real."
+        async function carregarCursoPorId(id) {
+            const container = document.getElementById('conteudo-curso');
+
+            try {
+                const response = await fetch(`${API_URL}/cursos/${id}`);
+
+                if (response.status === 404) {
+                    container.innerHTML = `
+                        <div class="erro-card">
+                            <h2>Curso não encontrado</h2>
+                            <p>O curso que você procura não existe ou foi removido.</p>
+                            <button class="btn-voltar" onclick="history.back()">← Voltar para Cursos</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Erro ao buscar curso: ${response.status}`);
+                }
+
+                const curso = await response.json();
+
+                container.innerHTML = `
+                    <h1>${curso.nome}</h1>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>Duração:</strong> ${curso.duracao} semestres</div>
+                        <div class="info-item"><strong>Faixa salarial:</strong> ${curso.salario}</div>
+                        <div class="info-item"><strong>Carga Horária:</strong> ${curso.carga_horaria}</div>
+                    </div>
+                    <div class="secao destaque">
+                        <h3>Descrição</h3>
+                        <p>${curso.descricao}</p>
+                    </div>
+                    <div class="secao">
+                        <h3>Mercado de Trabalho</h3>
+                        <p>${curso.mercado}</p>
+                    </div>
+                    <div class="secao">
+                        <h3>Perfil do Aluno</h3>
+                        <p>${curso.perfil}</p>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `
+                    <div class="erro-card">
+                        <h2>Erro ao carregar curso</h2>
+                        <p>Não foi possível buscar os dados. Tente novamente mais tarde.</p>
+                        <button class="btn-voltar" onclick="history.back()">← Voltar para Cursos</button>
+                    </div>
+                `;
             }
-        };
-
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
         const container = document.getElementById('conteudo-curso');
 
-        if (!id || !cursosDetalhados[id]) {
+        if (!id) {
             container.innerHTML = `
                 <div class="erro-card">
                     <h2>Curso não encontrado</h2>
-                    <p>O curso que você procura não existe ou foi removido.</p> 
+                    <p>Nenhum curso foi selecionado.</p>
                     <button class="btn-voltar" onclick="history.back()">← Voltar para Cursos</button>
                 </div>
             `;
         } else {
-            const curso = cursosDetalhados[id];
-            container.innerHTML = `
-                <h1>${curso.nome}</h1>
-                <div class="info-grid">
-                    <div class="info-item"><strong>Duração:</strong> ${curso.duracao}</div>
-                    <div class="info-item"><strong>Faixa salarial:</strong> ${curso.salario}</div>
-                    <div class="info-item"><strong>Carga Horária:</strong> ${curso.cargaHoraria}</div>
-                </div>
-                    <div class="secao destaque">
-                    <h3>Descrição</h3>
-                    <p>${curso.descricao}</p>
-                </div>
-
-                <div class="secao">
-                    <h3>Mercado de Trabalho</h3>
-                    <p>${curso.mercado}</p>
-                </div>
-
-                <div class="secao">
-                    <h3>Perfil do Aluno</h3>
-                    <p>${curso.perfil}</p>
-                </div>
-
-
-            `;
+            carregarCursoPorId(id);
         }
     </script>
 </body>

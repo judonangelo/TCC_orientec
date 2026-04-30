@@ -47,7 +47,6 @@
             <section id="usuarios-section" class="content-section active">
                 <div class="section-header">
                     <h2>Gerenciamento de Usuários</h2>
-                    <!-- ALTERADO: chama abrirModalCriarUsuario() em vez de abrirModalUsuario() -->
                     <button class="btn-primary" onclick="abrirModalCriarUsuario()">+ Novo Usuário</button>
                 </div>
                 <div class="table-container">
@@ -147,8 +146,6 @@
 
     <!-- ================================================
          MODAL CRIAÇÃO DE USUÁRIO
-         Contém todos os campos, incluindo senha (obrigatória).
-         Usado apenas ao clicar em "+ Novo Usuário".
     ================================================ -->
     <div id="modal-criar-usuario" class="modal">
         <div class="modal-content">
@@ -165,7 +162,6 @@
                     <input type="email" id="criar-usuario-email" placeholder="Digite o e-mail" required>
                 </div>
 
-                <!-- Senha obrigatória apenas na criação -->
                 <div class="form-group">
                     <label>Senha</label>
                     <input type="password" id="criar-usuario-senha" placeholder="Digite a senha" required minlength="6">
@@ -199,34 +195,26 @@
 
     <!-- ================================================
          MODAL EDIÇÃO DE USUÁRIO
-         NÃO possui campo de senha nem de e-mail.
-         Permite editar apenas: Perfil e Status.
-         Exibe nome e e-mail como campos somente leitura
-         para o admin saber qual usuário está editando.
     ================================================ -->
     <div id="modal-editar-usuario" class="modal">
         <div class="modal-content">
             <h3>Editar Usuário</h3>
             <form id="form-editar-usuario">
 
-                <!-- ID oculto para identificar qual usuário será atualizado -->
                 <input type="hidden" id="editar-usuario-id">
 
-                <!-- Nome: somente leitura (informativo) -->
                 <div class="form-group">
                     <label>Nome</label>
                     <input type="text" id="editar-usuario-nome" readonly
                         style="background:#f5f5f5; cursor:not-allowed; color:#999;">
                 </div>
 
-                <!-- E-mail: somente leitura — não pode ser alterado por segurança -->
                 <div class="form-group">
                     <label>E-mail <small style="color:#999;">(não editável)</small></label>
                     <input type="email" id="editar-usuario-email" readonly
                         style="background:#f5f5f5; cursor:not-allowed; color:#999;">
                 </div>
 
-                <!-- Perfil: editável -->
                 <div class="form-group">
                     <label>Perfil</label>
                     <select id="editar-usuario-perfil" required>
@@ -236,7 +224,6 @@
                     </select>
                 </div>
 
-                <!-- Status: editável -->
                 <div class="form-group">
                     <label>Status</label>
                     <select id="editar-usuario-status" required>
@@ -254,35 +241,74 @@
     </div>
 
 
-    <!-- Modal de Curso (sem alterações) -->
+    <!-- Modal de Curso -->
     <div id="modal-curso" class="modal">
         <div class="modal-content">
             <h3 id="modal-curso-titulo">Novo Curso</h3>
             <form id="form-curso">
                 <input type="hidden" id="curso-id">
-                <div class="form-group">
-                    <label>Nome do Curso</label>
-                    <input type="text" id="curso-nome" placeholder="Digite o nome do curso" required>
-                </div>
-                <div class="form-group">
-                    <label>Duração (semestres)</label>
-                    <input type="number" id="curso-duracao" placeholder="Duração em semestres" required min="1">
-                </div>
-                <div class="form-group">
-                    <label>Número de Vagas</label>
-                    <input type="number" id="curso-vagas" placeholder="Número de vagas" required min="1">
-                </div>
-                <div class="form-group">
-                    <label>Descrição</label>
-                    <textarea id="curso-descricao" rows="4" placeholder="Descrição do curso" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="curso-status" required>
-                        <option value="ativo">Ativo</option>
-                        <option value="inativo">Inativo</option>
-                    </select>
-                </div>
+
+                <div class="modal-campos-grid">
+                    
+                    <div class="form-group">
+                        <label>Nome do Curso</label>
+                        <input type="text" id="curso-nome" placeholder="Digite o nome do curso" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Duração (semestres)</label>
+                        <input type="number" id="curso-duracao" placeholder="Duração em semestres" required min="1">
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <label>Número de Vagas</label>
+                        <input type="number" id="curso-vagas" placeholder="Número de vagas" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Carga Horária (horas)</label>
+                        <input type="number" id="curso-carga-horaria" placeholder="Ex: 1200" min="1">
+                    </div>
+
+                   
+                    <div class="form-group">
+                        <label>Salário Médio</label>
+                        <input type="text" id="curso-salario" placeholder="Ex: R$ 2.500 a R$ 5.500">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="curso-status" required>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
+                        </select>
+                    </div>
+
+                   
+                    <div class="form-group campo-largo">
+                        <label>Descrição</label>
+                        <textarea id="curso-descricao" rows="3" placeholder="Descrição detalhada do curso"
+                            required></textarea>
+                    </div>
+                    <div class="form-group campo-largo">
+                        <label>Área de Atuação</label>
+                        <textarea id="curso-area" rows="3" placeholder="Área de atuação profissional"
+                            required></textarea>
+                    </div>
+                    <div class="form-group campo-largo">
+                        <label>Resumo</label>
+                        <textarea id="curso-resumo" rows="3" placeholder="Resumo do curso (aparece nos cards)"
+                            required></textarea>
+                    </div>
+                    <div class="form-group campo-largo">
+                        <label>Mercado de Trabalho</label>
+                        <textarea id="curso-mercado" rows="3" placeholder="Perspectivas do mercado"></textarea>
+                    </div>
+                    <div class="form-group campo-largo">
+                        <label>Perfil do Aluno</label>
+                        <textarea id="curso-perfil" rows="3"
+                            placeholder="Características desejáveis do aluno"></textarea>
+                    </div>
+                </div> 
+
                 <div class="modal-buttons">
                     <button type="submit" class="btn-primary">Salvar</button>
                     <button type="button" class="btn-cancelar" onclick="fecharModalCurso()">Cancelar</button>
@@ -291,7 +317,7 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão (sem alterações) -->
+    <!-- Modal de Confirmação de Exclusão -->
     <div id="modal-confirmacao" class="modal">
         <div class="modal-content modal-pequeno">
             <h3>Confirmar Exclusão</h3>
@@ -303,364 +329,7 @@
         </div>
     </div>
 
-    <script>
-
-        // ============================================
-        // PROTEÇÃO DE ROTA
-        // ============================================
-        const token = localStorage.getItem("tokenIntranet");
-        if (!token) {
-            alert("Acesso Negado! Área restrita a administradores.");
-            window.location.href = "intranet.html";
-        }
-
-        // ============================================
-        // Dados em memória (simulando banco de dados)
-        // ============================================
-        let usuarios = [
-            { id: 1, nome: "Julia", email: "julia@email.com", perfil: "aluno", data_cadastro: "2024-01-15", status: "ativo" },
-            { id: 2, nome: "Joao Victor", email: "joao@email.com", perfil: "admin", data_cadastro: "2026-03-10", status: "ativo" }
-        ];
-
-        let cursos = [
-            { id: 1, nome: "Desenvolvimento de sistemas", duracao: 4, vagas: 60, status: "ativo" },
-            { id: 2, nome: "Química", duracao: 4, vagas: 30, status: "ativo" },
-            { id: 3, nome: "Administração", duracao: 4, vagas: 29, status: "ativo" },
-            { id: 4, nome: "Logística", duracao: 4, vagas: 31, status: "ativo" },
-            { id: 5, nome: "Eletroeletrônica", duracao: 4, vagas: 32, status: "ativo" },
-        ];
-
-        let proximoIdUsuario = 3;
-        let proximoIdCurso = 6;
-        let itemParaExcluir = null;
-        let tipoExclusao = null;
-
-        // ============================================
-        // Navegação do Sidebar
-        // ============================================
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-                const section = this.dataset.section;
-                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-                document.getElementById(`${section}-section`).classList.add('active');
-            });
-        });
-
-        // ============================================
-        // Funções de Usuários — Tabela
-        // ============================================
-        function carregarUsuarios() {
-            const tbody = document.getElementById('usuarios-table-body');
-            tbody.innerHTML = '';
-
-            usuarios.forEach(usuario => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${usuario.id}</td>
-                    <td>${usuario.nome}</td>
-                    <td>${usuario.email}</td>
-                    <td><span class="badge badge-${usuario.perfil}">${usuario.perfil}</span></td>
-                    <td>${usuario.data_cadastro}</td>
-                    <td><span class="status status-${usuario.status}">${usuario.status}</span></td>
-                    <td class="acoes">
-                        <button class="btn-editar" onclick="editarUsuario(${usuario.id})">Editar</button>
-                        <button class="btn-excluir" onclick="confirmarExclusaoUsuario(${usuario.id})">Excluir</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            atualizarRelatorios();
-        }
-
-        // ============================================
-        // MODAL CRIAR USUÁRIO
-        // Responsável apenas pela abertura do formulário de criação.
-        // Todos os campos são limpos e a senha é obrigatória.
-        // ============================================
-        function abrirModalCriarUsuario() {
-            document.getElementById('form-criar-usuario').reset();
-            document.getElementById('modal-criar-usuario').style.display = 'flex';
-        }
-
-        function fecharModalCriarUsuario() {
-            document.getElementById('modal-criar-usuario').style.display = 'none';
-            document.getElementById('form-criar-usuario').reset();
-        }
-
-        // ============================================
-        // MODAL EDITAR USUÁRIO
-        // Responsável apenas pela edição de um usuário existente.
-        // Preenche nome e email como somente leitura (informativo).
-        // Permite editar apenas perfil e status.
-        // Senha NÃO aparece neste modal.
-        // ============================================
-        function abrirModalEditarUsuario(usuario) {
-            // Preenche os campos informativos (somente leitura)
-            document.getElementById('editar-usuario-id').value    = usuario.id;
-            document.getElementById('editar-usuario-nome').value  = usuario.nome;
-            document.getElementById('editar-usuario-email').value = usuario.email;
-
-            // Preenche os campos editáveis com os valores atuais do usuário
-            document.getElementById('editar-usuario-perfil').value = usuario.perfil;
-            document.getElementById('editar-usuario-status').value = usuario.status;
-
-            document.getElementById('modal-editar-usuario').style.display = 'flex';
-        }
-
-        function fecharModalEditarUsuario() {
-            document.getElementById('modal-editar-usuario').style.display = 'none';
-        }
-
-        // editarUsuario: busca o objeto e chama a função correta
-        function editarUsuario(id) {
-            const usuario = usuarios.find(u => u.id === id);
-            if (usuario) {
-                // ALTERADO: chama abrirModalEditarUsuario em vez de abrirModalUsuario
-                abrirModalEditarUsuario(usuario);
-            }
-        }
-
-        function confirmarExclusaoUsuario(id) {
-            itemParaExcluir = id;
-            tipoExclusao = 'usuario';
-            document.getElementById('modal-confirmacao').style.display = 'flex';
-        }
-
-        function excluirUsuario(id) {
-            usuarios = usuarios.filter(u => u.id !== id);
-            carregarUsuarios();
-            mostrarMensagem('usuarios-mensagem', 'Usuário excluído com sucesso!', 'sucesso');
-        }
-
-        // ============================================
-        // Funções de Cursos
-        // ============================================
-        function carregarCursos() {
-            const tbody = document.getElementById('cursos-table-body');
-            tbody.innerHTML = '';
-
-            cursos.forEach(curso => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${curso.id}</td>
-                    <td>${curso.nome}</td>
-                    <td>${curso.duracao} semestres</td>
-                    <td>${curso.vagas}</td>
-                    <td><span class="status status-${curso.status}">${curso.status}</span></td>
-                    <td class="acoes">
-                        <button class="btn-editar" onclick="editarCurso(${curso.id})">Editar</button>
-                        <button class="btn-excluir" onclick="confirmarExclusaoCurso(${curso.id})">Excluir</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            atualizarRelatorios();
-        }
-
-        function abrirModalCurso(curso = null) {
-            document.getElementById('modal-curso').style.display = 'flex';
-            if (curso) {
-                document.getElementById('modal-curso-titulo').textContent = 'Editar Curso';
-                document.getElementById('curso-id').value            = curso.id;
-                document.getElementById('curso-nome').value          = curso.nome;
-                document.getElementById('curso-duracao').value       = curso.duracao;
-                document.getElementById('curso-vagas').value         = curso.vagas;
-                document.getElementById('curso-descricao').value     = curso.descricao || '';
-                document.getElementById('curso-status').value        = curso.status;
-            } else {
-                document.getElementById('modal-curso-titulo').textContent = 'Novo Curso';
-                document.getElementById('form-curso').reset();
-                document.getElementById('curso-id').value = '';
-            }
-        }
-
-        function fecharModalCurso() {
-            document.getElementById('modal-curso').style.display = 'none';
-            document.getElementById('form-curso').reset();
-        }
-
-        function editarCurso(id) {
-            const curso = cursos.find(c => c.id === id);
-            if (curso) abrirModalCurso(curso);
-        }
-
-        function confirmarExclusaoCurso(id) {
-            itemParaExcluir = id;
-            tipoExclusao = 'curso';
-            document.getElementById('modal-confirmacao').style.display = 'flex';
-        }
-
-        function excluirCurso(id) {
-            cursos = cursos.filter(c => c.id !== id);
-            carregarCursos();
-            mostrarMensagem('cursos-mensagem', 'Curso excluído com sucesso!', 'sucesso');
-        }
-
-        // ============================================
-        // Modal de Confirmação
-        // ============================================
-        function fecharModalConfirmacao() {
-            document.getElementById('modal-confirmacao').style.display = 'none';
-            itemParaExcluir = null;
-            tipoExclusao = null;
-        }
-
-        document.getElementById('btn-confirmar-exclusao').addEventListener('click', function () {
-            if (tipoExclusao === 'usuario') excluirUsuario(itemParaExcluir);
-            else if (tipoExclusao === 'curso') excluirCurso(itemParaExcluir);
-            fecharModalConfirmacao();
-        });
-
-        // ============================================
-        // SUBMIT — CRIAÇÃO DE USUÁRIO
-        // Captura todos os campos, incluindo senha (corrigido: antes
-        // a variável "senha" era usada sem ter sido capturada do DOM).
-        // ============================================
-        document.getElementById('form-criar-usuario').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const nome   = document.getElementById('criar-usuario-nome').value.trim();
-            const email  = document.getElementById('criar-usuario-email').value.trim();
-            const senha  = document.getElementById('criar-usuario-senha').value; // CORRIGIDO: captura correta da senha
-            const perfil = document.getElementById('criar-usuario-perfil').value;
-            const status = document.getElementById('criar-usuario-status').value;
-
-            // Validação extra: senha não pode estar vazia
-            if (!senha) {
-                mostrarMensagem('usuarios-mensagem', 'A senha é obrigatória para criar um usuário.', 'erro');
-                return;
-            }
-
-            const novoUsuario = {
-                id: proximoIdUsuario++,
-                nome,
-                email,
-                senha,   // armazenado em memória (em produção, deve ser enviado ao back-end para hash)
-                perfil,
-                data_cadastro: new Date().toISOString().split('T')[0],
-                status
-            };
-
-            usuarios.push(novoUsuario);
-            carregarUsuarios();
-            fecharModalCriarUsuario();
-            mostrarMensagem('usuarios-mensagem', 'Usuário cadastrado com sucesso!', 'sucesso');
-        });
-
-        // ============================================
-        // SUBMIT — EDIÇÃO DE USUÁRIO
-        // Atualiza APENAS perfil e status.
-        // Nome, e-mail e senha NÃO são alterados aqui.
-        // ============================================
-        document.getElementById('form-editar-usuario').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const id     = parseInt(document.getElementById('editar-usuario-id').value);
-            const perfil = document.getElementById('editar-usuario-perfil').value;
-            const status = document.getElementById('editar-usuario-status').value;
-
-            const index = usuarios.findIndex(u => u.id === id);
-            if (index !== -1) {
-                // Spread preserva todos os campos originais (nome, email, senha, etc.)
-                // e sobrescreve apenas perfil e status
-                usuarios[index] = { ...usuarios[index], perfil, status };
-                carregarUsuarios();
-                fecharModalEditarUsuario();
-                mostrarMensagem('usuarios-mensagem', 'Usuário atualizado com sucesso!', 'sucesso');
-            } else {
-                mostrarMensagem('usuarios-mensagem', 'Usuário não encontrado.', 'erro');
-            }
-        });
-
-        // ============================================
-        // SUBMIT — CURSOS (sem alterações)
-        // ============================================
-        document.getElementById('form-curso').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const id       = document.getElementById('curso-id').value;
-            const nome     = document.getElementById('curso-nome').value;
-            const duracao  = document.getElementById('curso-duracao').value;
-            const vagas    = document.getElementById('curso-vagas').value;
-            const descricao = document.getElementById('curso-descricao').value;
-            const status   = document.getElementById('curso-status').value;
-
-            if (id) {
-                const index = cursos.findIndex(c => c.id === parseInt(id));
-                if (index !== -1) {
-                    cursos[index] = { ...cursos[index], nome, duracao: parseInt(duracao), vagas: parseInt(vagas), descricao, status };
-                    mostrarMensagem('cursos-mensagem', 'Curso atualizado com sucesso!', 'sucesso');
-                }
-            } else {
-                const novoCurso = {
-                    id: proximoIdCurso++,
-                    nome,
-                    duracao: parseInt(duracao),
-                    vagas: parseInt(vagas),
-                    descricao,
-                    status
-                };
-                cursos.push(novoCurso);
-                mostrarMensagem('cursos-mensagem', 'Curso cadastrado com sucesso!', 'sucesso');
-            }
-
-            carregarCursos();
-            fecharModalCurso();
-        });
-
-        // ============================================
-        // Relatórios
-        // ============================================
-        function atualizarRelatorios() {
-            document.getElementById('total-usuarios').textContent   = usuarios.length;
-            document.getElementById('total-cursos').textContent     = cursos.length;
-            document.getElementById('usuarios-ativos').textContent  = usuarios.filter(u => u.status === 'ativo').length;
-            document.getElementById('cursos-ativos').textContent    = cursos.filter(c => c.status === 'ativo').length;
-        }
-
-        // ============================================
-        // Funções Auxiliares
-        // ============================================
-        function mostrarMensagem(elementoId, texto, tipo) {
-            const elemento = document.getElementById(elementoId);
-            elemento.textContent = texto;
-            elemento.className = `mensagem ${tipo}`;
-            setTimeout(() => {
-                elemento.className = 'mensagem';
-                elemento.textContent = '';
-            }, 3000);
-        }
-
-        function salvarConfiguracoes() {
-            alert('Configurações salvas com sucesso!');
-        }
-
-        function logout() {
-            if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.removeItem("tokenIntranet");
-                window.location.href = 'index.html';
-            }
-        }
-
-        // ============================================
-        // Inicialização
-        // ============================================
-        carregarUsuarios();
-        carregarCursos();
-
-        // Fechar modais ao clicar fora
-        window.addEventListener('click', function (e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-            }
-        });
-
-    </script>
+    <script src="script/dashboard.js"></script>
 </body>
 
 </html>

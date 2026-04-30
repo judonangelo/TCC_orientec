@@ -17,7 +17,7 @@
                 <a href="home.html#servicos">Serviços</a>
                 <a href="home.html#contato">Contato</a>
             </nav>
-            <button class="btn-perfil" onclick="window.location.href='home.html'">Perfil</button>
+            <button class="btn-perfil" onclick="window.location.href='home.html'">Usuário</button>
         </div>
     </header>
 
@@ -33,43 +33,51 @@
     </footer>
 
     <script>
-        const cursosPadrao = [
-            { id: 1, nome: "Desenvolvimento de Sistemas", duracao: 4, status: "ativo", descricaoCurta: "Crie sistemas web, mobile e desktop. Aprenda programação, banco de dados e desenvolvimento ágil.", areaAtuacao: "Programador, Analista de Sistemas, Desenvolvedor Full Stack" },
-            { id: 2, nome: "Química", duracao: 4, status: "ativo", descricaoCurta: "Atue em laboratórios, indústrias e controle de qualidade. Análises químicas e processos industriais.", areaAtuacao: "Técnico Químico, Laboratorista, Controle de Qualidade" },
-            { id: 3, nome: "Administração", duracao: 4, status: "ativo", descricaoCurta: "Gestão de empresas, finanças, marketing e recursos humanos. Torne-se um gestor de sucesso.", areaAtuacao: "Assistente Administrativo, Supervisor, Empreendedor" },
-            { id: 4, nome: "Logística", duracao: 4, status: "ativo", descricaoCurta: "Gerencie cadeias de suprimentos, transportes e armazenagem. Otimize processos logísticos.", areaAtuacao: "Coordenador de Logística, Analista de Supply Chain, Transportes" },
-            { id: 5, nome: "Eletroeletrônica", duracao: 4, status: "ativo", descricaoCurta: "Projete e mantenha circuitos elétricos, sistemas eletrônicos e automação industrial.", areaAtuacao: "Técnico em Eletrônica, Automação, Manutenção Industrial" }
-        ];
+        const API_URL = "http://localhost:3000";
 
-        let cursos = JSON.parse(localStorage.getItem("cursosAdmin"));
-        if (!cursos || cursos.length == 0) {
-            cursos = cursosPadrao;
-            localStorage.setItem("cursosAdmin", JSON.stringify(cursos));
+        async function carregarCursos() {
+            const grid = document.getElementById('cursos-grid');
+
+            try {
+                const response = await fetch(`${API_URL}/cursos`);
+
+                if (!response.ok) {
+                    throw new Error(`Erro ao buscar cursos: ${response.status}`);
+                }
+
+                const cursos = await response.json();
+
+                const cursosAtivos = cursos.filter(c => c.status === "ativo");
+
+                if (cursosAtivos.length === 0) {
+                    grid.innerHTML = '<p class="sem-cursos">Nenhum curso ativo no momento.</p>';
+                    return;
+                }
+
+                grid.innerHTML = cursosAtivos.map(curso => `
+                    <div class="curso-card">
+                        <h3>${curso.nome}</h3>
+                        <p class="curso-desc">${curso.resumo}</p>
+                        <p class="curso-duracao">Duração: ${curso.duracao} semestres</p>
+                        <p class="curso-area">Áreas: ${curso.area}</p>
+                        <button class="btn-saiba-mais" data-id="${curso.id}">Saiba mais</button>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.btn-saiba-mais').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-id');
+                        window.location.href = `saiba-mais.html?id=${id}`;
+                    });
+                });
+
+            } catch (error) {
+                console.error(error);
+                grid.innerHTML = '<p class="sem-cursos">Erro ao carregar cursos. Tente novamente mais tarde.</p>';
+            }
         }
 
-        const cursosAtivos = cursos.filter(c => c.status == "ativo");
-        const grid = document.getElementById('cursos-grid');
-        if (cursosAtivos.length == 0) {
-            grid.innerHTML = '<p class="sem-cursos">Nenhum curso ativo no momento.</p>';
-        } else {
-            grid.innerHTML = cursosAtivos.map(curso => `
-                <div class="curso-card">
-                    <h3>${curso.nome}</h3>
-                    <p class="curso-desc">${curso.descricaoCurta}</p>
-                    <p class="curso-duracao">Duração: ${curso.duracao} semestres</p>
-                    <p class="curso-area">Áreas: ${curso.areaAtuacao}</p>
-                    <button class="btn-saiba-mais" onclick="window.location.href='saiba-mais.html'" data-id="${curso.id}">Saiba mais</button>
-                    
-                </div>
-            `).join('');
-        }
-
-        document.querySelectorAll('.btn-saiba-mais').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.getAttribute('data-id');
-                window.location.href = `saiba-mais.html?id=${id}`;
-            });
-        });
+        carregarCursos();
     </script>
 </body>
 </html>
