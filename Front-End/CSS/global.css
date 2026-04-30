@@ -1,8 +1,3 @@
-/* =============================================
-   GLOBAL.CSS — Estilos compartilhados
-   ============================================= */
-
-/* ── Reset (completo, usado por todas as páginas) ── */
 *,
 *::before,
 *::after {
@@ -15,7 +10,6 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* ── Links ── */
 a {
     color: #0c3470;
     text-decoration: none;
@@ -28,7 +22,6 @@ a:hover {
     color: #1a4a8a;
 }
 
-/* ── Formulários (usados em várias páginas) ── */
 .form-group {
     margin-bottom: 20px;
 }
@@ -60,7 +53,6 @@ a:hover {
     box-shadow: 0 0 0 3px rgba(12, 52, 112, 0.1);
 }
 
-/* ── Mensagens de feedback ── */
 .mensagem {
     margin-top: 20px;
     padding: 10px;
@@ -91,7 +83,6 @@ a:hover {
     display: block;
 }
 
-/* ── Modais (base) ── */
 .modal {
     display: none;
     position: fixed;
@@ -152,11 +143,6 @@ a:hover {
     font-weight: 600;
 }
 
-/* =============================================
-   HEADER E FOOTER PADRONIZADOS (para todas as páginas)
-   ============================================= */
-
-/* Header padrão */
 .default-header {
     background: #0c3470;
     padding: 0 24px;
@@ -199,7 +185,6 @@ a:hover {
     color: #fff;
 }
 
-/* Botão de perfil (se necessário) */
 .default-header .btn-perfil {
     background: rgba(255,255,255,0.15);
     color: #fff;
@@ -215,7 +200,6 @@ a:hover {
     background: rgba(255,255,255,0.25);
 }
 
-/* Footer padrão */
 .default-footer {
     background: #0c3470;
     color: rgba(255,255,255,0.6);

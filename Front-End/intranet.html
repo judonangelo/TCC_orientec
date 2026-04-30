@@ -49,7 +49,7 @@
     </div>
 
     <script>
-        // Login
+ 
         document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -64,7 +64,7 @@
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ email, senha }) // ← envia "email" igual ao back-end espera
+                    body: JSON.stringify({ email, senha }) 
                 });
 
                 const dados = await resposta.json();
@@ -73,12 +73,12 @@
                     mensagemDiv.className = "mensagem sucesso";
                     mensagemDiv.textContent = "Login realizado com sucesso!";
 
-                    // 1. Guarda o token exclusivo da intranet
+                   
                     localStorage.setItem("tokenIntranet", dados.token);
 
-                    // 2. Aguarda 1 segundo e manda pro dashboard
+                 
                     setTimeout(() => {
-                        window.location.href = "dashboard.html"; // Coloque o nome exato do seu arquivo dashboard
+                        window.location.href = "dashboard.html"; 
                     }, 1000);
 
                 } else {
@@ -93,7 +93,7 @@
             }
         });
 
-        // Modal recuperar senha
+
         function abrirModalRecuperarSenha() {
             document.getElementById('modalRecuperar').style.display = 'flex';
         }

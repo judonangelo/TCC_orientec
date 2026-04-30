@@ -1,14 +1,8 @@
-/* =============================================
-   DASHBOARD.CSS — Dashboard (admin)
-   ============================================= */
-
-/* ── Corpo do dashboard ── */
 .dashboard-body {
     background-color: #f0f2f5;
     min-height: 100vh;
 }
 
-/* ── Header do dashboard ── */
 .dashboard-header {
     background: linear-gradient(135deg, #0c3470 0%, #1a4a8a 100%);
     color: white;
@@ -65,20 +59,17 @@
     font-weight: 600;
 }
 
-/* ── Container geral (sidebar + conteúdo) ── */
 .dashboard-container {
     display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
     min-height: calc(100vh - 70px);
 }
 
-/* ── Sidebar ── */
 .sidebar {
     width: 280px;
     background: white;
     box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
-    padding: 30px 0;
+    padding: 30px 0
 }
 
 .sidebar-nav ul {
@@ -111,11 +102,13 @@
     font-weight: 600;
 }
 
-/* ── Conteúdo principal ── */
 .main-content {
     flex: 1;
     padding: 30px;
+    max-width: 70%;   
+    margin: 0 auto;
     background-color: #f0f2f5;
+    
 }
 
 .content-section {
@@ -124,8 +117,10 @@
 }
 
 .content-section.active {
-    display: block;
+   display: block;
 }
+
+
 
 @keyframes fadeIn {
     from {
@@ -156,7 +151,6 @@
     font-size: 24px;
 }
 
-/* ── Tabelas de dados ── */
 .table-container {
     background: white;
     border-radius: 10px;
@@ -197,7 +191,6 @@
     border-bottom: none;
 }
 
-/* ── Badges e Status ── */
 .badge {
     padding: 5px 12px;
     border-radius: 20px;
@@ -239,7 +232,6 @@
     color: #c62828;
 }
 
-/* ── Botões de ação ── */
 .acoes {
     display: flex;
     gap: 8px;
@@ -297,7 +289,6 @@
     box-shadow: 0 5px 15px rgba(12, 52, 112, 0.3);
 }
 
-/* ── Relatórios ── */
 .relatorios-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -329,7 +320,6 @@
     color: #0c3470;
 }
 
-/* ── Configurações ── */
 .config-form {
     background: white;
     padding: 30px;
@@ -344,51 +334,39 @@
     font-size: 20px;
 }
 
-/* ── Modal pequeno (confirmação) ── */
 .modal-pequeno {
     max-width: 400px;
 }
 
-/* ─────────────────────────────────────
-   MODAL DE CURSO – duas colunas e scroll
-   ───────────────────────────────────── */
 #modal-curso .modal-content {
     max-height: 85vh;
-    /* altura máxima: 85% da tela */
     overflow-y: auto;
-    /* barra de rolagem vertical quando necessário */
     width: 90%;
     max-width: 800px;
-    /* um pouco mais largo que o modal padrão */
     padding: 30px;
 }
 
-/* Grid de duas colunas para os campos */
 .modal-campos-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0 20px;
-    /* espaço apenas entre as colunas */
 }
 
-/* Campos que devem ocupar as duas colunas */
 .modal-campos-grid .campo-largo {
     grid-column: span 2;
 }
 
-/* Ajuste fino para o espaçamento interno */
 .modal-campos-grid .form-group {
     margin-bottom: 15px;
 }
 
-/* Botões do modal continuam com display flex */
+
 #modal-curso .modal-buttons {
     display: flex;
     gap: 10px;
     margin-top: 10px;
 }
 
-/* ── Responsivo do dashboard ── */
 @media (max-width: 768px) {
     .dashboard-container {
         flex-direction: column;
@@ -431,9 +409,9 @@
     }
 
     .modal-campos-grid {
-        grid-template-columns: 1fr;   /* empilha os campos */
+        grid-template-columns: 1fr; 
     }
     .modal-campos-grid .campo-largo {
-        grid-column: span 1;          /* remove o span extra */
+        grid-column: span 1;          
     }
 }

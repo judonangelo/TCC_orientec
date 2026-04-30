@@ -60,7 +60,6 @@
             </div>
         </section>
 
-        <!-- Quem Somos + Missão -->
         <section id="quem-somos" class="home-info">
             <div class="info-box">
                 <span class="tag">Quem Somos</span>
@@ -76,7 +75,7 @@
             </div>
         </section>
 
-        <!-- Contato -->
+
         <section id="contato" class="home-contact">
             <h2>Ficou com dúvidas?</h2>
             <p>Nossa equipe está pronta para ajudar.</p>
@@ -88,18 +87,13 @@
 
     </main>
 
-    <!-- Footer -->
+
     <footer class="home-footer">
         <p>© 2026 Orientec — Todos os direitos reservados</p>
     </footer>
-
-    <!-- ==========================================
-         PAINEL LATERAL DE PERFIL
-    ========================================== -->
-    <!-- Overlay -->
     <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
 
-    <!-- Painel -->
+
     <aside class="profile-panel" id="profilePanel">
         <div class="panel-header">
             <button class="panel-close" onclick="closePanel()">✕</button>
@@ -110,11 +104,11 @@
 
         <div class="panel-body">
 
-            <!-- Seção de informações do perfil -->
+     
             <div id="sectionInfo">
                 <p class="panel-section-title">Informações da Conta</p>
 
-                <!-- Modo leitura -->
+      
                 <div id="viewMode">
                     <div class="info-field">
                         <label>Nome completo</label>
@@ -134,16 +128,13 @@
 
 
             <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar senha</button>
-            <!-- Sair da conta -->
+
             <button class="btn-danger-outline" onclick="logout()">Sair da conta</button>
         </div>
     </aside>
 
     <script>
 
-        /* ────────────────────────────────
-           ABRIR / FECHAR PAINEL LATERAL
-           ──────────────────────────────── */
         function openPanel(section) {
             document.getElementById('overlay').classList.add('open');
             document.getElementById('profilePanel').classList.add('open');
@@ -163,19 +154,12 @@
         }
 
 
-
-        /* ────────────────────────────────
-           LOGOUT
-           ──────────────────────────────── */
         function logout() {
             localStorage.removeItem('emailUsuario');
-            localStorage.removeItem('tokenOrientec');   // remove também o token, se existir
+            localStorage.removeItem('tokenOrientec');   
             window.location.href = 'index.html';
         }
 
-        /* ────────────────────────────────
-           INICIALIZAÇÃO
-           ──────────────────────────────── */
         document.addEventListener('DOMContentLoaded', () => {
             carregarPerfil();
         });

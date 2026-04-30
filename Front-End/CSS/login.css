@@ -44,13 +44,11 @@ body.page-login {
     font-size: 12px;
 }
 
-/* ── Link "Esqueci minha senha" ── */
 .esqueci-senha {
     text-align: right;
     margin-bottom: 20px;
 }
 
-/* ── Botões do formulário ── */
 .btn-entrar {
     width: 100%;
     background-color: #0c3470;
@@ -89,10 +87,9 @@ body.page-login {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* ── Ajustes específicos para o formulário de login ── */
 .page-login .form-group input {
-    font-size: 16px;          /* mantém o tamanho original das páginas de login */
-    border-color: #ddd;       /* borda mais clara, como no design original */
+    font-size: 16px;         
+    border-color: #ddd;      
 }
 
 .page-login .form-group input:focus {
@@ -100,7 +97,6 @@ body.page-login {
     box-shadow: 0 0 5px rgba(12, 52, 112, 0.3);
 }
 
-/* ── Campo do modal de recuperação (não está dentro de .form-group) ── */
 .modal-content input {
     width: 100%;
     padding: 12px;

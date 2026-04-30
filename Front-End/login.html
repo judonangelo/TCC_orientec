@@ -50,7 +50,7 @@
     </div>
 
     <script>
-        // Login
+
         document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -65,7 +65,7 @@
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ email, senha }) // ← envia "email" igual ao back-end espera
+                    body: JSON.stringify({ email, senha }) 
                 });
 
                 const dados = await resposta.json();
@@ -74,13 +74,13 @@
                     mensagemDiv.className = "mensagem sucesso";
                     mensagemDiv.textContent = "Login realizado com sucesso!";
 
-                    // 1. Salva o token no navegador do usuário
+                   
                     localStorage.setItem('tokenOrientec', dados.token);
                     localStorage.setItem('emailUsuario', email);   
 
-                    // 2. Aguarda 1 segundo (para o usuário ler a mensagem) e muda de página
+                   
                     setTimeout(() => {
-                        window.location.href = "home.html"; // Coloque aqui o nome exato do arquivo da sua página principal
+                        window.location.href = "home.html"; 
                     }, 1000);
 
                 } else {
@@ -95,7 +95,7 @@
             }
         });
 
-        // Modal recuperar senha
+      
         function abrirModalRecuperarSenha() {
             document.getElementById('modalRecuperar').style.display = 'flex';
         }
