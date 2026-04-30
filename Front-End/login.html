@@ -37,18 +37,6 @@
         <div id="mensagem" class="mensagem"></div>
     </div>
 
-    <div id="modalRecuperar" class="modal">
-        <div class="modal-content">
-            <h3>Recuperar Senha</h3>
-            <p>Digite seu e-mail cadastrado para receber as instruções de recuperação de senha.</p>
-            <input type="email" id="emailRecuperacao" placeholder="Seu e-mail">
-            <div class="modal-buttons">
-                <button class="btn-enviar" onclick="enviarRecuperacao()">Enviar</button>
-                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
     <script>
 
         document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -95,35 +83,6 @@
             }
         });
 
-      
-        function abrirModalRecuperarSenha() {
-            document.getElementById('modalRecuperar').style.display = 'flex';
-        }
-
-        function fecharModal() {
-            document.getElementById('modalRecuperar').style.display = 'none';
-            document.getElementById('emailRecuperacao').value = '';
-        }
-
-        function enviarRecuperacao() {
-            const email = document.getElementById('emailRecuperacao').value;
-            const mensagemDiv = document.getElementById('mensagem');
-
-            if (email === '') {
-                alert('Por favor, digite seu e-mail.');
-                return;
-            }
-
-            fecharModal();
-
-            mensagemDiv.className = 'mensagem info';
-            mensagemDiv.innerHTML = 'Instruções de recuperação enviadas para ' + email + '. Verifique sua caixa de entrada.';
-
-            setTimeout(() => {
-                mensagemDiv.className = 'mensagem';
-                mensagemDiv.innerHTML = '';
-            }, 5000);
-        }
     </script>
 </body>
 
