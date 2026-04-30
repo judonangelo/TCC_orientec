@@ -1,8 +1,5 @@
-/* =============================================
-   LOGIN.CSS — Login, Cadastro e Intranet
-   ============================================= */
 
-/* ── Centralização da página ── */
+
 body.page-login {
     background-color: #f5f5f5;
     min-height: 100vh;
@@ -11,17 +8,12 @@ body.page-login {
     align-items: center;
 }
 
-/* ── Container do formulário ── */
 .login-container {
     background: white;
     border-radius: 15px;
     padding: 50px;
     width: 450px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-.login-container:hover {
-    transform: translateY(-5px);
 }
 
 .login-container h2 {
@@ -38,7 +30,7 @@ body.page-login {
     font-size: 14px;
 }
 
-/* ── Logo ── */
+
 .logo {
     text-align: center;
     margin-bottom: 20px;

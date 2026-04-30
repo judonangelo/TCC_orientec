@@ -23,17 +23,21 @@ USE `tcc`;
 -- Copiando estrutura para tabela tcc.cursos
 DROP TABLE IF EXISTS `cursos`;
 CREATE TABLE IF NOT EXISTS `cursos` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(50) NOT NULL,
-  `descricao` varchar(300) NOT NULL,
-  `salario` decimal(10,2) NOT NULL,
-  `duracao` int(11) NOT NULL,
-  `profissao` varchar(50) NOT NULL,
+  `vagas` int(11) NOT NULL DEFAULT 0,
+  `status` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- Copiando dados para a tabela tcc.cursos: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.cursos: ~5 rows (aproximadamente)
 DELETE FROM `cursos`;
+INSERT INTO `cursos` (`id`, `nome`, `vagas`, `status`) VALUES
+	(1, 'Desenvolvimento de Sistemas', 64, 'ativo'),
+	(2, 'Química', 32, 'ativo'),
+	(3, 'Administração', 32, 'ativo'),
+	(4, 'Logística', 32, 'ativo'),
+	(5, 'Eletroeletrônica', 32, 'ativo');
 
 -- Copiando estrutura para tabela tcc.respostas
 DROP TABLE IF EXISTS `respostas`;
@@ -59,14 +63,15 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `senha` varchar(256) NOT NULL,
   `nivel` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- Copiando dados para a tabela tcc.usuarios: ~2 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.usuarios: ~3 rows (aproximadamente)
 DELETE FROM `usuarios`;
 INSERT INTO `usuarios` (`id`, `email`, `senha`, `nivel`) VALUES
 	(1, 'joao@gmail.com', '123456', 'user'),
 	(2, 'julia@gmail.com', '654321', 'user'),
-	(3, 'arthur@email.com', 'arrozfeijão', 'user');
+	(3, 'arthur@email.com', 'arrozfeijão', 'user'),
+	(7, 'natalia@gmail.com', '$2b$10$pXTsTNMM6hcHFxmEqTK4EeUXrOw754it/IKCpO7XOxoLpIWs8EVMK', '');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

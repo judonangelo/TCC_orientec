@@ -151,3 +151,85 @@ a:hover {
     cursor: pointer;
     font-weight: 600;
 }
+
+/* =============================================
+   HEADER E FOOTER PADRONIZADOS (para todas as páginas)
+   ============================================= */
+
+/* Header padrão */
+.default-header {
+    background: #0c3470;
+    padding: 0 24px;
+}
+
+.default-header .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.default-header .logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+
+.default-header .nav-menu {
+    display: flex;
+    gap: 8px;
+}
+
+.default-header .nav-menu a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.default-header .nav-menu a:hover,
+.default-header .nav-menu a.active {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+}
+
+/* Botão de perfil (se necessário) */
+.default-header .btn-perfil {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.default-header .btn-perfil:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Footer padrão */
+.default-footer {
+    background: #0c3470;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    margin-top: 40px;
+}
+
+.default-footer a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+}
+
+.default-footer a:hover {
+    text-decoration: underline;
+}

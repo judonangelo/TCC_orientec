@@ -1,0 +1,124 @@
+.cursos-section {
+    padding: 40px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.cursos-section h2 {
+    text-align: center;
+    color: #0c3470;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    width: 100%;
+}
+
+.cursos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.curso-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;          
+    border-radius: 16px;                 
+    padding: 24px;
+    transition: box-shadow 0.25s, transform 0.25s; 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+
+.curso-card:hover {
+    transform: translateY(-4px);   
+    box-shadow: 0 8px 28px rgba(12, 52, 112, 0.12);
+}
+
+
+.curso-card:nth-child(1) { animation-delay: 0.05s; }
+.curso-card:nth-child(2) { animation-delay: 0.1s; }
+.curso-card:nth-child(3) { animation-delay: 0.15s; }
+.curso-card:nth-child(4) { animation-delay: 0.2s; }
+.curso-card:nth-child(5) { animation-delay: 0.25s; }
+
+
+.curso-card h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0c3470;
+    margin-bottom: 16px;
+    padding-left: 16px;
+    border-left: 5px solid #0c3470;
+    line-height: 1.3;
+}
+
+
+.curso-desc {
+    color: #2c3e4e;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    flex-grow: 1;
+}
+
+.curso-duracao, .curso-area {
+    font-size: 0.85rem;
+    color: #4a627a;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-saiba-mais {
+    background: #0c3470;
+    color: white;
+    padding: 12px 0;
+    border-radius: 40px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: all 0.25s;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-saiba-mais:hover {
+    background: #1a4a8a;
+    transform: scale(1.02);
+    box-shadow: 0 6px 14px rgba(12, 52, 112, 0.3);
+}
+
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .cursos-section {
+        padding: 20px 15px;
+    }
+    .cursos-section h2 {
+        font-size: 1.8rem;
+    }
+    .cursos-grid {
+        grid-template-columns: 1fr;
+    }
+    .curso-card h3 {
+        font-size: 1.4rem;
+    }
+}
