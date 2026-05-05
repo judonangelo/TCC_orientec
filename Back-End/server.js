@@ -128,22 +128,21 @@ server.post("/cursos", async (req, res) => {
   try {
     const { nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil } = req.body;
 
-    // Validação simples
-    if (!nome || !duracao || !vagas || !status || !area || !resumo || !carga_horaria || !salario || !mercado || !perfil || !descricao || !resumo) {
-      return res.status(400).json({ mensagem: "Campos obrigatórios: nome, duracao, vagas, status, área, resumo, carga horária, salário, mercado, perfil, descrição e resumo " });
+    // Somente os campos essenciais são obrigatórios
+    if (!nome || !duracao || !vagas || !status) {
+      return res.status(400).json({ mensagem: "Campos obrigatórios: nome, duracao, vagas, status" });
     }
 
     const [resultado] = await pool.query(
       `INSERT INTO cursos (nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil]
+      [nome, duracao, vagas, descricao || null, status, area || null, resumo || null, carga_horaria || null, salario || null, mercado || null, perfil || null]
     );
 
     res.status(201).json({
       mensagem: "Curso criado com sucesso!",
       id: resultado.insertId
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ mensagem: "Erro ao criar curso" });
@@ -200,3 +199,22 @@ server.delete("/cursos/:id", async (req, res) => {
 
 // ─── USUÁRIOS (admin) ─────────────────────────────────────────────────────────
 
+//RELATÓRIO (dashboard)
+server.get("/relatorios", async (req, res) => {
+  try {
+    const [totalUsuarios] = await pool.query(`SELECT COUNT(*) AS total FROM usuarios`);
+    const [usuariosAtivos] = await pool.query(`SELECT COUNT(*) AS total FROM usuarios WHERE status = 'ativo'`);
+    const [totalCursos] = await pool.query(`SELECT COUNT(*) AS total FROM cursos`);
+    const [cursosAtivos] = await pool.query(`SELECT COUNT(*) AS total FROM cursos WHERE status = 'ativo'`);
+
+    res.json({
+      totalUsuarios: totalUsuarios[0].total,
+      usuariosAtivos: usuariosAtivos[0].total,
+      totalCursos: totalCursos[0].total,
+      cursosAtivos: cursosAtivos[0].total
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao carregar relatórios" });
+  }
+});

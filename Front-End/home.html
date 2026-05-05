@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +7,8 @@
     <link rel="stylesheet" href="CSS/global.css">
     <link rel="stylesheet" href="CSS/home.css">
 </head>
-
 <body>
 
-  
     <header class="home-header">
         <div class="home-header-inner">
             <p class="home-logo">Orientec</p>
@@ -27,18 +24,13 @@
         </div>
     </header>
 
-    
     <main class="home-page">
-
-      
         <section id="hero" class="home-hero">
             <h1>Olá, <span id="heroNome">Estudante</span>!</h1>
             <p>Pronto para descobrir seu caminho profissional? Continue sua jornada vocacional com a gente.</p>
             <button class="btn-primary" onclick="alert('Em breve')">Fazer Teste Vocacional</button>
         </section>
 
-
-       
         <section id="servicos" class="home-services">
             <h2>Nossos Serviços</h2>
             <div class="services-grid">
@@ -64,17 +56,14 @@
             <div class="info-box">
                 <span class="tag">Quem Somos</span>
                 <h2>Revolucionando a escolha profissional</h2>
-                <p>A Orientec nasceu para ajudar estudantes a encontrarem o curso ideal através de tecnologia e análise
-                    humana.</p>
+                <p>A Orientec nasceu para ajudar estudantes a encontrarem o curso ideal através de tecnologia e análise humana.</p>
             </div>
             <div class="info-box">
                 <span class="tag">Nossa Missão</span>
                 <h2>Iluminando caminhos únicos</h2>
-                <p>Acreditamos que cada pessoa possui talentos únicos. Nosso papel é revelar esses talentos e
-                    transformá-los em carreira.</p>
+                <p>Acreditamos que cada pessoa possui talentos únicos. Nosso papel é revelar esses talentos e transformá-los em carreira.</p>
             </div>
         </section>
-
 
         <section id="contato" class="home-contact">
             <h2>Ficou com dúvidas?</h2>
@@ -84,15 +73,13 @@
                 <span>(21) 99999-9999</span>
             </div>
         </section>
-
     </main>
-
 
     <footer class="home-footer">
         <p>© 2026 Orientec — Todos os direitos reservados</p>
     </footer>
-    <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
 
+    <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
 
     <aside class="profile-panel" id="profilePanel">
         <div class="panel-header">
@@ -101,14 +88,9 @@
             <div class="panel-user-name" id="panelName">Estudante X</div>
             <div class="panel-user-email" id="panelEmail">estudante@email.com</div>
         </div>
-
         <div class="panel-body">
-
-     
             <div id="sectionInfo">
                 <p class="panel-section-title">Informações da Conta</p>
-
-      
                 <div id="viewMode">
                     <div class="info-field">
                         <label>Nome completo</label>
@@ -118,33 +100,20 @@
                         <label>E-mail</label>
                         <span id="viewEmail">estudante@email.com</span>
                     </div>
-                    <button class="btn-save" onclick="toggleEdit(true)" style="margin-top:12px;">Editar
-                        Informações</button>
+                    <button class="btn-save" onclick="toggleEdit(true)" style="margin-top:12px;">Editar Informações</button>
                 </div>
-
             </div>
-
             <hr style="margin: 24px 0; border-color: #e2e8f0;">
-
-
             <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar senha</button>
-
             <button class="btn-danger-outline" onclick="logout()">Sair da conta</button>
         </div>
     </aside>
 
     <script>
-
         function openPanel(section) {
             document.getElementById('overlay').classList.add('open');
             document.getElementById('profilePanel').classList.add('open');
             document.body.style.overflow = 'hidden';
-
-            if (section === 'pw') {
-                setTimeout(() => {
-                    document.getElementById('sectionPw').scrollIntoView({ behavior: 'smooth' });
-                }, 300);
-            }
         }
 
         function closePanel() {
@@ -153,17 +122,11 @@
             document.body.style.overflow = '';
         }
 
-
         function logout() {
             localStorage.removeItem('emailUsuario');
-            localStorage.removeItem('tokenOrientec');   
+            localStorage.removeItem('tokenOrientec');
             window.location.href = 'index.html';
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            carregarPerfil();
-        });
     </script>
 </body>
-
 </html>

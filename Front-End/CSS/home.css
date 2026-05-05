@@ -9,7 +9,6 @@ body {
     background: #0c3470;
     padding: 0 24px;
 }
-
 .home-header-inner {
     max-width: 1200px;
     margin: 0 auto;
@@ -18,18 +17,15 @@ body {
     align-items: center;
     justify-content: space-between;
 }
-
 .home-logo {
     font-size: 22px;
     font-weight: 700;
     color: #fff;
 }
-
 .home-nav {
     display: flex;
     gap: 8px;
 }
-
 .home-nav a {
     color: rgba(255,255,255,0.75);
     text-decoration: none;
@@ -39,13 +35,10 @@ body {
     border-radius: 8px;
     transition: background 0.2s, color 0.2s;
 }
-
 .home-nav a:hover {
     background: rgba(255,255,255,0.12);
     color: #fff;
 }
-
-/* Botão que abre o perfil */
 .btn-perfil {
     background: rgba(255,255,255,0.15);
     color: #fff;
@@ -63,14 +56,12 @@ body {
     background: rgba(255,255,255,0.25);
 }
 
-/* ── Conteúdo geral ── */
 .home-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 32px 24px 60px;
 }
 
-/* ── Hero ── */
 .home-hero {
     background: #0c3470;
     border-radius: 16px;
@@ -78,19 +69,16 @@ body {
     margin-bottom: 24px;
     color: #fff;
 }
-
 .home-hero h1 {
     font-size: 32px;
     margin-bottom: 12px;
 }
-
 .home-hero p {
     font-size: 16px;
     opacity: 0.85;
     margin-bottom: 24px;
     max-width: 500px;
 }
-
 .btn-primary {
     background: #fff;
     color: #0c3470;
@@ -107,59 +95,17 @@ body {
     box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
-/* ── Ações rápidas ── */
-.home-actions {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin-bottom: 24px;
-}
-
-.action-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: box-shadow 0.2s, transform 0.2s;
-}
-.action-card:hover {
-    box-shadow: 0 4px 20px rgba(12,52,112,0.1);
-    transform: translateY(-2px);
-}
-
-.action-icon {
-    font-size: 28px;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.action-card h3 {
-    font-size: 16px;
-    margin-bottom: 4px;
-    color: #0c3470;
-}
-
-.action-card p {
-    font-size: 13px;
-    color: #6b7a90;
-}
-
-/* ── Serviços ── */
 .home-services h2 {
     font-size: 24px;
     color: #0c3470;
     margin-bottom: 16px;
 }
-
 .services-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
     margin-bottom: 24px;
 }
-
 .service-card {
     background: #fff;
     border: 1px solid #e2e8f0;
@@ -171,41 +117,35 @@ body {
     box-shadow: 0 8px 28px rgba(12,52,112,0.12);
     transform: translateY(-4px);
 }
-
 .service-icon {
     font-size: 28px;
     display: block;
     margin-bottom: 12px;
 }
-
 .service-card h3 {
     font-size: 17px;
     font-weight: 700;
     color: #0c3470;
     margin-bottom: 8px;
 }
-
 .service-card p {
     font-size: 14px;
     color: #6b7a90;
     line-height: 1.5;
 }
 
-/* ── Quem Somos / Missão ── */
 .home-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 18px;
     margin-bottom: 24px;
 }
-
 .info-box {
     background: #fff;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
     padding: 28px;
 }
-
 .tag {
     display: inline-block;
     background: #e8eef7;
@@ -218,20 +158,17 @@ body {
     border-radius: 6px;
     margin-bottom: 12px;
 }
-
 .info-box h2 {
     font-size: 20px;
     color: #0c3470;
     margin-bottom: 10px;
 }
-
 .info-box p {
     font-size: 14px;
     color: #6b7a90;
     line-height: 1.6;
 }
 
-/* ── Contato ── */
 .home-contact {
     background: #0c3470;
     color: #fff;
@@ -239,22 +176,18 @@ body {
     padding: 36px;
     margin-bottom: 24px;
 }
-
 .home-contact h2 {
     font-size: 22px;
     margin-bottom: 8px;
 }
-
 .home-contact p {
     opacity: 0.8;
     margin-bottom: 16px;
 }
-
 .contact-chips {
     display: flex;
     gap: 16px;
 }
-
 .contact-chips span {
     background: rgba(255,255,255,0.12);
     padding: 10px 18px;
@@ -263,7 +196,6 @@ body {
     font-weight: 500;
 }
 
-/* ── Footer ── */
 .home-footer {
     background: #0c3470;
     color: rgba(255,255,255,0.6);
@@ -272,11 +204,7 @@ body {
     font-size: 13px;
 }
 
-/* =============================================
-   PAINEL LATERAL DE PERFIL (SLIDE-IN)
-   ============================================= */
-
-/* Overlay escuro atrás do painel */
+/* Painel lateral */
 .panel-overlay {
     position: fixed;
     inset: 0;
@@ -287,8 +215,6 @@ body {
 .panel-overlay.open {
     display: block;
 }
-
-/* Painel em si */
 .profile-panel {
     position: fixed;
     top: 0;
@@ -305,15 +231,12 @@ body {
 .profile-panel.open {
     transform: translateX(0);
 }
-
-/* Cabeçalho do painel */
 .panel-header {
     background: #0c3470;
     padding: 30px 28px;
     color: #fff;
     position: relative;
 }
-
 .panel-close {
     position: absolute;
     top: 16px;
@@ -332,7 +255,6 @@ body {
 .panel-close:hover {
     background: rgba(255,255,255,0.3);
 }
-
 .panel-avatar {
     width: 64px; height: 64px;
     border-radius: 50%;
@@ -344,22 +266,17 @@ body {
     font-weight: 700;
     margin-bottom: 12px;
 }
-
 .panel-user-name {
     font-size: 20px;
     font-weight: 700;
 }
-
 .panel-user-email {
     font-size: 13px;
     opacity: 0.7;
 }
-
-/* Corpo do painel */
 .panel-body {
     padding: 28px;
 }
-
 .panel-section-title {
     font-size: 11px;
     font-weight: 700;
@@ -368,8 +285,6 @@ body {
     color: #6b7a90;
     margin-bottom: 16px;
 }
-
-/* Campos de visualização (modo leitura) */
 .info-field {
     background: #f4f6fb;
     border: 1px solid #e2e8f0;
@@ -390,55 +305,6 @@ body {
     display: block;
     margin-top: 2px;
 }
-
-/* Modo edição */
-.edit-fields {
-    display: none;
-}
-.edit-fields.visible {
-    display: block;
-}
-
-.form-input {
-    width: 100%;
-    background: #f4f6fb;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 14px;
-    color: #1e2a3b;
-    margin-bottom: 10px;
-    outline: none;
-    transition: border-color 0.2s;
-}
-.form-input:focus {
-    border-color: #3b82f6;
-}
-
-.form-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #0c3470;
-    margin-bottom: 6px;
-}
-
-/* Barra de força da senha (simples) */
-.strength-bar {
-    height: 4px;
-    border-radius: 2px;
-    background: #e2e8f0;
-    margin-bottom: 12px;
-    overflow: hidden;
-}
-.strength-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 2px;
-    transition: width 0.3s, background 0.3s;
-}
-
-/* Botões do painel */
 .btn-save {
     width: 100%;
     background: #0c3470;
@@ -455,23 +321,6 @@ body {
 .btn-save:hover {
     background: #1a4a8a;
 }
-
-.btn-outline {
-    width: 100%;
-    background: transparent;
-    color: #0c3470;
-    border: 1.5px solid #0c3470;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 8px;
-}
-.btn-outline:hover {
-    background: #e8eef7;
-}
-
 .btn-danger-outline {
     width: 100%;
     background: transparent;
@@ -488,31 +337,7 @@ body {
     background: #fee2e2;
 }
 
-/* Mensagens dentro do painel */
-.feedback-msg {
-    display: none;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 10px;
-}
-.feedback-msg.success {
-    background: #d1fae5;
-    color: #065f46;
-    display: block;
-}
-.feedback-msg.error {
-    background: #fee2e2;
-    color: #991b1b;
-    display: block;
-}
-
-/* ── Responsivo ── */
 @media (max-width: 768px) {
-    .home-actions {
-        grid-template-columns: repeat(2, 1fr);
-    }
     .services-grid {
         grid-template-columns: 1fr;
     }
@@ -527,9 +352,6 @@ body {
     }
 }
 @media (max-width: 480px) {
-    .home-actions {
-        grid-template-columns: 1fr;
-    }
     .home-nav {
         display: none;
     }
