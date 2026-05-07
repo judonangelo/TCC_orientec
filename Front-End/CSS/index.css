@@ -1,111 +1,212 @@
-.header {
-    background: white;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+
+
+   :root {
+    --primary: #0c3470;
+    --primary-light: #1a4a8a;
+    --primary-soft: #e8f0fe;
+    --secondary: #4a5568;
+    --text: #2d3748;
+    --text-light: #718096;
+    --bg: #f7f9fc;
+    --white: #ffffff;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+    --radius: 16px;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-.btn-intranet {
-    background-color: rgba(26, 40, 83, 0.8);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-.btn-intranet:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
 
-.container {
-    width: 1200px;
-    margin: 0 auto;
-    padding: 40px;
-}
-
-.quem-somos,
-.sobre {
-    background: white;
-    border-radius: 15px;
-    padding: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-.quem-somos { margin-bottom: 30px; }
-.sobre { margin-bottom: 40px; }
-.quem-somos:hover,
-.sobre:hover {
-    transform: translateY(-5px);
-}
-.quem-somos h2,
-.sobre h2 {
-    color: #0c3470;
-    margin-bottom: 20px;
-    font-size: 28px;
-}
-.quem-somos p,
-.sobre p {
-    line-height: 1.6;
-    font-size: 16px;
-    color: #666;
-}
-.sobre p { margin-bottom: 20px; }
-
-.acessoLogin {
-    display: flex;
-    justify-content: center;
-}
-
-.login-section {
-    background: white;
-    border-radius: 15px;
-    padding: 40px;
-    width: 500px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
+body {
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-.login-section h2 {
-    color: #0c3470;
-    margin-bottom: 30px;
-    font-size: 28px;
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font);
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
 }
 
-.btn-login {
-    background-color: #0c3470;
-    color: white;
-    padding: 15px 40px;
-    border: none;
+main {
+    flex: 1;
+}
+
+
+.main-header {
+    background: #0c3470;
+    padding: 0 24px;
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    letter-spacing: normal;
+}
+
+.nav-links {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
     border-radius: 8px;
-    font-size: 18px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.header-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
-}
-.btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+    font-size: 14px;
 }
 
-.footer {
-    background-color: #0c3470;
-    color: white;
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* =============================================
+   HERO SECTION
+   ============================================= */
+.hero {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e2ebfd 100%);
+    text-align: center;
+    padding: 80px 24px 70px;
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: 0 auto 32px;
+}
+
+/* =============================================
+   INFO CARDS (Quem Somos / Sobre Nós)
+   ============================================= */
+.info-grid {
+    max-width: 1200px;
+    margin: -40px auto 60px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+.info-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+}
+
+.info-card .tag {
+    display: inline-block;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-card h2 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.info-card p {
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+
+.main-footer {
+    background: #0c3470;
+    color: rgba(255, 255, 255, 0.6);
     text-align: center;
     padding: 20px;
-    margin-top: 40px;
+    font-size: 13px;
+    border-top: none;
 }
 
-@media (max-width: 768px) {
-    .container {
+
+@media (max-width: 640px) {
+    .header-inner {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 16px;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .nav-links {
+        gap: 18px;
+        order: 3;
         width: 100%;
-        padding: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .info-grid {
+        margin-top: -20px;
     }
 }

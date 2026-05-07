@@ -3,47 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Principal</title>
+    <title>Orientec – Página Inicial</title>
     <link rel="stylesheet" href="CSS/global.css">
     <link rel="stylesheet" href="CSS/index.css">
 </head>
 <body>
 
-    <div class="header">
-        <button class="btn-intranet" onclick="window.location.href='intranet.html'">Intranet</button>
-    </div>
-
-    <div class="container">
-
-        <section class="quem-somos">
-            <h2>Quem Somos</h2>
-            <p>
-                A Orientec nasceu com o propósito de revolucionar a forma como as pessoas escolhem suas profissões. Nosso objetivo é ajudar estudantes a 
-                encontrarem o curso ideal através do nosso teste vocacional inteligente. Oferecemos uma plataforma completa com análise detalhada, 
-                relatório personalizado de perfil profissional e recomendações de carreira alinhadas aos seus interesses e habilidades.
-            </p>
-        </section>
-
-        <section class="sobre">
-            <h2>Sobre Nós</h2>
-            <p>
-                Nossa empresa nasceu com o propósito de revolucionar o mercado digital. Acreditamos que cada pessoa possui talentos únicos,
-                e nosso papel é iluminar o caminho para que esses talentos sejam transformados em uma carreira sólida, de sucesso e realização pessoal. 
-            </p>
-        </section>
-
-        <div class="acessoLogin">
-            <section class="login-section">
-                <h2>Acesso ao Sistema</h2>
-                <button class="btn-login" onclick="window.location.href='login.html'">Fazer Login</button>
-            </section> 
+    <header class="main-header">
+        <div class="header-inner">
+            <div class="logo" onclick="window.location.href='index.html'">Orientec</div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="window.location.href='intranet.html'">Intranet</button>
+                <button class="header-btn" onclick="window.location.href='login.html'">Entrar</button>
+            </div>
         </div>
+    </header>
 
-    </div>
+    <main>
+        <section class="hero">
+            <h1>Descubra a carreira dos seus sonhos</h1>
+            <p>Teste vocacional inteligente, orientação personalizada e relatórios detalhados para iluminar seu futuro profissional.</p>
+        </section>
 
-    <div class="footer">
-        <p> 2026 Orientec - Todos os direitos reservados</p>
-    </div>
+        <div class="info-grid" id="quem-somos">
+            <div class="info-card">
+                <span class="tag">Quem Somos</span>
+                <h2>Revolucionando a escolha profissional</h2>
+                <p>A Orientec nasceu com o propósito de revolucionar a forma como as pessoas escolhem suas profissões. Nosso objetivo é ajudar estudantes a encontrarem o curso ideal através do nosso teste vocacional inteligente. Oferecemos uma plataforma completa com análise detalhada, relatório personalizado de perfil profissional e recomendações de carreira alinhadas aos seus interesses e habilidades.</p>
+            </div>
+            <div class="info-card" id="sobre">
+                <span class="tag">Sobre Nós</span>
+                <h2>Iluminando talentos únicos</h2>
+                <p>Nossa empresa nasceu com o propósito de revolucionar o mercado digital. Acreditamos que cada pessoa possui talentos únicos, e nosso papel é iluminar o caminho para que esses talentos sejam transformados em uma carreira sólida, de sucesso e realização pessoal.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>© 2026 Orientec — Todos os direitos reservados</p>
+    </footer>
 
 </body>
 </html>

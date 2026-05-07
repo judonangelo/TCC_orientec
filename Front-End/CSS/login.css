@@ -84,3 +84,21 @@ body.page-login {
     border-color: #0c3470;
     box-shadow: 0 0 5px rgba(12, 52, 112, 0.3);
 }
+
+
+.login-link-container {
+    margin-top: 16px;
+    font-size: 0.9rem;
+}
+
+.login-link-container a {
+    color: #0c3470;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.login-link-container a:hover {
+    text-decoration: underline;
+    color: #1a4a8a;
+}
