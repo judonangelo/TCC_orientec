@@ -47,7 +47,7 @@ const verificarAdmin = (req, res, next) => {
 
 
 
-// ─── USUÁRIOS ────────────────────────────────────────────────────────────────
+// ─── LOGINS ────────────────────────────────────────────────────────────────
 
 server.post("/cadastro", async (req, res) => {
   const { email, senha, nome, cpf } = req.body;
@@ -74,7 +74,7 @@ server.post("/login", async (req, res) => {
   const { email, senha } = req.body;
   try {
     const [conferir] = await pool.execute(
-      `SELECT email, senha, nivel FROM usuarios WHERE email = ?`, [email]
+      `SELECT email, senha, nivel, nome FROM usuarios WHERE email = ?`, [email]
     );
 
     if (conferir.length === 0) {
@@ -97,7 +97,8 @@ server.post("/login", async (req, res) => {
     res.json({
       mensagem: "Acesso Liberado",
       token: token,
-      nivel: usuario.nivel   // ← importante para o front decidir o fluxo
+      nivel: usuario.nivel,   // ← importante para o front decidir o fluxo
+      nome: usuario.nome
     });
   } catch (error) {
     console.log(error);
@@ -229,9 +230,9 @@ server.delete("/cursos/:id", verificarAdmin, async (req, res) => {
   }
 });
 
-// ─── USUÁRIOS (admin) ─────────────────────────────────────────────────────────
+// ─── Administrador ─────────────────────────────────────────────────────────
 
-//RELATÓRIO (dashboard)
+//RELATÓRIO 
 server.get("/relatorios", verificarAdmin, async (req, res) => {
   try {
     const [totalUsuarios] = await pool.query(`SELECT COUNT(*) AS total FROM usuarios`);
@@ -248,7 +249,7 @@ server.get("/relatorios", verificarAdmin, async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao carregar relatórios" });
   }
 });
-
+//atualizar nivel de usuario (apenas para admin)
 server.put("/usuarios/:id", verificarAdmin, async (req, res) => {
   const { id } = req.params;
   const { nivel } = req.body;
@@ -269,7 +270,7 @@ server.put("/usuarios/:id", verificarAdmin, async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao atualizar usuário" });
   }
 });
-
+//deletar usuario (apenas para admin)
 server.delete("/usuarios/:id", verificarAdmin, async (req, res) => {
   const { id } = req.params;
   try {
@@ -283,7 +284,7 @@ server.delete("/usuarios/:id", verificarAdmin, async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao excluir usuário." });
   }
 });
-
+// ver informações de usuários (apenas para admin)
 server.get("/usuarios", verificarAdmin, async (req, res) => {
   try {
     const [resultado] = await pool.query(`SELECT id, nome, email, nivel, DATE_FORMAT(data, '%d/%m/%Y') AS data FROM usuarios ORDER BY nome`);

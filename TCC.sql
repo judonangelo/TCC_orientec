@@ -75,12 +75,33 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `data` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `cpf` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- Copiando dados para a tabela tcc.usuarios: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.usuarios: ~1 rows (aproximadamente)
 DELETE FROM `usuarios`;
 INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `email`, `senha`, `nivel`, `data`) VALUES
-	(15, 'João Victor Piacenza de Oliveira Andrade', '12648976000', 'joaoandrade@gmail.com', '$2b$10$ty5H/Da9hN83hq75cnxdnuh1ru5LKuhIf.Ds1BzROEioE2jdN5R.K', 'admin', '2026-05-12 16:30:34');
+	(15, 'João Victor Piacenza de Oliveira Andrade', '12648976000', 'joaoandrade@gmail.com', '$2b$10$ty5H/Da9hN83hq75cnxdnuh1ru5LKuhIf.Ds1BzROEioE2jdN5R.K', 'admin', '2026-05-12 16:30:34'),
+	(19, 'João Silva', '12345678901', 'joao.silva@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
+	(20, 'Maria Oliveira', '12345678902', 'maria.oliveira@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(21, 'Pedro Santos', '12345678903', 'pedro.santos@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(22, 'Ana Costa', '12345678904', 'ana.costa@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(23, 'Lucas Ferreira', '12345678905', 'lucas.ferreira@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(24, 'Juliana Lima', '12345678906', 'juliana.lima@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(25, 'Carlos Souza', '12345678907', 'carlos.souza@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
+	(26, 'Fernanda Alves', '12345678908', 'fernanda.alves@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(27, 'Rafael Gomes', '12345678909', 'rafael.gomes@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(28, 'Patricia Rocha', '12345678910', 'patricia.rocha@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(29, 'Bruno Martins', '12345678911', 'bruno.martins@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(30, 'Camila Ribeiro', '12345678912', 'camila.ribeiro@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(31, 'Diego Carvalho', '12345678913', 'diego.carvalho@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
+	(32, 'Larissa Mendes', '12345678914', 'larissa.mendes@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(33, 'Felipe Barbosa', '12345678915', 'felipe.barbosa@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(34, 'Amanda Nunes', '12345678916', 'amanda.nunes@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(35, 'Gustavo Araújo', '12345678917', 'gustavo.araujo@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(36, 'Beatriz Fernandes', '12345678918', 'beatriz.fernandes@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(37, 'Thiago Moreira', '12345678919', 'thiago.moreira@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
+	(38, 'Renata Teixeira', '12345678920', 'renata.teixeira@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(39, 'Julia Donangelo Alves Carneiro', '80092198007', 'julia@gmail.com', '$2b$10$0LDEdC2z2gCWbVr0EjJFueR1cnkWFIBSBAEFBu4TcvIFgzRwUg0Sa', 'aluno', '2026-05-12 18:10:19');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

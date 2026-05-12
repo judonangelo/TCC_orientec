@@ -20,6 +20,9 @@ const authHeaders = () => ({
 const API_BASE = "http://localhost:3000";
 
 let usuariosGlobal = [];
+let paginaAtual = 1;
+const ITENS_POR_PAGINA = 10;
+let termoPesquisa = '';
 
 // ============================================
 // NAVEGAÇÃO DO SIDEBAR
@@ -41,29 +44,19 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
 // ============================================
 // USUÁRIOS 
 // ============================================
-async function carregarUsuarios() {
+
+function renderizarUsuarios(usuarios) {
     const tbody = document.getElementById('usuarios-table-body');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
+    tbody.innerHTML = '';
 
-    try {
-        const response = await fetch(`${API_BASE}/usuarios`, { headers: authHeaders() });
-        if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-                logout(); // Sessão expirada ou token não admin
-                return;
-            }
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-        const usuarios = await response.json();
-        usuariosGlobal = usuarios;
-        tbody.innerHTML = '';
-        if (usuarios.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum usuário cadastrado.</td></tr>';
-            carregarRelatorios();
-            return;
-        }
+    const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+    const fim = inicio + ITENS_POR_PAGINA;
+    const paginaUsuarios = usuarios.slice(inicio, fim);
 
-        usuarios.forEach(usuario => {
+    if (paginaUsuarios.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum usuário encontrado.</td></tr>';
+    } else {
+        paginaUsuarios.forEach(usuario => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${usuario.id}</td>
@@ -78,6 +71,72 @@ async function carregarUsuarios() {
             `;
             tbody.appendChild(tr);
         });
+    }
+
+    atualizarControlesPaginacao(usuarios.length);
+}
+
+function atualizarControlesPaginacao(totalItens) {
+    const container = document.getElementById('paginacao-container');
+    if (!container) return;
+
+    const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
+    container.innerHTML = '';
+
+    if (totalPaginas <= 1) return;
+
+    // Botão Anterior
+    const btnAnterior = document.createElement('button');
+    btnAnterior.textContent = '← Anterior';
+    btnAnterior.disabled = paginaAtual === 1;
+    btnAnterior.addEventListener('click', () => {
+        if (paginaAtual > 1) {
+            paginaAtual--;
+            aplicarFiltroEPaginar();
+        }
+    });
+    container.appendChild(btnAnterior);
+
+    // Indicador de página
+    const spanPagina = document.createElement('span');
+    spanPagina.textContent = ` Página ${paginaAtual} de ${totalPaginas} `;
+    spanPagina.style.margin = '0 10px';
+    container.appendChild(spanPagina);
+
+    // Botão Próximo
+    const btnProximo = document.createElement('button');
+    btnProximo.textContent = 'Próximo →';
+    btnProximo.disabled = paginaAtual === totalPaginas;
+    btnProximo.addEventListener('click', () => {
+        if (paginaAtual < totalPaginas) {
+            paginaAtual++;
+            aplicarFiltroEPaginar();
+        }
+    });
+    container.appendChild(btnProximo);
+}
+
+async function carregarUsuarios() {
+    const tbody = document.getElementById('usuarios-table-body');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
+
+    try {
+        const response = await fetch(`${API_BASE}/usuarios`, { headers: authHeaders() });
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                logout();
+                return;
+            }
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        const usuarios = await response.json();
+        usuariosGlobal = usuarios;
+        paginaAtual = 1;
+        termoPesquisa = '';
+        document.getElementById('pesquisa-nome').value = '';
+
+        // Aplica filtro (vazio) + paginação e renderiza
+        aplicarFiltroEPaginar();
 
         carregarRelatorios();
     } catch (error) {
@@ -143,6 +202,23 @@ async function excluirUsuario(id) {
     }
 }
 
+function aplicarFiltroEPaginar() {
+    const termo = termoPesquisa.toLowerCase();
+    const filtrados = usuariosGlobal.filter(usuario =>
+        usuario.nome.toLowerCase().startsWith(termo)
+    );
+    renderizarUsuarios(filtrados);
+}
+
+// Pesquisa de usuários
+document.getElementById('pesquisa-nome').addEventListener('input', function (e) {
+    termoPesquisa = e.target.value.trim();
+    paginaAtual = 1;          // volta para a página 1 ao pesquisar
+    aplicarFiltroEPaginar();
+});
+
+
+
 // ============================================
 // CRUD CURSOS (integrado ao backend)
 // ============================================
@@ -151,7 +227,7 @@ async function carregarCursos() {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
 
     try {
-        const response = await fetch(`${API_BASE}/cursos` , { headers: authHeaders() });
+        const response = await fetch(`${API_BASE}/cursos`, { headers: authHeaders() });
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const cursos = await response.json();
 
@@ -214,7 +290,7 @@ function fecharModalCurso() {
 
 async function editarCurso(id) {
     try {
-        const response = await fetch(`${API_BASE}/cursos/${id}` , { headers: authHeaders() });
+        const response = await fetch(`${API_BASE}/cursos/${id}`, { headers: authHeaders() });
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const curso = await response.json();
         abrirModalCurso(curso);
@@ -316,7 +392,7 @@ document.getElementById('form-curso').addEventListener('submit', async function 
 // ============================================
 async function carregarRelatorios() {
     try {
-        const response = await fetch(`${API_BASE}/relatorios` , { headers: authHeaders() });
+        const response = await fetch(`${API_BASE}/relatorios`, { headers: authHeaders() });
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const stats = await response.json();
 

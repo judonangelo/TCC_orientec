@@ -24,7 +24,8 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             mensagemDiv.textContent = "Login realizado com sucesso!";
 
             localStorage.setItem('tokenOrientec', dados.token);
-            localStorage.setItem('emailUsuario', email);   
+            localStorage.setItem('emailUsuario', email);
+            localStorage.setItem('nomeUsuario', dados.nome);
 
             setTimeout(() => {
                 window.location.href = "home.html"; 
