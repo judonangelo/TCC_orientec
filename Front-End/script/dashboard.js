@@ -88,6 +88,7 @@ function atualizarControlesPaginacao(totalItens) {
     // Botão Anterior
     const btnAnterior = document.createElement('button');
     btnAnterior.textContent = '← Anterior';
+    btnAnterior.className = 'btn-paginacao btn-anterior';
     btnAnterior.disabled = paginaAtual === 1;
     btnAnterior.addEventListener('click', () => {
         if (paginaAtual > 1) {
@@ -106,6 +107,7 @@ function atualizarControlesPaginacao(totalItens) {
     // Botão Próximo
     const btnProximo = document.createElement('button');
     btnProximo.textContent = 'Próximo →';
+    btnProximo.className = 'btn-paginacao btn-proximo';
     btnProximo.disabled = paginaAtual === totalPaginas;
     btnProximo.addEventListener('click', () => {
         if (paginaAtual < totalPaginas) {
