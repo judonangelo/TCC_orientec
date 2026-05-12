@@ -307,6 +307,43 @@
     margin-top: 10px;
 }
 
+
+.search-box {
+    margin-bottom: 20px;
+}
+.search-box input {
+    width: 100%;
+    justify-content: space-between;
+    max-width: 350px;
+    padding: 10px 15px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #495057;
+    outline: none;
+    transition: border-color 0.3s;
+}
+.search-box input:focus {
+    border-color: #0c3470;
+    box-shadow: 0 0 0 3px rgba(12, 52, 112, 0.1);
+}
+
+
+
+
+@media (max-width: 768px) {
+    .search-form {
+        max-width: 100%;
+    }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .search-form {
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .dashboard-container {
         flex-direction: column;

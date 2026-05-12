@@ -1,10 +1,10 @@
-        const API_URL = "http://localhost:3000";
+        const API_BASE = "http://localhost:3000";
 
         async function carregarCursos() {
             const grid = document.getElementById('cursos-grid');
 
             try {
-                const response = await fetch(`${API_URL}/cursos`);
+                const response = await fetch(`${API_BASE}/cursos`);
 
                 if (!response.ok) {
                     throw new Error(`Erro ao buscar cursos: ${response.status}`);

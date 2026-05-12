@@ -1,17 +1,21 @@
+ const API_BASE = 'http://localhost:3000';
+
         document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const email = document.getElementById("email").value;
             const senha = document.getElementById("senha").value;
+            const nome = document.getElementById("nome").value;
+            const cpf = document.getElementById("cpf").value;
             const mensagemDiv = document.getElementById("mensagem");
 
             try {
-                const resposta = await fetch("http://localhost:3000/cadastro", {
+                const resposta = await fetch(`${API_BASE}/cadastro`, {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ email, senha })
+                    body: JSON.stringify({ email, senha, nome, cpf })
                 });
                 const dados = await resposta.json();
 

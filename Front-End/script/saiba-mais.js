@@ -1,10 +1,10 @@
-        const API_URL = "http://localhost:3000";
+        const API_BASE = "http://localhost:3000";
 
         async function carregarCursoPorId(id) {
             const container = document.getElementById('conteudo-curso');
 
             try {
-                const response = await fetch(`${API_URL}/cursos/${id}`);
+                const response = await fetch(`${API_BASE}/cursos/${id}`);
 
                 if (response.status === 404) {
                     container.innerHTML = `

@@ -15,13 +15,25 @@
         </div>
         <form id="loginForm">
             <div class="form-group">
-                <label>Insira seu E-mail</label>
-                <input type="text" id="email" placeholder="Digite seu e-mail" required>
+                <label>Nome completo</label>
+                <input type="text" id="nome" placeholder="Digite seu nome completo" required>
             </div>
+
+            <div class="form-group">
+                <label>Insira seu CPF</label>
+                <input type="text" id="cpf" placeholder="Digite seu CPF" required>
+            </div>
+
+            <div class="form-group">
+                <label>Insira seu E-mail</label>
+                <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            </div>
+
             <div class="form-group">
                 <label>Insira sua senha</label>
                 <input type="password" id="senha" placeholder="Digite sua senha" required>
             </div>
+
             <button type="submit" class="btn-entrar">Cadastrar</button>
             <button type="button" class="btn-voltar" onclick="window.location.href='index.html'">Voltar para Home</button>
             

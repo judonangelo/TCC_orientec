@@ -67,21 +67,20 @@ DELETE FROM `respostas`;
 DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE IF NOT EXISTS `usuarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(200) NOT NULL,
+  `cpf` varchar(11) NOT NULL DEFAULT '',
   `email` varchar(50) NOT NULL,
   `senha` varchar(256) NOT NULL,
   `nivel` varchar(50) NOT NULL DEFAULT '',
-  `status` varchar(20) NOT NULL,
-  `nome` varchar(200) NOT NULL,
-  `cpf` int(11) NOT NULL,
+  `data` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `cpf` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- Copiando dados para a tabela tcc.usuarios: ~2 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.usuarios: ~0 rows (aproximadamente)
 DELETE FROM `usuarios`;
-INSERT INTO `usuarios` (`id`, `email`, `senha`, `nivel`, `status`, `nome`, `cpf`) VALUES
-	(7, 'natalia@gmail.com', '$2b$10$pXTsTNMM6hcHFxmEqTK4EeUXrOw754it/IKCpO7XOxoLpIWs8EVMK', '', '', '', 12),
-	(8, 'joaovictor@gmail.com', '$2b$10$hy4LvKFBbwna//YS4hwXY.FA6CilQQH1oy6osRmvPCCtx.9I.uh.2', '', '', '', 13);
+INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `email`, `senha`, `nivel`, `data`) VALUES
+	(15, 'João Victor Piacenza de Oliveira Andrade', '12648976000', 'joaoandrade@gmail.com', '$2b$10$ty5H/Da9hN83hq75cnxdnuh1ru5LKuhIf.Ds1BzROEioE2jdN5R.K', 'admin', '2026-05-12 16:30:34');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

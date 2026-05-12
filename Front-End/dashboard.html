@@ -31,7 +31,6 @@
                     <li><a href="#" class="sidebar-link active" data-section="usuarios">Usuários</a></li>
                     <li><a href="#" class="sidebar-link" data-section="cursos">Cursos</a></li>
                     <li><a href="#" class="sidebar-link" data-section="relatorios">Relatórios</a></li>
-                    <li><a href="#" class="sidebar-link" data-section="configuracoes">Configurações</a></li>
                 </ul>
             </nav>
         </aside>
@@ -40,8 +39,17 @@
             <section id="usuarios-section" class="content-section active">
                 <div class="section-header">
                     <h2>Gerenciamento de Usuários</h2>
-                    <button class="btn-primary" onclick="abrirModalCriarUsuario()">+ Novo Usuário</button>
                 </div>
+
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="pesquisa-nome" 
+                        placeholder="Pesquisar usuário                                                 🔍︎​" 
+
+                    >
+                </div>
+
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
@@ -49,9 +57,8 @@
                                 <th>ID</th>
                                 <th>Nome</th>
                                 <th>E-mail</th>
-                                <th>Perfil</th>
+                                <th>Nivel</th>
                                 <th>Data de Cadastro</th>
-                                <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -98,85 +105,16 @@
                         <p class="relatorio-numero" id="total-cursos">0</p>
                     </div>
                     <div class="relatorio-card">
-                        <h3>Usuários Ativos</h3>
-                        <p class="relatorio-numero" id="usuarios-ativos">0</p>
-                    </div>
-                    <div class="relatorio-card">
                         <h3>Cursos Ativos</h3>
                         <p class="relatorio-numero" id="cursos-ativos">0</p>
                     </div>
                 </div>
             </section>
 
-            <section id="configuracoes-section" class="content-section">
-                <div class="section-header">
-                    <h2>Configurações do Sistema</h2>
-                </div>
-                <div class="config-form">
-                    <h3>Configurações Gerais</h3>
-                    <div class="form-group">
-                        <label>Nome do Sistema</label>
-                        <input type="text" id="config-nome-sistema" value="Orientec" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>E-mail de Contato</label>
-                        <input type="email" id="config-email" value="contato@orientec.com.br" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Telefone</label>
-                        <input type="text" id="config-telefone" value="(21) 99999-9999" class="form-control">
-                    </div>
-                    <button class="btn-primary" onclick="salvarConfiguracoes()">Salvar Configurações</button>
-                </div>
-            </section>
-
         </main>
     </div>
 
-    <div id="modal-criar-usuario" class="modal">
-        <div class="modal-content">
-            <h3>Novo Usuário</h3>
-            <form id="form-criar-usuario">
 
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="criar-usuario-nome" placeholder="Digite o nome completo" required>
-                </div>
-
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="criar-usuario-email" placeholder="Digite o e-mail" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="criar-usuario-senha" placeholder="Digite a senha" required minlength="6">
-                </div>
-
-                <div class="form-group">
-                    <label>Perfil</label>
-                    <select id="criar-usuario-perfil" required>
-                        <option value="">Selecione o perfil</option>
-                        <option value="admin">Administrador</option>
-                        <option value="aluno">Aluno</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="criar-usuario-status" required>
-                        <option value="ativo">Ativo</option>
-                        <option value="inativo">Inativo</option>
-                    </select>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="submit" class="btn-primary">Cadastrar</button>
-                    <button type="button" class="btn-cancelar" onclick="fecharModalCriarUsuario()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <div id="modal-editar-usuario" class="modal">
         <div class="modal-content">
@@ -186,31 +124,11 @@
                 <input type="hidden" id="editar-usuario-id">
 
                 <div class="form-group">
-                    <label>Nome</label>
-                    <input type="text" id="editar-usuario-nome" readonly
-                        style="background:#f5f5f5; cursor:not-allowed; color:#999;">
-                </div>
-
-                <div class="form-group">
-                    <label>E-mail <small style="color:#999;">(não editável)</small></label>
-                    <input type="email" id="editar-usuario-email" readonly
-                        style="background:#f5f5f5; cursor:not-allowed; color:#999;">
-                </div>
-
-                <div class="form-group">
-                    <label>Perfil</label>
-                    <select id="editar-usuario-perfil" required>
-                        <option value="">Selecione o perfil</option>
+                    <label>Nível</label>
+                    <select id="editar-usuario-nivel" required>
+                        <option value="">Selecione o nível</option>
                         <option value="admin">Administrador</option>
                         <option value="aluno">Aluno</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="editar-usuario-status" required>
-                        <option value="ativo">Ativo</option>
-                        <option value="inativo">Inativo</option>
                     </select>
                 </div>
 
@@ -248,7 +166,6 @@
                         <label>Carga Horária (horas)</label>
                         <input type="number" id="curso-carga-horaria" placeholder="Ex: 1200" min="1">
                     </div>
-
                    
                     <div class="form-group">
                         <label>Salário Médio</label>
@@ -262,7 +179,6 @@
                         </select>
                     </div>
 
-                   
                     <div class="form-group campo-largo">
                         <label>Descrição</label>
                         <textarea id="curso-descricao" rows="3" placeholder="Descrição detalhada do curso"

@@ -1,27 +1,25 @@
 // ============================================
 // PROTEÇÃO DE ROTA
 // ============================================
+
+
+
 const token = localStorage.getItem("tokenIntranet");
 if (!token) {
     alert("Acesso Negado! Área restrita a administradores.");
     window.location.href = "intranet.html";
 }
+const authHeaders = () => ({
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+});
 
 // ============================================
 // CONFIGURAÇÃO
 // ============================================
-const API_URL = "http://localhost:3000";
+const API_BASE = "http://localhost:3000";
 
-// ============================================
-// USUÁRIOS (ainda não integrado ao banco)
-// ============================================
-let usuarios = [
-    { id: 1, nome: "Julia", email: "julia@email.com", perfil: "aluno", data_cadastro: "2024-01-15", status: "ativo" },
-    { id: 2, nome: "Joao Victor", email: "joao@email.com", perfil: "admin", data_cadastro: "2026-03-10", status: "ativo" }
-];
-let proximoIdUsuario = 3;
-let itemParaExcluir = null;
-let tipoExclusao = null;
+let usuariosGlobal = [];
 
 // ============================================
 // NAVEGAÇÃO DO SIDEBAR
@@ -41,61 +39,108 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
 });
 
 // ============================================
-// USUÁRIOS (funções existentes)
+// USUÁRIOS 
 // ============================================
-function carregarUsuarios() {
+async function carregarUsuarios() {
     const tbody = document.getElementById('usuarios-table-body');
-    tbody.innerHTML = '';
-    usuarios.forEach(usuario => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${usuario.id}</td>
-            <td>${usuario.nome}</td>
-            <td>${usuario.email}</td>
-            <td><span class="badge badge-${usuario.perfil}">${usuario.perfil}</span></td>
-            <td>${usuario.data_cadastro}</td>
-            <td><span class="status status-${usuario.status}">${usuario.status}</span></td>
-            <td class="acoes">
-                <button class="btn-editar" onclick="editarUsuario(${usuario.id})">Editar</button>
-                <button class="btn-excluir" onclick="confirmarExclusaoUsuario(${usuario.id})">Excluir</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-    carregarRelatorios(); // <-- atualiza os cards de relatório
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
+
+    try {
+        const response = await fetch(`${API_BASE}/usuarios`, { headers: authHeaders() });
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                logout(); // Sessão expirada ou token não admin
+                return;
+            }
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        const usuarios = await response.json();
+        usuariosGlobal = usuarios;
+        tbody.innerHTML = '';
+        if (usuarios.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum usuário cadastrado.</td></tr>';
+            carregarRelatorios();
+            return;
+        }
+
+        usuarios.forEach(usuario => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${usuario.id}</td>
+                <td>${usuario.nome}</td>
+                <td>${usuario.email}</td>
+                <td>${usuario.nivel}</td>
+                <td>${usuario.data}</td>
+                <td class="acoes">
+                    <button class="btn-editar" onclick="abrirModalEditarUsuario(${usuario.id}, '${usuario.nivel}')">Editar</button>
+                    <button class="btn-excluir" onclick="confirmarExclusaoUsuario(${usuario.id})">Excluir</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        carregarRelatorios();
+    } catch (error) {
+        console.error("Erro ao carregar usuários:", error);
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Erro ao carregar usuários.</td></tr>';
+    }
 }
 
-function abrirModalCriarUsuario() {
-    document.getElementById('form-criar-usuario').reset();
-    document.getElementById('modal-criar-usuario').style.display = 'flex';
-}
+document.getElementById('form-editar-usuario').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const id = document.getElementById('editar-usuario-id').value;
+    const payload = {
+        nivel: document.getElementById('editar-usuario-nivel').value,
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/usuarios/${id}`, {
+            method: 'PUT',
+            headers: authHeaders(),
+            body: JSON.stringify(payload)
+        });
+        const dados = await response.json();
+        if (!response.ok) throw new Error(dados.mensagem || 'Erro ao atualizar');
+        await carregarUsuarios();
+        fecharModalEditarUsuario();
+        mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso');
+    } catch (erro) {
+        mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro');
+    }
+});
+
+
+
 function fecharModalCriarUsuario() {
     document.getElementById('modal-criar-usuario').style.display = 'none';
 }
-function abrirModalEditarUsuario(usuario) {
-    document.getElementById('editar-usuario-id').value = usuario.id;
-    document.getElementById('editar-usuario-nome').value = usuario.nome;
-    document.getElementById('editar-usuario-email').value = usuario.email;
-    document.getElementById('editar-usuario-perfil').value = usuario.perfil;
-    document.getElementById('editar-usuario-status').value = usuario.status;
+function abrirModalEditarUsuario(id, nivel) {
+    document.getElementById('editar-usuario-id').value = id;
+    document.getElementById('editar-usuario-nivel').value = nivel;
     document.getElementById('modal-editar-usuario').style.display = 'flex';
 }
 function fecharModalEditarUsuario() {
     document.getElementById('modal-editar-usuario').style.display = 'none';
 }
-function editarUsuario(id) {
-    const usuario = usuarios.find(u => u.id === id);
-    if (usuario) abrirModalEditarUsuario(usuario);
-}
+
 function confirmarExclusaoUsuario(id) {
     itemParaExcluir = id;
     tipoExclusao = 'usuario';
     document.getElementById('modal-confirmacao').style.display = 'flex';
 }
-function excluirUsuario(id) {
-    usuarios = usuarios.filter(u => u.id !== id);
-    carregarUsuarios();
-    mostrarMensagem('usuarios-mensagem', 'Usuário excluído com sucesso!', 'sucesso');
+async function excluirUsuario(id) {
+    try {
+        const response = await fetch(`${API_BASE}/usuarios/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        });
+        const dados = await response.json();
+        if (!response.ok) throw new Error(dados.mensagem || 'Erro ao excluir');
+        await carregarUsuarios();
+        mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso');
+    } catch (erro) {
+        mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro');
+    }
 }
 
 // ============================================
@@ -106,7 +151,7 @@ async function carregarCursos() {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
 
     try {
-        const response = await fetch(`${API_URL}/cursos`);
+        const response = await fetch(`${API_BASE}/cursos` , { headers: authHeaders() });
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const cursos = await response.json();
 
@@ -169,7 +214,7 @@ function fecharModalCurso() {
 
 async function editarCurso(id) {
     try {
-        const response = await fetch(`${API_URL}/cursos/${id}`);
+        const response = await fetch(`${API_BASE}/cursos/${id}` , { headers: authHeaders() });
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const curso = await response.json();
         abrirModalCurso(curso);
@@ -187,7 +232,10 @@ function confirmarExclusaoCurso(id) {
 
 async function excluirCurso(id) {
     try {
-        const response = await fetch(`${API_URL}/cursos/${id}`, { method: 'DELETE' });
+        const response = await fetch(`${API_BASE}/cursos/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        });
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         await carregarCursos();
         mostrarMensagem('cursos-mensagem', 'Curso excluído com sucesso!', 'sucesso');
@@ -232,15 +280,15 @@ document.getElementById('form-curso').addEventListener('submit', async function 
     try {
         let response;
         if (id) {
-            response = await fetch(`${API_URL}/cursos/${id}`, {
+            response = await fetch(`${API_BASE}/cursos/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders(),
                 body: JSON.stringify(payload)
             });
         } else {
-            response = await fetch(`${API_URL}/cursos`, {
+            response = await fetch(`${API_BASE}/cursos`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders(),
                 body: JSON.stringify(payload)
             });
         }
@@ -268,12 +316,11 @@ document.getElementById('form-curso').addEventListener('submit', async function 
 // ============================================
 async function carregarRelatorios() {
     try {
-        const response = await fetch(`${API_URL}/relatorios`);
+        const response = await fetch(`${API_BASE}/relatorios` , { headers: authHeaders() });
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const stats = await response.json();
 
         document.getElementById('total-usuarios').textContent = stats.totalUsuarios;
-        document.getElementById('usuarios-ativos').textContent = stats.usuariosAtivos;
         document.getElementById('total-cursos').textContent = stats.totalCursos;
         document.getElementById('cursos-ativos').textContent = stats.cursosAtivos;
     } catch (error) {

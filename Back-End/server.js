@@ -19,61 +19,91 @@ server.listen(PORT, () => {
   console.log(`Server rodando no http://localhost:${PORT}/`)
 })
 
+
+// Middleware para verificar token JWT
+const verificarToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ mensagem: "Token não fornecido" });
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const payload = jwt.verify(token, api_chave);
+    req.usuario = payload; // { email, nivel }
+    next();
+  } catch (erro) {
+    return res.status(401).json({ mensagem: "Token inválido ou expirado" });
+  }
+};
+
+// Middleware que restringe acesso somente a administradores
+const verificarAdmin = (req, res, next) => {
+  verificarToken(req, res, () => {
+    if (req.usuario.nivel !== "admin") {
+      return res.status(403).json({ mensagem: "Acesso restrito a administradores" });
+    }
+    next();
+  });
+};
+
+
+
 // ─── USUÁRIOS ────────────────────────────────────────────────────────────────
 
-// Rota de cadastro: confere se já tem email, criptografa a senha e cadastra
 server.post("/cadastro", async (req, res) => {
-  const { email, senha } = req.body;
-
+  const { email, senha, nome, cpf } = req.body;
   try {
     const [conferir] = await pool.execute(`SELECT email FROM usuarios WHERE email = ?`, [email]);
     if (conferir.length > 0) {
-      return res.status(400).json({ "mensagem": "Este e-mail já está cadastrado!" });
+      return res.status(400).json({ mensagem: "Este e-mail já está cadastrado!" });
     }
 
     const senhaCriptografada = await bcrypt.hash(senha, 10);
 
     await pool.execute(
-      `INSERT INTO usuarios (email, senha) VALUES (?, ?)`,
-      [email, senhaCriptografada]
+      `INSERT INTO usuarios (email, senha, nome, cpf, nivel) VALUES (?, ?, ?, ?, 'aluno')`,
+      [email, senhaCriptografada, nome, cpf]
     );
-    res.status(201).json({ "mensagem": "Usuário cadastrado com sucesso!" });
-
+    res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ "mensagem": "Erro ao cadastrar usuário!" });
+    return res.status(500).json({ mensagem: "Erro ao cadastrar usuário!" });
   }
 });
 
-// Rota de login: confere se tem esse email, valida senha, gera token de 1h
 server.post("/login", async (req, res) => {
-  const { email, senha } = req.body
+  const { email, senha } = req.body;
   try {
-    const [conferir] = await pool.execute(`SELECT email FROM usuarios WHERE email = ?`, [email])
-    if (conferir.length > 0) {
-      const [resultado] = await pool.execute(`SELECT * FROM usuarios WHERE email = ? `, [email])
+    const [conferir] = await pool.execute(
+      `SELECT email, senha, nivel FROM usuarios WHERE email = ?`, [email]
+    );
 
-      const validou = await bcrypt.compare(senha, resultado[0].senha)
-
-      if (validou == false) {
-        return res.status(401).json({ "mensagem": "Usuário ou senha inválido!" })
-      }
-
-      const token = jwt.sign({
-        email: email,
-      }, api_chave, {
-        expiresIn: "1h"
-      })
-
-      res.json({ "mensagem": "Acesso Liberado", "token": token })
-    } else {
-      return res.json({ "mensagem": "Nenhum e-mail encontrado!" })
+    if (conferir.length === 0) {
+      return res.status(401).json({ mensagem: "Usuário ou senha inválido!" });
     }
+
+    const usuario = conferir[0];
+    const validou = await bcrypt.compare(senha, usuario.senha);
+
+    if (!validou) {
+      return res.status(401).json({ mensagem: "Usuário ou senha inválido!" });
+    }
+
+    const token = jwt.sign(
+      { email: usuario.email, nivel: usuario.nivel },
+      api_chave,
+      { expiresIn: "1h" }
+    );
+
+    res.json({
+      mensagem: "Acesso Liberado",
+      token: token,
+      nivel: usuario.nivel   // ← importante para o front decidir o fluxo
+    });
   } catch (error) {
-    console.log(error)
-    return res.json({ "mensagem": "Erro ao fazer login !" })
+    console.log(error);
+    return res.status(500).json({ mensagem: "Erro ao fazer login!" });
   }
-})
+});
 
 server.put("/trocar_senha", async (req, res) => {
   try {
@@ -89,6 +119,8 @@ server.put("/trocar_senha", async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao alterar senha" });
   }
 });
+
+
 
 
 
@@ -124,7 +156,7 @@ server.get("/cursos/:id", async (req, res) => {
 
 
 // Rota de criação de curso (POST) 
-server.post("/cursos", async (req, res) => {
+server.post("/cursos", verificarAdmin, async (req, res) => {
   try {
     const { nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil } = req.body;
 
@@ -150,7 +182,7 @@ server.post("/cursos", async (req, res) => {
 });
 
 // Rota de atualização de curso (PUT)
-server.put("/cursos/:id", async (req, res) => {
+server.put("/cursos/:id", verificarAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil } = req.body;
@@ -179,7 +211,7 @@ server.put("/cursos/:id", async (req, res) => {
 });
 
 // Rota de exclusão de curso
-server.delete("/cursos/:id", async (req, res) => {
+server.delete("/cursos/:id", verificarAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -200,21 +232,64 @@ server.delete("/cursos/:id", async (req, res) => {
 // ─── USUÁRIOS (admin) ─────────────────────────────────────────────────────────
 
 //RELATÓRIO (dashboard)
-server.get("/relatorios", async (req, res) => {
+server.get("/relatorios", verificarAdmin, async (req, res) => {
   try {
     const [totalUsuarios] = await pool.query(`SELECT COUNT(*) AS total FROM usuarios`);
-    const [usuariosAtivos] = await pool.query(`SELECT COUNT(*) AS total FROM usuarios WHERE status = 'ativo'`);
     const [totalCursos] = await pool.query(`SELECT COUNT(*) AS total FROM cursos`);
     const [cursosAtivos] = await pool.query(`SELECT COUNT(*) AS total FROM cursos WHERE status = 'ativo'`);
 
     res.json({
       totalUsuarios: totalUsuarios[0].total,
-      usuariosAtivos: usuariosAtivos[0].total,
       totalCursos: totalCursos[0].total,
       cursosAtivos: cursosAtivos[0].total
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({ mensagem: "Erro ao carregar relatórios" });
+  }
+});
+
+server.put("/usuarios/:id", verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { nivel } = req.body;
+  try {
+    if (!nivel) {
+      return res.status(400).json({ mensagem: "Nível é obrigatório." });
+    }
+    const [resultado] = await pool.execute(
+      `UPDATE usuarios SET nivel = ? WHERE id = ?`,
+      [nivel, id]
+    );
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({ mensagem: "Usuário não encontrado." });
+    }
+    res.json({ mensagem: "Usuário atualizado com sucesso!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao atualizar usuário" });
+  }
+});
+
+server.delete("/usuarios/:id", verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [resultado] = await pool.execute(`DELETE FROM usuarios WHERE id = ?`, [id]);
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({ mensagem: "Usuário não encontrado." });
+    }
+    res.json({ mensagem: "Usuário excluído com sucesso!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao excluir usuário." });
+  }
+});
+
+server.get("/usuarios", verificarAdmin, async (req, res) => {
+  try {
+    const [resultado] = await pool.query(`SELECT id, nome, email, nivel, DATE_FORMAT(data, '%d/%m/%Y') AS data FROM usuarios ORDER BY nome`);
+    res.json(resultado);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao buscar usuários" });
   }
 });
