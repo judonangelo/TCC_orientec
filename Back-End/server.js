@@ -97,7 +97,7 @@ server.post("/login", async (req, res) => {
     res.json({
       mensagem: "Acesso Liberado",
       token: token,
-      nivel: usuario.nivel,   // ← importante para o front decidir o fluxo
+      nivel: usuario.nivel,   //  importante para o front decidir o fluxo
       nome: usuario.nome
     });
   } catch (error) {
