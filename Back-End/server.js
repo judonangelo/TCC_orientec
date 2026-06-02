@@ -4,7 +4,7 @@ const cors = require('cors')
 const server = express()
 server.use(cors())
 server.use(express.json())
-const pool = require('./db.js')
+const pool = require('./db.js') 
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./swagger.json')
 const api_chave = process.env.API_CHAVE;

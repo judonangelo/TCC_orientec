@@ -1,14 +1,5 @@
-// ============================================
-// PROTEÇÃO DE ROTA
-// ============================================
-
-
-
 const token = localStorage.getItem("tokenIntranet");
-if (!token) {
-    alert("Acesso Negado! Área restrita a administradores.");
-    window.location.href = "intranet.html";
-}
+
 const authHeaders = () => ({
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`
@@ -23,6 +14,7 @@ let usuariosGlobal = [];
 let paginaAtual = 1;
 const ITENS_POR_PAGINA = 10;
 let termoPesquisa = '';
+let filtroNivel = 'todos';  // 'todos', 'admin', 'aluno'
 
 // ============================================
 // NAVEGAÇÃO DO SIDEBAR
@@ -42,7 +34,7 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
 });
 
 // ============================================
-// USUÁRIOS 
+// USUÁRIOS - FILTROS COMBINADOS
 // ============================================
 
 function renderizarUsuarios(usuarios) {
@@ -93,7 +85,7 @@ function atualizarControlesPaginacao(totalItens) {
     btnAnterior.addEventListener('click', () => {
         if (paginaAtual > 1) {
             paginaAtual--;
-            aplicarFiltroEPaginar();
+            aplicarFiltros();
         }
     });
     container.appendChild(btnAnterior);
@@ -112,10 +104,47 @@ function atualizarControlesPaginacao(totalItens) {
     btnProximo.addEventListener('click', () => {
         if (paginaAtual < totalPaginas) {
             paginaAtual++;
-            aplicarFiltroEPaginar();
+            aplicarFiltros();
         }
     });
     container.appendChild(btnProximo);
+}
+
+function aplicarFiltros() {
+    const termo = termoPesquisa.toLowerCase();
+    const filtrados = usuariosGlobal.filter(usuario => {
+        // Filtro por nome (startsWith)
+        const matchNome = usuario.nome.toLowerCase().startsWith(termo);
+        if (!matchNome) return false;
+
+        // Filtro por nível
+        if (filtroNivel === 'todos') return true;
+        return usuario.nivel === filtroNivel;
+    });
+    renderizarUsuarios(filtrados);
+}
+
+function atualizarUsuariosFiltrados() {
+    paginaAtual = 1;  // reset para primeira página ao filtrar
+    aplicarFiltros();
+}
+
+// Evento do campo de pesquisa
+const pesquisaInput = document.getElementById('pesquisa-nome');
+if (pesquisaInput) {
+    pesquisaInput.addEventListener('input', function (e) {
+        termoPesquisa = e.target.value.trim();
+        atualizarUsuariosFiltrados();
+    });
+}
+
+// Evento do filtro de nível
+const filtroSelect = document.getElementById('filtro-tipo-usuario');
+if (filtroSelect) {
+    filtroSelect.addEventListener('change', function (e) {
+        filtroNivel = e.target.value;
+        atualizarUsuariosFiltrados();
+    });
 }
 
 async function carregarUsuarios() {
@@ -135,10 +164,11 @@ async function carregarUsuarios() {
         usuariosGlobal = usuarios;
         paginaAtual = 1;
         termoPesquisa = '';
-        document.getElementById('pesquisa-nome').value = '';
+        filtroNivel = 'todos';
+        if (pesquisaInput) pesquisaInput.value = '';
+        if (filtroSelect) filtroSelect.value = 'todos';
 
-        // Aplica filtro (vazio) + paginação e renderiza
-        aplicarFiltroEPaginar();
+        atualizarUsuariosFiltrados();
 
         carregarRelatorios();
     } catch (error) {
@@ -147,48 +177,57 @@ async function carregarUsuarios() {
     }
 }
 
-document.getElementById('form-editar-usuario').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const id = document.getElementById('editar-usuario-id').value;
-    const payload = {
-        nivel: document.getElementById('editar-usuario-nivel').value,
-    };
+// ============================================
+// MODAL EDITAR USUÁRIO
+// ============================================
+const formEditar = document.getElementById('form-editar-usuario');
+if (formEditar) {
+    formEditar.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = document.getElementById('editar-usuario-id').value;
+        const payload = {
+            nivel: document.getElementById('editar-usuario-nivel').value,
+        };
 
-    try {
-        const response = await fetch(`${API_BASE}/usuarios/${id}`, {
-            method: 'PUT',
-            headers: authHeaders(),
-            body: JSON.stringify(payload)
-        });
-        const dados = await response.json();
-        if (!response.ok) throw new Error(dados.mensagem || 'Erro ao atualizar');
-        await carregarUsuarios();
-        fecharModalEditarUsuario();
-        mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso');
-    } catch (erro) {
-        mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro');
-    }
-});
-
-
-
-function fecharModalCriarUsuario() {
-    document.getElementById('modal-criar-usuario').style.display = 'none';
+        try {
+            const response = await fetch(`${API_BASE}/usuarios/${id}`, {
+                method: 'PUT',
+                headers: authHeaders(),
+                body: JSON.stringify(payload)
+            });
+            const dados = await response.json();
+            if (!response.ok) throw new Error(dados.mensagem || 'Erro ao atualizar');
+            await carregarUsuarios();
+            fecharModalEditarUsuario();
+            mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso');
+        } catch (erro) {
+            mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro');
+        }
+    });
 }
+
 function abrirModalEditarUsuario(id, nivel) {
     document.getElementById('editar-usuario-id').value = id;
     document.getElementById('editar-usuario-nivel').value = nivel;
     document.getElementById('modal-editar-usuario').style.display = 'flex';
 }
+
 function fecharModalEditarUsuario() {
     document.getElementById('modal-editar-usuario').style.display = 'none';
 }
+
+// ============================================
+// EXCLUSÃO DE USUÁRIO
+// ============================================
+let itemParaExcluir = null;
+let tipoExclusao = null;
 
 function confirmarExclusaoUsuario(id) {
     itemParaExcluir = id;
     tipoExclusao = 'usuario';
     document.getElementById('modal-confirmacao').style.display = 'flex';
 }
+
 async function excluirUsuario(id) {
     try {
         const response = await fetch(`${API_BASE}/usuarios/${id}`, {
@@ -204,25 +243,8 @@ async function excluirUsuario(id) {
     }
 }
 
-function aplicarFiltroEPaginar() {
-    const termo = termoPesquisa.toLowerCase();
-    const filtrados = usuariosGlobal.filter(usuario =>
-        usuario.nome.toLowerCase().startsWith(termo)
-    );
-    renderizarUsuarios(filtrados);
-}
-
-// Pesquisa de usuários
-document.getElementById('pesquisa-nome').addEventListener('input', function (e) {
-    termoPesquisa = e.target.value.trim();
-    paginaAtual = 1;          // volta para a página 1 ao pesquisar
-    aplicarFiltroEPaginar();
-});
-
-
-
 // ============================================
-// CRUD CURSOS (integrado ao backend)
+// CRUD CURSOS
 // ============================================
 async function carregarCursos() {
     const tbody = document.getElementById('cursos-table-body');
@@ -323,11 +345,17 @@ async function excluirCurso(id) {
     }
 }
 
-document.getElementById('btn-confirmar-exclusao').addEventListener('click', async function () {
-    if (tipoExclusao === 'usuario') excluirUsuario(itemParaExcluir);
-    else if (tipoExclusao === 'curso') await excluirCurso(itemParaExcluir);
-    fecharModalConfirmacao();
-});
+// ============================================
+// CONFIRMAÇÃO GENÉRICA (exclusão)
+// ============================================
+const btnConfirmar = document.getElementById('btn-confirmar-exclusao');
+if (btnConfirmar) {
+    btnConfirmar.addEventListener('click', async function () {
+        if (tipoExclusao === 'usuario') excluirUsuario(itemParaExcluir);
+        else if (tipoExclusao === 'curso') await excluirCurso(itemParaExcluir);
+        fecharModalConfirmacao();
+    });
+}
 
 function fecharModalConfirmacao() {
     document.getElementById('modal-confirmacao').style.display = 'none';
@@ -338,59 +366,62 @@ function fecharModalConfirmacao() {
 // ============================================
 // SUBMIT DO FORMULÁRIO DE CURSO
 // ============================================
-document.getElementById('form-curso').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const id = document.getElementById('curso-id').value;
-    const payload = {
-        nome: document.getElementById('curso-nome').value.trim(),
-        duracao: parseInt(document.getElementById('curso-duracao').value),
-        vagas: parseInt(document.getElementById('curso-vagas').value),
-        descricao: document.getElementById('curso-descricao').value.trim(),
-        status: document.getElementById('curso-status').value,
-        area: document.getElementById('curso-area').value.trim(),
-        resumo: document.getElementById('curso-resumo').value.trim(),
-        carga_horaria: document.getElementById('curso-carga-horaria').value.trim() || null,
-        salario: document.getElementById('curso-salario').value.trim() || null,
-        mercado: document.getElementById('curso-mercado').value.trim() || null,
-        perfil: document.getElementById('curso-perfil').value.trim() || null
-    };
+const formCurso = document.getElementById('form-curso');
+if (formCurso) {
+    formCurso.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = document.getElementById('curso-id').value;
+        const payload = {
+            nome: document.getElementById('curso-nome').value.trim(),
+            duracao: parseInt(document.getElementById('curso-duracao').value),
+            vagas: parseInt(document.getElementById('curso-vagas').value),
+            descricao: document.getElementById('curso-descricao').value.trim(),
+            status: document.getElementById('curso-status').value,
+            area: document.getElementById('curso-area').value.trim(),
+            resumo: document.getElementById('curso-resumo').value.trim(),
+            carga_horaria: document.getElementById('curso-carga-horaria').value.trim() || null,
+            salario: document.getElementById('curso-salario').value.trim() || null,
+            mercado: document.getElementById('curso-mercado').value.trim() || null,
+            perfil: document.getElementById('curso-perfil').value.trim() || null
+        };
 
-    try {
-        let response;
-        if (id) {
-            response = await fetch(`${API_BASE}/cursos/${id}`, {
-                method: 'PUT',
-                headers: authHeaders(),
-                body: JSON.stringify(payload)
-            });
-        } else {
-            response = await fetch(`${API_BASE}/cursos`, {
-                method: 'POST',
-                headers: authHeaders(),
-                body: JSON.stringify(payload)
-            });
+        try {
+            let response;
+            if (id) {
+                response = await fetch(`${API_BASE}/cursos/${id}`, {
+                    method: 'PUT',
+                    headers: authHeaders(),
+                    body: JSON.stringify(payload)
+                });
+            } else {
+                response = await fetch(`${API_BASE}/cursos`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify(payload)
+                });
+            }
+
+            if (!response.ok) {
+                const erro = await response.json();
+                throw new Error(erro.mensagem || `Erro HTTP: ${response.status}`);
+            }
+
+            await carregarCursos();
+            fecharModalCurso();
+            mostrarMensagem(
+                'cursos-mensagem',
+                id ? 'Curso atualizado com sucesso!' : 'Curso cadastrado com sucesso!',
+                'sucesso'
+            );
+        } catch (error) {
+            console.error("Erro ao salvar curso:", error);
+            mostrarMensagem('cursos-mensagem', `Erro: ${error.message}`, 'erro');
         }
-
-        if (!response.ok) {
-            const erro = await response.json();
-            throw new Error(erro.mensagem || `Erro HTTP: ${response.status}`);
-        }
-
-        await carregarCursos();
-        fecharModalCurso();
-        mostrarMensagem(
-            'cursos-mensagem',
-            id ? 'Curso atualizado com sucesso!' : 'Curso cadastrado com sucesso!',
-            'sucesso'
-        );
-    } catch (error) {
-        console.error("Erro ao salvar curso:", error);
-        mostrarMensagem('cursos-mensagem', `Erro: ${error.message}`, 'erro');
-    }
-});
+    });
+}
 
 // ============================================
-// RELATÓRIOS (busca do backend)
+// RELATÓRIOS
 // ============================================
 async function carregarRelatorios() {
     try {
@@ -411,6 +442,7 @@ async function carregarRelatorios() {
 // ============================================
 function mostrarMensagem(elementoId, texto, tipo) {
     const elemento = document.getElementById(elementoId);
+    if (!elemento) return;
     elemento.textContent = texto;
     elemento.className = `mensagem ${tipo}`;
     setTimeout(() => {
@@ -419,13 +451,12 @@ function mostrarMensagem(elementoId, texto, tipo) {
     }, 3000);
 }
 
-function salvarConfiguracoes() {
-    alert('Configurações salvas com sucesso!');
-}
-
 function logout() {
     if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem("emailUsuario");
         localStorage.removeItem("tokenIntranet");
+        localStorage.removeItem("nomeUsuario");
+        localStorage.removeItem("nivelUsuario")
         window.location.href = 'index.html';
     }
 }

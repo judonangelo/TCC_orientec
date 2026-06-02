@@ -1,201 +1,567 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "API TCC - Gerenciamento de Usuários",
-      "description": "API REST para cadastro, consulta, atualização e remoção de usuários.",
-      "version": "1.0.0"
-    },
-    "servers": [
-      {
-        "url": "http://localhost:3000",
-        "description": "Servidor local de desenvolvimento"
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API TCC Oriente - Sistema de Cursos",
+    "description": "API para cadastro de usuários, login JWT, gerenciamento de cursos e relatórios administrativos.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Julia Donangelo",
+      "email": "julia@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor local (padrão)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT obtido no login. Enviar no header: Authorization: Bearer <token>"
       }
-    ],
-    "paths": {
-      "/cadastrar_user": {
-        "post": {
-          "summary": "Cadastrar novo usuário",
-          "description": "Cria um novo usuário com e-mail e senha. O nível é definido automaticamente como 'user'.",
-          "requestBody": {
-            "required": true,
+    },
+    "schemas": {
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "nome": { "type": "string", "example": "João Silva" },
+          "email": { "type": "string", "format": "email", "example": "joao@email.com" },
+          "nivel": { "type": "string", "enum": ["aluno", "admin"], "example": "aluno" },
+          "data": { "type": "string", "example": "01/01/2024" }
+        }
+      },
+      "Curso": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 10 },
+          "nome": { "type": "string", "example": "Análise e Desenvolvimento de Sistemas" },
+          "duracao": { "type": "string", "example": "2 anos" },
+          "vagas": { "type": "integer", "example": 40 },
+          "descricao": { "type": "string", "example": "Curso focado em desenvolvimento de software..." },
+          "status": { "type": "string", "enum": ["ativo", "inativo"], "example": "ativo" },
+          "area": { "type": "string", "example": "Tecnologia" },
+          "resumo": { "type": "string", "example": "Resumo do curso..." },
+          "carga_horaria": { "type": "integer", "example": 2000 },
+          "salario": { "type": "string", "example": "R$ 3.500,00" },
+          "mercado": { "type": "string", "example": "Grande demanda" },
+          "perfil": { "type": "string", "example": "Perfil do profissional" }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "senha"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "aluno@email.com" },
+          "senha": { "type": "string", "format": "password", "example": "123456" }
+        }
+      },
+      "CadastroRequest": {
+        "type": "object",
+        "required": ["email", "senha", "nome", "cpf"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "novo@email.com" },
+          "senha": { "type": "string", "format": "password", "example": "123456" },
+          "nome": { "type": "string", "example": "Maria Souza" },
+          "cpf": { "type": "string", "example": "123.456.789-00" }
+        }
+      },
+      "TrocarSenhaRequest": {
+        "type": "object",
+        "required": ["email", "senha"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "usuario@email.com" },
+          "senha": { "type": "string", "format": "password", "example": "novaSenha123" }
+        }
+      },
+      "AtualizarNivelRequest": {
+        "type": "object",
+        "required": ["nivel"],
+        "properties": {
+          "nivel": { "type": "string", "enum": ["aluno", "admin"], "example": "admin" }
+        }
+      },
+      "RelatorioResponse": {
+        "type": "object",
+        "properties": {
+          "totalUsuarios": { "type": "integer", "example": 50 },
+          "totalCursos": { "type": "integer", "example": 12 },
+          "cursosAtivos": { "type": "integer", "example": 8 }
+        }
+      },
+      "MensagemResposta": {
+        "type": "object",
+        "properties": {
+          "mensagem": { "type": "string", "example": "Operação realizada com sucesso" }
+        }
+      },
+      "ErroResposta": {
+        "type": "object",
+        "properties": {
+          "mensagem": { "type": "string", "example": "Erro na requisição" }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/cadastro": {
+      "post": {
+        "summary": "Cadastrar um novo usuário (nível aluno)",
+        "description": "Cria um novo usuário com nível 'aluno'. Não requer autenticação.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CadastroRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MensagemResposta" }
+              }
+            }
+          },
+          "400": {
+            "description": "E-mail já cadastrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErroResposta" }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Autenticar usuário e obter token JWT",
+        "description": "Retorna token, nível e nome do usuário.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login bem-sucedido",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["email", "senha"],
                   "properties": {
-                    "email": {
-                      "type": "string",
-                      "format": "email",
-                      "example": "usuario@email.com"
-                    },
-                    "senha": {
-                      "type": "string",
-                      "example": "minhasenha123"
-                    }
+                    "mensagem": { "type": "string", "example": "Acesso Liberado" },
+                    "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIs..." },
+                    "nivel": { "type": "string", "example": "aluno" },
+                    "nome": { "type": "string", "example": "João Silva" }
                   }
                 }
               }
             }
           },
-          "responses": {
-            "200": {
-              "description": "Usuário cadastrado com sucesso",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "fieldCount": { "type": "integer", "example": 0 },
-                      "affectedRows": { "type": "integer", "example": 1 },
-                      "insertId": { "type": "integer", "example": 5 },
-                      "serverStatus": { "type": "integer", "example": 2 },
-                      "warningCount": { "type": "integer", "example": 0 },
-                      "message": { "type": "string", "example": "" },
-                      "changedRows": { "type": "integer", "example": 0 }
-                    }
-                  }
+          "401": {
+            "description": "Credenciais inválidas",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErroResposta" }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/trocar_senha": {
+      "put": {
+        "summary": "Alterar senha do usuário (sem necessidade de token)",
+        "description": "Atualiza a senha de um usuário existente pelo e-mail.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TrocarSenhaRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Senha alterada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MensagemResposta" }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao alterar senha"
+          }
+        }
+      }
+    },
+    "/cursos": {
+      "get": {
+        "summary": "Listar todos os cursos",
+        "description": "Retorna array com todos os cursos cadastrados (acesso público).",
+        "responses": {
+          "200": {
+            "description": "Lista de cursos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Curso" }
                 }
               }
-            },
-            "500": {
-              "description": "Erro interno no servidor"
             }
+          },
+          "500": {
+            "description": "Erro ao buscar cursos"
           }
         }
       },
-      "/ver_usuarios": {
-        "get": {
-          "summary": "Listar todos os usuários",
-          "description": "Retorna todos os usuários cadastrados no banco de dados.",
-          "responses": {
-            "200": {
-              "description": "Lista de usuários retornada com sucesso",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "integer", "example": 1 },
-                        "email": { "type": "string", "example": "usuario@email.com" },
-                        "senha": { "type": "string", "example": "minhasenha123" },
-                        "nivel": { "type": "string", "example": "user" }
-                      }
-                    }
-                  }
+      "post": {
+        "summary": "Criar um novo curso (somente admin)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nome", "duracao", "vagas", "status"],
+                "properties": {
+                  "nome": { "type": "string", "example": "Engenharia de Software" },
+                  "duracao": { "type": "string", "example": "4 anos" },
+                  "vagas": { "type": "integer", "example": 50 },
+                  "descricao": { "type": "string", "example": "Curso completo..." },
+                  "status": { "type": "string", "enum": ["ativo", "inativo"], "example": "ativo" },
+                  "area": { "type": "string", "example": "Exatas" },
+                  "resumo": { "type": "string" },
+                  "carga_horaria": { "type": "integer", "example": 3200 },
+                  "salario": { "type": "string", "example": "R$ 7.000" },
+                  "mercado": { "type": "string", "example": "Alta empregabilidade" },
+                  "perfil": { "type": "string" }
                 }
               }
-            },
-            "500": {
-              "description": "Erro interno no servidor"
             }
           }
-        }
-      },
-      "/atualizar_usuarios": {
-        "put": {
-          "summary": "Atualizar dados de um usuário",
-          "description": "Atualiza o e-mail e a senha de um usuário existente com base no ID informado.",
-          "requestBody": {
-            "required": true,
+        },
+        "responses": {
+          "201": {
+            "description": "Curso criado com sucesso",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["id", "email", "senha"],
                   "properties": {
-                    "id": {
-                      "type": "integer",
-                      "example": 1
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email",
-                      "example": "novo@email.com"
-                    },
-                    "senha": {
-                      "type": "string",
-                      "example": "novasenha456"
-                    }
+                    "mensagem": { "type": "string" },
+                    "id": { "type": "integer" }
                   }
                 }
               }
             }
           },
-          "responses": {
-            "200": {
-              "description": "Usuário atualizado com sucesso",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "fieldCount": { "type": "integer", "example": 0 },
-                      "affectedRows": { "type": "integer", "example": 1 },
-                      "insertId": { "type": "integer", "example": 0 },
-                      "serverStatus": { "type": "integer", "example": 2 },
-                      "warningCount": { "type": "integer", "example": 0 },
-                      "message": { "type": "string", "example": "(Rows matched: 1  Changed: 1  Warnings: 0" },
-                      "changedRows": { "type": "integer", "example": 1 }
-                    }
-                  }
-                }
+          "400": {
+            "description": "Campos obrigatórios não preenchidos"
+          },
+          "401": {
+            "description": "Token não fornecido ou inválido"
+          },
+          "403": {
+            "description": "Acesso restrito a administradores"
+          },
+          "500": {
+            "description": "Erro ao criar curso"
+          }
+        }
+      }
+    },
+    "/cursos/{id}": {
+      "get": {
+        "summary": "Buscar curso por ID",
+        "description": "Retorna um único curso (acesso público).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID do curso"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Curso encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Curso" }
               }
-            },
-            "500": {
-              "description": "Erro interno no servidor"
             }
+          },
+          "404": {
+            "description": "Curso não encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErroResposta" }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno"
           }
         }
       },
-      "/deletar_usuarios": {
-        "delete": {
-          "summary": "Deletar um usuário",
-          "description": "Remove um usuário do banco de dados com base no ID informado.",
-          "requestBody": {
+      "put": {
+        "summary": "Atualizar curso existente (somente admin)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
             "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nome", "duracao", "vagas", "status"],
+                "properties": {
+                  "nome": { "type": "string" },
+                  "duracao": { "type": "string" },
+                  "vagas": { "type": "integer" },
+                  "descricao": { "type": "string" },
+                  "status": { "type": "string", "enum": ["ativo", "inativo"] },
+                  "area": { "type": "string" },
+                  "resumo": { "type": "string" },
+                  "carga_horaria": { "type": "integer" },
+                  "salario": { "type": "string" },
+                  "mercado": { "type": "string" },
+                  "perfil": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Curso atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MensagemResposta" }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos obrigatórios ausentes"
+          },
+          "401": {
+            "description": "Token inválido"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "Curso não encontrado"
+          },
+          "500": {
+            "description": "Erro ao atualizar"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Excluir curso (somente admin)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Curso excluído com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MensagemResposta" }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "Curso não encontrado"
+          },
+          "500": {
+            "description": "Erro ao excluir"
+          }
+        }
+      }
+    },
+    "/relatorios": {
+      "get": {
+        "summary": "Obter estatísticas (total usuários, cursos, cursos ativos)",
+        "description": "Requisição autenticada com token de administrador.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Dados do relatório",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RelatorioResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Token não fornecido ou inválido"
+          },
+          "403": {
+            "description": "Acesso restrito a administradores"
+          },
+          "500": {
+            "description": "Erro ao carregar relatórios"
+          }
+        }
+      }
+    },
+    "/usuarios": {
+      "get": {
+        "summary": "Listar todos os usuários (somente admin)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "required": ["id"],
-                  "properties": {
-                    "id": {
-                      "type": "integer",
-                      "example": 1
-                    }
-                  }
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Usuario" }
                 }
               }
             }
           },
-          "responses": {
-            "200": {
-              "description": "Usuário deletado com sucesso",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "fieldCount": { "type": "integer", "example": 0 },
-                      "affectedRows": { "type": "integer", "example": 1 },
-                      "insertId": { "type": "integer", "example": 0 },
-                      "serverStatus": { "type": "integer", "example": 2 },
-                      "warningCount": { "type": "integer", "example": 0 },
-                      "message": { "type": "string", "example": "" },
-                      "changedRows": { "type": "integer", "example": 0 }
-                    }
-                  }
-                }
-              }
-            },
-            "500": {
-              "description": "Erro interno no servidor"
+          "401": {
+            "description": "Token inválido"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "500": {
+            "description": "Erro ao buscar usuários"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}": {
+      "put": {
+        "summary": "Atualizar nível de um usuário (somente admin)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID do usuário"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AtualizarNivelRequest" }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Nível atualizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MensagemResposta" }
+              }
+            }
+          },
+          "400": {
+            "description": "Nível obrigatório"
+          },
+          "401": {
+            "description": "Token inválido"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          },
+          "500": {
+            "description": "Erro ao atualizar"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Excluir um usuário (somente admin)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário excluído",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MensagemResposta" }
+              }
+            }
+          },
+          "401": {
+            "description": "Token inválido"
+          },
+          "403": {
+            "description": "Acesso negado"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          },
+          "500": {
+            "description": "Erro ao excluir"
           }
         }
       }
     }
   }
+}
