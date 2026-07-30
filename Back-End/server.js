@@ -58,6 +58,10 @@ server.post("/cadastro", async (req, res) => {
       return res.status(400).json({ mensagem: "Este e-mail já está cadastrado!" });
     }
 
+    if (cpf.length !== 11){
+      return res.status(400).json({mensagem: "CPF invá  lido"})
+    }
+
     const senhaCriptografada = await bcrypt.hash(senha, 10);
 
     await pool.execute(
