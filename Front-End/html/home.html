@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,14 @@
     <link rel="stylesheet" href="/Front-End/CSS/home.css">
     <link rel="icon" href="/Front-End/assets/Orientec-Borda.png" type="image/png">
 </head>
+
 <body style="display: none;">
 
-    <header class="home-header">
-        <div class="home-header-inner">
-            <div class="home-logo" onclick="window.location.href='home.html'">Orientec</div>
-            <nav class="home-nav">
-                <a href="home.html">Início</a>
+    <header class="default-header">
+        <div class="header-inner">
+            <a href="home.html" class="logo">Orientec</a>
+            <nav class="nav-menu">
+                <a href="home.html" class="active">Início</a>
                 <a href="teste.html">Teste Vocacional</a>
                 <a href="cursos.html">Cursos</a>
                 <a href="#contato">Contato</a>
@@ -55,12 +57,14 @@
             <div class="info-box">
                 <span class="tag">Quem Somos</span>
                 <h2>Revolucionando a escolha profissional</h2>
-                <p>A Orientec nasceu para ajudar estudantes a encontrarem o curso ideal através de tecnologia e análise humana.</p>
+                <p>A Orientec nasceu para ajudar estudantes a encontrarem o curso ideal através de tecnologia e análise
+                    humana.</p>
             </div>
             <div class="info-box">
                 <span class="tag">Nossa Missão</span>
                 <h2>Iluminando caminhos únicos</h2>
-                <p>Acreditamos que cada pessoa possui talentos únicos. Nosso papel é revelar esses talentos e transformá-los em carreira.</p>
+                <p>Acreditamos que cada pessoa possui talentos únicos. Nosso papel é revelar esses talentos e
+                    transformá-los em carreira.</p>
             </div>
         </section>
 
@@ -102,7 +106,8 @@
                 </div>
             </div>
             <hr style="margin: 24px 0; border-color: #e2e8f0;">
-            <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar senha</button>
+            <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar
+                senha</button>
             <button class="btn-danger-outline" onclick="logout()">Sair da conta</button>
         </div>
     </aside>
@@ -113,4 +118,5 @@
     <script src="/Front-End/script/home.js"></script>
     <script src="/Front-End/script/autenticacao.js"></script>
 </body>
+
 </html>

@@ -3,32 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste Vocacional</title>
+    <title>Orientec – Teste Vocacional</title>
     <link rel="stylesheet" href="/Front-End/CSS/global.css">
-    <link rel="stylesheet" href="/Front-End/CSS/home.css">
+    <link rel="stylesheet" href="/Front-End/CSS/teste.css">
     <link rel="icon" href="/Front-End/assets/Orientec-Borda.png" type="image/png">
 </head>
 <body>
 
-    <header class="home-header">
-        <div class="home-header-inner">
-            <div class="home-logo" onclick="window.location.href='home.html'">Orientec</div>
-            <nav class="home-nav">
+    <header class="default-header">
+        <div class="header-inner">
+            <a href="home.html" class="logo">Orientec</a>
+            <nav class="nav-menu">
                 <a href="home.html">Início</a>
-                <a href="teste.html">Teste Vocacional</a>
+                <a href="teste.html" class="active">Teste Vocacional</a>
                 <a href="cursos.html">Cursos</a>
-                <a href="#contato">Contato</a>
+                <a href="home.html#contato">Contato</a>
             </nav>
             <button class="btn-perfil" onclick="openPanel()">Usuário</button>
         </div>
     </header>
-    
+
+    <main class="teste-page">
+        <section class="test-hero">
+            <h1>Descubra o Curso Técnico Ideal para Você</h1>
+            <p>Responda às perguntas abaixo com sinceridade para analisarmos seu perfil profissional.</p>
+        </section>
+
+        <section id="quiz-container" class="quiz-card">
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span id="progress-text">Pergunta 1 de 10</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h2 id="question">Carregando pergunta...</h2>
+                <div id="answers" class="answers-grid"></div>
+            </div>
+
+            <div class="quiz-actions">
+                <button id="prev-btn" class="btn-secondary" style="display:none;">
+                    <i class="fas fa-arrow-left"></i> Anterior
+                </button>
+                <button id="next-btn" class="btn-primary-quiz">
+                    Próxima <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="result-container" class="quiz-card" style="display: none;">
+            <div id="resultado-principal"></div>
+            <hr class="divider">
+            <h3>Seu Desempenho por Área</h3>
+            <div id="ranking-completo" class="ranking-list"></div>
+            
+            <div class="result-actions">
+                <button id="restart-btn" class="btn-secondary">
+                    <i class="fas fa-redo"></i> Refazer Teste
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="default-footer">
+        <p>© 2026 Orientec - Todos os direitos reservados</p>
+    </footer>
+
+    <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
+
+    <aside class="profile-panel" id="profilePanel">
+        <div class="panel-header">
+            <button class="panel-close" onclick="closePanel()">✕</button>
+            <div class="panel-avatar" id="panelInitials">??</div>
+            <div class="panel-user-name" id="panelName">Estudante X</div>
+            <div class="panel-user-email" id="panelEmail">estudante@email.com</div>
+        </div>
+        <div class="panel-body">
+            <div id="sectionInfo">
+                <p class="panel-section-title">Informações da Conta</p>
+                <div id="viewMode">
+                    <div class="info-field">
+                        <label>Nome completo</label>
+                        <span id="viewName">Estudante da Silva</span>
+                    </div>
+                    <div class="info-field">
+                        <label>E-mail</label>
+                        <span id="viewEmail">estudante@email.com</span>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 24px 0; border-color: #e2e8f0;">
+            <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar senha</button>
+            <button class="btn-danger-outline" onclick="logout()">Sair da conta</button>
+        </div>
+    </aside>
 
     <script>
-        var nivelNecessario = "any"
+        var nivelNecessario = "any";
     </script>
-
     <script src="/Front-End/script/autenticacao.js"></script>
     <script src="/Front-End/script/home.js"></script>
+    <script src="/Front-End/script/teste.js"></script>
 </body>
 </html>

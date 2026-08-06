@@ -1,0 +1,247 @@
+/* Força a presença do espaço da scrollbar para travar a posição do header */
+html {
+    overflow-y: scroll;
+}
+
+.teste-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.test-hero {
+    background: #0c3470;
+    border-radius: 16px;
+    padding: 36px 30px;
+    margin-bottom: 24px;
+    color: #fff;
+    text-align: center;
+}
+
+.test-hero h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.test-hero p {
+    font-size: 15px;
+    opacity: 0.85;
+}
+
+/* Card Principal do Quiz */
+.quiz-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(12, 52, 112, 0.05);
+}
+
+/* Barra de Progresso */
+.progress-container {
+    margin-bottom: 28px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7a90;
+    margin-bottom: 8px;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #0c3470;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* Perguntas e Respostas */
+.question-box h2 {
+    font-size: 20px;
+    color: #0c3470;
+    margin-bottom: 24px;
+}
+
+.answers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.answer-btn {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 15px;
+    color: #1e2a3b;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.answer-btn:hover {
+    border-color: #0c3470;
+    background: #f0f4fa;
+}
+
+.answer-btn.selected {
+    border-color: #0c3470;
+    background: #e8eef7;
+    color: #0c3470;
+    font-weight: 600;
+}
+
+/* Ações */
+.quiz-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    gap: 12px;
+}
+
+.btn-primary-quiz {
+    background: #0c3470;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-primary-quiz:hover {
+    background: #1a4a8a;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #1e2a3b;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+/* Resultados */
+.curso-vencedor {
+    text-align: center;
+    padding: 20px 10px;
+}
+
+.vencedor-icon {
+    font-size: 48px;
+    color: #0c3470;
+    margin-bottom: 16px;
+}
+
+.curso-vencedor h2 {
+    font-size: 16px;
+    color: #6b7a90;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.curso-vencedor h1 {
+    font-size: 28px;
+    color: #0c3470;
+    margin: 8px 0;
+}
+
+.vencedor-descricao {
+    font-size: 15px;
+    color: #475569;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 32px 0;
+}
+
+/* Ranking */
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+.ranking-item.destaque {
+    background: #e8eef7;
+    border: 1px solid #b6ceec;
+}
+
+.ranking-posicao {
+    font-weight: 700;
+    color: #0c3470;
+    width: 24px;
+}
+
+.ranking-info {
+    flex: 1;
+}
+
+.ranking-nome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.ranking-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ranking-fill {
+    height: 100%;
+    background: #0c3470;
+}
+
+.ranking-pontos {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7a90;
+}
+
+.result-actions {
+    margin-top: 32px;
+    text-align: center;
+}
