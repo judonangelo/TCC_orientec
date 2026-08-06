@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "API TCC Oriente - Sistema de Cursos",
+    "title": "API TCC Orientec - Sistema de Cursos",
     "description": "API para cadastro de usuários, login JWT, gerenciamento de cursos e relatórios administrativos.",
     "version": "1.0.0",
     "contact": {

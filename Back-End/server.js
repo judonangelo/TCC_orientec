@@ -161,7 +161,7 @@ server.get("/cursos/:id", async (req, res) => {
 });
 
 
-// Rota de criação de curso (POST) 
+// Rota de criação de curso
 server.post("/cursos", verificarAdmin, async (req, res) => {
   try {
     const { nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil } = req.body;
@@ -187,7 +187,7 @@ server.post("/cursos", verificarAdmin, async (req, res) => {
   }
 });
 
-// Rota de atualização de curso (PUT)
+// Rota de atualização de curso 
 server.put("/cursos/:id", verificarAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -234,6 +234,14 @@ server.delete("/cursos/:id", verificarAdmin, async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao excluir curso" });
   }
 });
+
+
+
+
+
+
+
+
 
 // ─── Administrador ─────────────────────────────────────────────────────────
 
