@@ -50,7 +50,7 @@ const verificarAdmin = (req, res, next) => {
 
 // ─── LOGINS ────────────────────────────────────────────────────────────────
 
-server.post("/cadastro", async (req, res) => {
+server.post("/cadastro", async (req, res) => {  
   const { email, senha, nome, cpf } = req.body;
   try {
     const [conferir] = await pool.execute(`SELECT email FROM usuarios WHERE email = ?`, [email]);

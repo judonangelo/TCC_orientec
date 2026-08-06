@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS `cursos` (
 DELETE FROM `cursos`;
 INSERT INTO `cursos` (`id`, `nome`, `vagas`, `status`, `duracao`, `descricao`, `area`, `carga_horaria`, `salario`, `resumo`, `mercado`, `perfil`) VALUES
 	(1, 'Desenvolvimento de Sistemas', 64, 'ativo', 4, 'Mergulhe no universo da programação e crie sites, aplicativos e softwares que transformam o dia a dia das pessoas. Você aprenderá lógica de programação, linguagens como JavaScript, Python, bancos de dados e metodologias ágeis. O curso estimula o raciocínio lógico e a resolução criativa de problemas, capacitando você a desenvolver sistemas completos, do front-end ao back-end. Prepare-se para o mercado de tecnologia, um dos que mais crescem no mundo.', 'Desenvolvedor Web, Mobile, Backend, Analista de Sistemas, Suporte Técnico.', 1200, 'R$ 2.500 a R$ 6.000', 'Crie sistemas web, mobile e desktop. Aprenda programação, banco de dados e desenvolvimento ágil.', 'Alta demanda em empresas de tecnologia, startups e setores digitais. Pode atuar como desenvolvedor web, mobile, backend ou analista de sistemas, com boas oportunidades de crescimento.', 'Pessoa com interesse em tecnologia, lógica e resolução de problemas. Gosta de aprender coisas novas, trabalhar com computadores e criar soluções digitais.'),
-	(2, 'Química', 32, 'ativo', 4, 'Explore o fascinante mundo das transformações químicas e suas aplicações industriais e científicas. Você aprenderá técnicas de análise laboratorial, controle de qualidade, química orgânica e inorgânica, além de boas práticas de laboratório. O curso une teoria e experimentação, desenvolvendo sua capacidade de observação, precisão e pensamento crítico. Com essa formação, poderá atuar em indústrias farmacêuticas, alimentícias, cosméticas e institutos de pesquisa.', 'Técnico Químico, Laboratorista, Controle de Qualidade', 1200, 'R$ 2.200 a R$ 4.500', 'Atue em laboratórios, indústrias e controle de qualidade. Análises químicas e processos industriais.', 'Atuação em indústrias químicas, farmacêuticas, alimentícias e laboratórios. Pode trabalhar com controle de qualidade, análises químicas e processos industriais.', 'Pessoa curiosa, detalhista e interessada em experimentos e ciência. Tem paciência para análises e gosta de entender como as coisas funcionam.'),
 	(3, 'Administração', 32, 'ativo', 4, 'Desenvolva uma visão estratégica de negócios e aprenda a gerenciar recursos, pessoas e processos com eficiência. O curso aborda finanças, marketing, recursos humanos, logística e empreendedorismo, sempre com foco na tomada de decisão. Por meio de estudos de caso e projetos práticos, você exercitará liderança, comunicação e planejamento. Ao final, estará pronto para atuar em empresas de qualquer porte ou abrir seu próprio negócio com confiança.', 'Assistente Administrativo, Supervisor, Empreendedor', 1200, 'R$ 2.000 a R$ 4.000', 'Gestão de empresas, finanças, marketing e recursos humanos. Torne-se um gestor de sucesso.', 'Amplo mercado em empresas de todos os setores. Pode atuar em áreas como financeiro, recursos humanos, marketing e gestão empresarial.', 'Pessoa comunicativa, organizada e com interesse em gestão e negócios. Gosta de liderar, tomar decisões e trabalhar com pessoas.'),
 	(4, 'Logística', 32, 'ativo', 4, 'Descubra como os produtos chegam até você e torne-se um especialista em planejar, executar e controlar cadeias de suprimentos. Você aprenderá sobre gestão de estoques, modais de transporte, distribuição, compras e custos logísticos. O curso enfatiza a organização, a visão sistêmica e a resolução de problemas reais do mercado. Com essa formação, você estará apto a atuar em transportadoras, centros de distribuição, indústrias e comércio eletrônico.', 'Coordenador de Logística, Analista de Supply Chain, Transportes', 1200, 'R$ 2.200 a R$ 4.800', 'Gerencie cadeias de suprimentos, transportes e armazenagem. Otimize processos logísticos.', 'Alta demanda em centros de distribuição, transportadoras e indústrias. Atua no controle de estoque, transporte, cadeia de suprimentos e planejamento logístico.', 'Pessoa organizada, prática e que gosta de planejamento. Tem interesse em processos, transporte e organização de sistemas.'),
 	(5, 'Eletroeletrônica', 32, 'ativo', 4, 'Aprenda a dominar circuitos elétricos, eletrônica analógica e digital, máquinas elétricas e sistemas de automação. Você desenvolverá habilidades para instalar, manter e reparar equipamentos industriais, painéis de comando e sistemas de energia. O curso une teoria e prática em laboratórios equipados, preparando você para atuar em indústrias, concessionárias de energia e empresas de manutenção. Com foco em tecnologia limpa e eficiência energética, você sairá apto a projetar soluções inteligentes p', 'Técnico em Eletrônica, Automação, Manutenção Industrial', 1200, 'R$ 2.500 a R$ 5.500', 'Projete e mantenha circuitos elétricos, sistemas eletrônicos e automação industrial.', 'Atuação em indústrias, manutenção industrial e automação. Pode trabalhar com instalação, manutenção de equipamentos e sistemas elétricos.', 'Pessoa prática, técnica e interessada em eletricidade e equipamentos. Gosta de montar, consertar e entender sistemas eletrônicos.');
@@ -75,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `data` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `cpf` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- Copiando dados para a tabela tcc.usuarios: ~23 rows (aproximadamente)
 DELETE FROM `usuarios`;
@@ -84,7 +83,7 @@ INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `email`, `senha`, `nivel`, `data`) 
 	(19, 'João Silva', '12345678901', 'joao.silva@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
 	(20, 'Maria Oliveira', '12345678902', 'maria.oliveira@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(21, 'Pedro Santos', '12345678903', 'pedro.santos@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
-	(22, 'Ana Costa', '12345678904', 'ana.costa@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
+	(22, 'Ana Costa', '12345678904', 'ana.costa@email.com', '123456', 'aluno', '2026-08-06 12:05:59'),
 	(23, 'Lucas Ferreira', '12345678905', 'lucas.ferreira@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(24, 'Juliana Lima', '12345678906', 'juliana.lima@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(25, 'Carlos Souza', '12345678907', 'carlos.souza@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
@@ -96,13 +95,13 @@ INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `email`, `senha`, `nivel`, `data`) 
 	(31, 'Diego Carvalho', '12345678913', 'diego.carvalho@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
 	(32, 'Larissa Mendes', '12345678914', 'larissa.mendes@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(33, 'Felipe Barbosa', '12345678915', 'felipe.barbosa@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
-	(34, 'Amanda Nunes', '12345678916', 'amanda.nunes@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(35, 'Gustavo Araújo', '12345678917', 'gustavo.araujo@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(36, 'Beatriz Fernandes', '12345678918', 'beatriz.fernandes@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(37, 'Thiago Moreira', '12345678919', 'thiago.moreira@email.com', '123456', 'admin', '2026-05-12 16:49:05'),
 	(38, 'Renata Teixeira', '12345678920', 'renata.teixeira@email.com', '123456', 'aluno', '2026-05-12 16:49:05'),
 	(39, 'Julia Donangelo Alves Carneiro', '80092198007', 'julia@gmail.com', '$2b$10$0LDEdC2z2gCWbVr0EjJFueR1cnkWFIBSBAEFBu4TcvIFgzRwUg0Sa', 'aluno', '2026-05-12 18:10:19'),
-	(43, 'Testador', '31941556019', 'testador@gmail.com', '$2b$10$C1dJtJUnbQXoxfQxDugpUOUf11mRzih1JtUtzrdNHFrkr9SNEaBwG', 'admin', '2026-07-30 11:44:49');
+	(43, 'Testador', '31941556019', 'testador@gmail.com', '$2b$10$C1dJtJUnbQXoxfQxDugpUOUf11mRzih1JtUtzrdNHFrkr9SNEaBwG', 'admin', '2026-07-30 11:44:49'),
+	(44, 'Gabriel Gouvea', '42411155867', 'gabriel@gmail.com', '$2b$10$hMqNRNDXLvTMWb9Thy7I8eK.Gsg8mTY6ClVM02PNowhp4wd5IpYTW', 'aluno', '2026-08-06 11:46:59');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
