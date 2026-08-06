@@ -4,7 +4,7 @@ const cors = require('cors')
 const server = express()
 server.use(cors())
 server.use(express.json())
-const pool = require('./db.js') 
+const pool = require('./db.js')
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./swagger.json')
 const api_chave = process.env.API_CHAVE;
@@ -50,16 +50,22 @@ const verificarAdmin = (req, res, next) => {
 
 // ─── LOGINS ────────────────────────────────────────────────────────────────
 
-server.post("/cadastro", async (req, res) => {  
+server.post("/cadastro", async (req, res) => {
   const { email, senha, nome, cpf } = req.body;
   try {
+
+    const SoNome = /^[A-Za-zÀ-ÿ\s]+$/;
+    if (!SoNome.test(nome.trim())) {
+      return res.status(400).json({ mensagem: "O nome deve conter apenas letras." });
+    }
+
     const [conferir] = await pool.execute(`SELECT email FROM usuarios WHERE email = ?`, [email]);
     if (conferir.length > 0) {
       return res.status(400).json({ mensagem: "Este e-mail já está cadastrado!" });
     }
 
-    if (cpf.length !== 11){
-      return res.status(400).json({mensagem: "CPF invá  lido"})
+    if (cpf.length !== 11) {
+      return res.status(400).json({ mensagem: "CPF inválido" })
     }
 
     const senhaCriptografada = await bcrypt.hash(senha, 10);
