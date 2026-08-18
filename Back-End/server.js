@@ -242,8 +242,107 @@ server.delete("/cursos/:id", verificarAdmin, async (req, res) => {
 });
 
 
+// ─── Teste ─────────────────────────────────────────────────────────
 
+server.get('/perguntas', async (req, res) => {
+  try {
+    const [perguntas] = await pool.query('SELECT * FROM perguntas ORDER BY id ASC')
+    const [respostas] = await pool.query('SELECT * FROM respostas')
 
+    const resultado = perguntas.map(p => {
+      return {
+        id: p.id,
+        pergunta: p.texto,
+        respostas: respostas
+          .filter(r => r.pergunta_id === p.id)
+          .map(r => ({
+            id: r.id,
+            texto: r.texto,
+            pesos: typeof r.pesos === 'string' ? JSON.parse(r.pesos) : r.pesos
+          }))
+      }
+    })
+
+    res.json(resultado)
+  } catch (error) {
+    res.status(500).json({ mensagem: 'Erro ao buscar perguntas' })
+  }
+})
+
+server.post('/perguntas', verificarAdmin, async (req, res) => {
+  const connection = await pool.getConnection()
+  try {
+    const { pergunta, respostas } = req.body
+
+    if (!pergunta || !respostas || !Array.isArray(respostas) || respostas.length === 0) {
+      return res.status(400).json({ mensagem: 'Pergunta e respostas sao obrigatorias' })
+    }
+
+    await connection.beginTransaction()
+
+    const [perguntaResult] = await connection.query(
+      'INSERT INTO perguntas (texto) VALUES (?)',
+      [pergunta]
+    )
+    const perguntaId = perguntaResult.insertId
+
+    for (const resp of respostas) {
+      await connection.query(
+        'INSERT INTO respostas (pergunta_id, texto, pesos) VALUES (?, ?, ?)',
+        [perguntaId, resp.texto, JSON.stringify(resp.pesos)]
+      )
+    }
+
+    await connection.commit()
+    res.status(201).json({ mensagem: 'Pergunta cadastrada com sucesso', id: perguntaId })
+  } catch (error) {
+    await connection.rollback()
+    res.status(500).json({ mensagem: 'Erro ao cadastrar pergunta' })
+  } finally {
+    connection.release()
+  }
+})
+
+server.put('/perguntas/:id', verificarAdmin, async (req, res) => {
+  const { id } = req.params
+  const { pergunta, respostas } = req.body
+
+  const connection = await pool.getConnection()
+  try {
+    await connection.beginTransaction()
+
+    await connection.query('UPDATE perguntas SET texto = ? WHERE id = ?', [pergunta, id])
+    await connection.query('DELETE FROM respostas WHERE pergunta_id = ?', [id])
+
+    for (const resp of respostas) {
+      await connection.query(
+        'INSERT INTO respostas (pergunta_id, texto, pesos) VALUES (?, ?, ?)',
+        [id, resp.texto, JSON.stringify(resp.pesos)]
+      )
+    }
+
+    await connection.commit()
+    res.json({ mensagem: 'Pergunta atualizada com sucesso' })
+  } catch (error) {
+    await connection.rollback()
+    res.status(500).json({ mensagem: 'Erro ao atualizar pergunta' })
+  } finally {
+    connection.release()
+  }
+})
+
+server.delete('/perguntas/:id', verificarAdmin, async (req, res) => {
+  const { id } = req.params
+  try {
+    const [resultado] = await pool.query('DELETE FROM perguntas WHERE id = ?', [id])
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({ mensagem: 'Pergunta nao encontrada' })
+    }
+    res.json({ mensagem: 'Pergunta excluida com sucesso' })
+  } catch (error) {
+    res.status(500).json({ mensagem: 'Erro ao excluir pergunta' })
+  }
+})
 
 
 

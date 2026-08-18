@@ -30,6 +30,7 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
 
         if (section === 'relatorios') carregarRelatorios();
         if (section === 'cursos') carregarCursos();
+        if (section === 'teste') carregarPerguntas()
     });
 });
 
@@ -353,6 +354,7 @@ if (btnConfirmar) {
     btnConfirmar.addEventListener('click', async function () {
         if (tipoExclusao === 'usuario') excluirUsuario(itemParaExcluir);
         else if (tipoExclusao === 'curso') await excluirCurso(itemParaExcluir);
+        else if (tipoExclusao === 'pergunta') await excluirPergunta(itemParaExcluir)
         fecharModalConfirmacao();
     });
 }
@@ -466,10 +468,188 @@ function logout() {
 // ============================================
 carregarUsuarios();
 carregarCursos();
-carregarRelatorios();
 
 window.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal')) {
         e.target.style.display = 'none';
     }
 });
+
+// parte do teste
+
+const CHAVES_CURSOS = [
+    { chave: 'dev', nome: 'Dev' },
+    { chave: 'quimica', nome: 'Química' },
+    { chave: 'logistica', nome: 'Logística' },
+    { chave: 'eletronica', nome: 'Eletrônica' },
+    { chave: 'adm', nome: 'ADM' }
+]
+
+async function carregarPerguntas() {
+    const tbody = document.getElementById('perguntas-table-body')
+    if (!tbody) return
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>'
+
+    try {
+        const response = await fetch(`${API_BASE}/perguntas`, { headers: authHeaders() })
+        if (!response.ok) throw new Error()
+        const perguntas = await response.json()
+
+        tbody.innerHTML = ''
+        if (perguntas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhuma pergunta cadastrada.</td></tr>'
+            return
+        }
+
+        perguntas.forEach(p => {
+            const tr = document.createElement('tr')
+            tr.innerHTML = `
+        <td>${p.id}</td>
+        <td>${p.pergunta}</td>
+        <td>${p.respostas ? p.respostas.length : 0} opções</td>
+        <td class="acoes">
+          <button class="btn-editar" onclick="editarPergunta(${p.id})">Editar</button>
+          <button class="btn-excluir" onclick="confirmarExclusaoPergunta(${p.id})">Excluir</button>
+        </td>
+      `
+            tbody.appendChild(tr)
+        })
+    } catch (error) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao carregar perguntas.</td></tr>'
+    }
+}
+
+function renderizarFormularioRespostas(respostasExistentes = []) {
+    const container = document.getElementById('container-respostas')
+    container.innerHTML = ''
+
+    const numOpcoes = respostasExistentes.length > 0 ? respostasExistentes.length : 5
+
+    for (let i = 0; i < numOpcoes; i++) {
+        const resp = respostasExistentes[i] || { texto: '', pesos: { dev: 1, quimica: 1, logistica: 1, eletronica: 1, adm: 1 } }
+
+        const divBox = document.createElement('div')
+        divBox.style.cssText = 'border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #f9f9f9;'
+
+        let htmlPesos = ''
+        CHAVES_CURSOS.forEach(c => {
+            const val = (resp.pesos && resp.pesos[c.chave] !== undefined) ? resp.pesos[c.chave] : 1
+            htmlPesos += `
+        <label style="font-size:11px; margin-right:4px; display:inline-block; margin-top:3px;">
+          ${c.nome}: 
+          <input type="number" min="0" max="3" class="input-peso" data-curso="${c.chave}" value="${val}" style="width: 38px; padding:2px;">
+        </label>
+      `
+        })
+
+        divBox.innerHTML = `
+      <div class="form-group" style="margin-bottom: 5px;">
+        <label><b>Opção ${i + 1}:</b></label>
+        <input type="text" class="input-resposta-texto" value="${resp.texto}" placeholder="Texto da alternativa" required style="width:100%;">
+      </div>
+      <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center;">
+        <span style="font-size:11px; font-weight:bold; width: 100%;">Pesos:</span> ${htmlPesos}
+      </div>
+    `
+        container.appendChild(divBox)
+    }
+}
+
+function abrirModalPergunta(pergunta = null) {
+    document.getElementById('modal-pergunta').style.display = 'flex'
+    if (pergunta) {
+        document.getElementById('modal-pergunta-titulo').textContent = 'Editar Pergunta'
+        document.getElementById('pergunta-id').value = pergunta.id
+        document.getElementById('pergunta-texto').value = pergunta.pergunta
+        renderizarFormularioRespostas(pergunta.respostas)
+    } else {
+        document.getElementById('modal-pergunta-titulo').textContent = 'Nova Pergunta'
+        document.getElementById('form-pergunta').reset()
+        document.getElementById('pergunta-id').value = ''
+        renderizarFormularioRespostas()
+    }
+}
+
+function fecharModalPergunta() {
+    document.getElementById('modal-pergunta').style.display = 'none'
+}
+
+async function editarPergunta(id) {
+    try {
+        const response = await fetch(`${API_BASE}/perguntas`, { headers: authHeaders() })
+        const perguntas = await response.json()
+        const pergunta = perguntas.find(p => p.id === id)
+        if (pergunta) abrirModalPergunta(pergunta)
+    } catch (error) {
+        mostrarMensagem('teste-mensagem', 'Erro ao carregar pergunta para edição.', 'erro')
+    }
+}
+
+function confirmarExclusaoPergunta(id) {
+    itemParaExcluir = id
+    tipoExclusao = 'pergunta'
+    document.getElementById('modal-confirmacao').style.display = 'flex'
+}
+
+async function excluirPergunta(id) {
+    try {
+        const response = await fetch(`${API_BASE}/perguntas/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        })
+        if (!response.ok) throw new Error()
+        await carregarPerguntas()
+        mostrarMensagem('teste-mensagem', 'Pergunta excluída com sucesso!', 'sucesso')
+    } catch (error) {
+        mostrarMensagem('teste-mensagem', 'Erro ao excluir pergunta.', 'erro')
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const formPergunta = document.getElementById('form-pergunta')
+    if (formPergunta) {
+        formPergunta.addEventListener('submit', async function (e) {
+            e.preventDefault()
+            const id = document.getElementById('pergunta-id').value
+            const textoPergunta = document.getElementById('pergunta-texto').value.trim()
+
+            const blocosRespostas = document.querySelectorAll('#container-respostas > div')
+            const respostas = []
+
+            blocosRespostas.forEach(bloco => {
+                const texto = bloco.querySelector('.input-resposta-texto').value.trim()
+                const inputsPesos = bloco.querySelectorAll('.input-peso')
+                const pesos = {}
+
+                inputsPesos.forEach(inp => {
+                    pesos[inp.dataset.curso] = parseInt(inp.value) || 0
+                })
+
+                if (texto) {
+                    respostas.push({ texto, pesos })
+                }
+            })
+
+            const payload = { pergunta: textoPergunta, respostas }
+
+            try {
+                const url = id ? `${API_BASE}/perguntas/${id}` : `${API_BASE}/perguntas`
+                const method = id ? 'PUT' : 'POST'
+
+                const response = await fetch(url, {
+                    method,
+                    headers: authHeaders(),
+                    body: JSON.stringify(payload)
+                })
+
+                if (!response.ok) throw new Error()
+
+                await carregarPerguntas()
+                fecharModalPergunta()
+                mostrarMensagem('teste-mensagem', id ? 'Pergunta atualizada!' : 'Pergunta cadastrada!', 'sucesso')
+            } catch (error) {
+                mostrarMensagem('teste-mensagem', 'Erro ao salvar pergunta.', 'erro')
+            }
+        })
+    }
+})

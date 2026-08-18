@@ -31,6 +31,7 @@
                 <ul>
                     <li><a href="#" class="sidebar-link active" data-section="usuarios">Usuários</a></li>
                     <li><a href="#" class="sidebar-link" data-section="cursos">Cursos</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="teste">Teste Vocacional</a></li>
                     <li><a href="#" class="sidebar-link" data-section="relatorios">Relatórios</a></li>
                 </ul>
             </nav>
@@ -43,12 +44,8 @@
                 </div>
 
                 <div class="search-box">
-                    <input 
-                        type="text" 
-                        id="pesquisa-nome" 
-                        placeholder="Pesquisar usuário                                                 🔍︎​" 
-
-                    >
+                    <input type="text" id="pesquisa-nome"
+                        placeholder="Pesquisar usuário                                                 🔍︎​">
                 </div>
 
                 <select id="filtro-tipo-usuario" style="margin-bottom: 20px; width: 100%; 
@@ -124,6 +121,27 @@
                 </div>
             </section>
 
+            <section id="teste-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gerenciamento de Perguntas do Teste</h2>
+                    <button class="btn-primary" onclick="abrirModalPergunta()">+ Nova Pergunta</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pergunta</th>
+                                <th>Qtd. Respostas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="perguntas-table-body"></tbody>
+                    </table>
+                </div>
+                <div id="teste-mensagem" class="mensagem"></div>
+            </section>
+
         </main>
     </div>
 
@@ -160,7 +178,7 @@
                 <input type="hidden" id="curso-id">
 
                 <div class="modal-campos-grid">
-                    
+
                     <div class="form-group">
                         <label>Nome do Curso</label>
                         <input type="text" id="curso-nome" placeholder="Digite o nome do curso" required>
@@ -170,7 +188,7 @@
                         <input type="number" id="curso-duracao" placeholder="Duração em semestres" required min="1">
                     </div>
 
-                    
+
                     <div class="form-group">
                         <label>Número de Vagas</label>
                         <input type="number" id="curso-vagas" placeholder="Número de vagas" required min="1">
@@ -179,7 +197,7 @@
                         <label>Carga Horária (horas)</label>
                         <input type="number" id="curso-carga-horaria" placeholder="Ex: 1200" min="1">
                     </div>
-                   
+
                     <div class="form-group">
                         <label>Salário Médio</label>
                         <input type="text" id="curso-salario" placeholder="Ex: R$ 2.500 a R$ 5.500">
@@ -216,7 +234,7 @@
                         <textarea id="curso-perfil" rows="3"
                             placeholder="Características desejáveis do aluno"></textarea>
                     </div>
-                </div> 
+                </div>
 
                 <div class="modal-buttons">
                     <button type="submit" class="btn-primary">Salvar</button>
@@ -233,6 +251,29 @@
                 <button class="btn-excluir" id="btn-confirmar-exclusao">Excluir</button>
                 <button class="btn-cancelar" onclick="fecharModalConfirmacao()">Cancelar</button>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-pergunta" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <h3 id="modal-pergunta-titulo">Nova Pergunta</h3>
+            <form id="form-pergunta">
+                <input type="hidden" id="pergunta-id">
+
+                <div class="form-group campo-largo">
+                    <label>Enunciado da Pergunta</label>
+                    <input type="text" id="pergunta-texto" placeholder="Ex: Como você prefere resolver problemas?"
+                        required>
+                </div>
+
+                <h4>Alternativas de Resposta e Pesos (0 a 3)</h4>
+                <div id="container-respostas"></div>
+
+                <div class="modal-buttons" style="margin-top: 20px;">
+                    <button type="submit" class="btn-primary">Salvar Pergunta</button>
+                    <button type="button" class="btn-cancelar" onclick="fecharModalPergunta()">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 

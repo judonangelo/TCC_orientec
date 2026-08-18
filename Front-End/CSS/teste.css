@@ -1,4 +1,3 @@
-/* Força a presença do espaço da scrollbar para travar a posição do header */
 html {
     overflow-y: scroll;
 }
@@ -100,8 +99,6 @@ html {
 .answer-btn.selected {
     border-color: #0c3470;
     background: #e8eef7;
-    color: #0c3470;
-    font-weight: 600;
 }
 
 /* Ações */
@@ -110,6 +107,14 @@ html {
     justify-content: space-between;
     margin-top: 32px;
     gap: 12px;
+}
+
+.quiz-actions .btn-secondary {
+    margin-right: auto;
+}
+
+.quiz-actions .btn-primary-quiz {
+    margin-left: auto;
 }
 
 .btn-primary-quiz {

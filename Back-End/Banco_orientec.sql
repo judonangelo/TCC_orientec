@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `cursos` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- Copiando dados para a tabela tcc.cursos: ~4 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.cursos: ~5 rows (aproximadamente)
 DELETE FROM `cursos`;
 INSERT INTO `cursos` (`id`, `nome`, `vagas`, `status`, `duracao`, `descricao`, `area`, `carga_horaria`, `salario`, `resumo`, `mercado`, `perfil`) VALUES
 	(1, 'Desenvolvimento de Sistemas', 64, 'ativo', 4, 'Mergulhe no universo da programação e crie sites, aplicativos e softwares que transformam o dia a dia das pessoas. Você aprenderá lógica de programação, linguagens como JavaScript, Python, bancos de dados e metodologias ágeis. O curso estimula o raciocínio lógico e a resolução criativa de problemas, capacitando você a desenvolver sistemas completos, do front-end ao back-end. Prepare-se para o mercado de tecnologia, um dos que mais crescem no mundo.', 'Desenvolvedor Web, Mobile, Backend, Analista de Sistemas, Suporte Técnico.', 1200, 'R$ 2.500 a R$ 6.000', 'Crie sistemas web, mobile e desktop. Aprenda programação, banco de dados e desenvolvimento ágil.', 'Alta demanda em empresas de tecnologia, startups e setores digitais. Pode atuar como desenvolvedor web, mobile, backend ou analista de sistemas, com boas oportunidades de crescimento.', 'Pessoa com interesse em tecnologia, lógica e resolução de problemas. Gosta de aprender coisas novas, trabalhar com computadores e criar soluções digitais.'),
@@ -47,21 +47,63 @@ INSERT INTO `cursos` (`id`, `nome`, `vagas`, `status`, `duracao`, `descricao`, `
 	(4, 'Logística', 32, 'ativo', 4, 'Descubra como os produtos chegam até você e torne-se um especialista em planejar, executar e controlar cadeias de suprimentos. Você aprenderá sobre gestão de estoques, modais de transporte, distribuição, compras e custos logísticos. O curso enfatiza a organização, a visão sistêmica e a resolução de problemas reais do mercado. Com essa formação, você estará apto a atuar em transportadoras, centros de distribuição, indústrias e comércio eletrônico.', 'Coordenador de Logística, Analista de Supply Chain, Transportes', 1200, 'R$ 2.200 a R$ 4.800', 'Gerencie cadeias de suprimentos, transportes e armazenagem. Otimize processos logísticos.', 'Alta demanda em centros de distribuição, transportadoras e indústrias. Atua no controle de estoque, transporte, cadeia de suprimentos e planejamento logístico.', 'Pessoa organizada, prática e que gosta de planejamento. Tem interesse em processos, transporte e organização de sistemas.'),
 	(5, 'Eletroeletrônica', 32, 'ativo', 4, 'Aprenda a dominar circuitos elétricos, eletrônica analógica e digital, máquinas elétricas e sistemas de automação. Você desenvolverá habilidades para instalar, manter e reparar equipamentos industriais, painéis de comando e sistemas de energia. O curso une teoria e prática em laboratórios equipados, preparando você para atuar em indústrias, concessionárias de energia e empresas de manutenção. Com foco em tecnologia limpa e eficiência energética, você sairá apto a projetar soluções inteligentes p', 'Técnico em Eletrônica, Automação, Manutenção Industrial', 1200, 'R$ 2.500 a R$ 5.500', 'Projete e mantenha circuitos elétricos, sistemas eletrônicos e automação industrial.', 'Atuação em indústrias, manutenção industrial e automação. Pode trabalhar com instalação, manutenção de equipamentos e sistemas elétricos.', 'Pessoa prática, técnica e interessada em eletricidade e equipamentos. Gosta de montar, consertar e entender sistemas eletrônicos.');
 
+-- Copiando estrutura para tabela tcc.perguntas
+DROP TABLE IF EXISTS `perguntas`;
+CREATE TABLE IF NOT EXISTS `perguntas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `texto` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- Copiando dados para a tabela tcc.perguntas: ~5 rows (aproximadamente)
+DELETE FROM `perguntas`;
+INSERT INTO `perguntas` (`id`, `texto`) VALUES
+	(1, 'Quando algo não funciona como deveria, qual caminho você tende a seguir primeiro?'),
+	(2, 'Pensando em uma rotina que dificilmente ficaria entediante para você, qual cenário parece mais interessante?'),
+	(3, 'Qual tipo de desafio escolar provavelmente faria você perder a noção do tempo?'),
+	(4, 'Quando você recebe uma tarefa nova e ninguém explica exatamente como fazê-la, qual comportamento mais combina com você?'),
+	(5, 'Você tem algumas horas livres e começa algo apenas por curiosidade. Qual situação provavelmente despertaria mais seu interesse?');
+
 -- Copiando estrutura para tabela tcc.respostas
 DROP TABLE IF EXISTS `respostas`;
 CREATE TABLE IF NOT EXISTS `respostas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_usuario` int(11) NOT NULL,
-  `data` datetime NOT NULL,
-  `pontos` int(11) NOT NULL,
-  `curso` varchar(50) NOT NULL,
+  `pergunta_id` int(11) NOT NULL,
+  `texto` text NOT NULL,
+  `pesos` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`pesos`)),
   PRIMARY KEY (`id`),
-  KEY `FK__usuarios` (`id_usuario`),
-  CONSTRAINT `FK__usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `pergunta_id` (`pergunta_id`),
+  CONSTRAINT `respostas_ibfk_1` FOREIGN KEY (`pergunta_id`) REFERENCES `perguntas` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- Copiando dados para a tabela tcc.respostas: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.respostas: ~25 rows (aproximadamente)
 DELETE FROM `respostas`;
+INSERT INTO `respostas` (`id`, `pergunta_id`, `texto`, `pesos`) VALUES
+	(91, 1, 'Tentar entender o que mudou até encontrar a causa', '{"eletronica": 2, "quimica": 1, "logistica": 2, "adm": 1, "dev": 3}'),
+	(92, 1, 'Observar o que aconteceu e testar possibilidades diferentes', '{"eletronica": 2, "logistica": 1, "dev": 1, "adm": 1, "quimica": 3}'),
+	(93, 1, 'Reunir as pessoas envolvidas e tentar chegar a um acordo', '{"eletronica": 1, "quimica": 1, "logistica": 2, "dev": 1, "adm": 3}'),
+	(94, 1, 'Verificar cada etapa até descobrir onde está o problema', '{"quimica": 1, "logistica": 3, "eletronica": 1, "adm": 2, "dev": 1}'),
+	(95, 1, 'Abrir, observar e tentar entender como as partes trabalham juntas', '{"adm": 1, "eletronica": 3, "logistica": 1, "dev": 2, "quimica": 2}'),
+	(96, 2, 'Um lugar onde diferentes situações precisam ser analisadas antes de tomar decisões', '{"logistica": 1, "quimica": 3, "dev": 1, "eletronica": 2, "adm": 1}'),
+	(97, 2, 'Um ambiente movimentado, onde várias coisas precisam acontecer na ordem certa', '{"quimica": 1, "eletronica": 1, "dev": 1, "logistica": 3, "adm": 2}'),
+	(98, 2, 'Um espaço em que ideias são discutidas e decisões são tomadas em conjunto', '{"adm": 3, "dev": 1, "quimica": 1, "logistica": 2, "eletronica": 1}'),
+	(99, 2, 'Um local em que você possa observar, modificar e testar diferentes possibilidades', '{"adm": 1, "eletronica": 3, "dev": 1, "logistica": 1, "quimica": 2}'),
+	(100, 2, 'Um ambiente tranquilo para se concentrar em desafios que exigem raciocínio', '{"adm": 2, "logistica": 2, "quimica": 1, "dev": 3, "eletronica": 1}'),
+	(101, 3, 'Encontrar uma explicação para algo que inicialmente parece não fazer sentido', '{"eletronica": 2, "quimica": 3, "dev": 1, "logistica": 1, "adm": 1}'),
+	(102, 3, 'Descobrir uma sequência ou estratégia para chegar a uma resposta', '{"logistica": 2, "eletronica": 2, "quimica": 2, "dev": 3, "adm": 1}'),
+	(103, 3, 'Analisar acontecimentos e entender como eles se relacionam', '{"dev": 1, "quimica": 1, "eletronica": 1, "logistica": 3, "adm": 2}'),
+	(104, 3, 'Defender uma ideia de forma que outras pessoas entendam seu ponto de vista', '{"eletronica": 1, "dev": 1, "logistica": 2, "quimica": 1, "adm": 3}'),
+	(105, 3, 'Entender por que determinado fenômeno acontece na prática', '{"logistica": 1, "adm": 1, "eletronica": 3, "quimica": 2, "dev": 2}'),
+	(106, 4, 'Faço perguntas, comparo informações e tento entender o contexto', '{"eletronica": 1, "logistica": 2, "adm": 3, "dev": 1, "quimica": 1}'),
+	(107, 4, 'Vou testando possibilidades até descobrir o que funciona', '{"adm": 1, "quimica": 3, "dev": 1, "logistica": 1, "eletronica": 2}'),
+	(108, 4, 'Organizo as etapas antes de começar para evitar retrabalho', '{"dev": 1, "eletronica": 1, "adm": 2, "quimica": 1, "logistica": 3}'),
+	(109, 4, 'Tento descobrir como as diferentes partes da tarefa se conectam', '{"eletronica": 3, "adm": 1, "logistica": 1, "quimica": 2, "dev": 2}'),
+	(110, 4, 'Analiso as informações disponíveis e procuro uma maneira mais eficiente de fazer', '{"dev": 3, "logistica": 2, "adm": 1, "eletronica": 2, "quimica": 2}'),
+	(111, 5, 'Tentar descobrir uma maneira melhor de organizar alguma coisa do cotidiano', '{"dev": 1, "eletronica": 1, "logistica": 3, "quimica": 1, "adm": 2}'),
+	(112, 5, 'Explorar uma ideia até conseguir entender como ela funciona', '{"logistica": 1, "eletronica": 1, "adm": 1, "quimica": 3, "dev": 1}'),
+	(113, 5, 'Encontrar uma solução para um desafio usando diferentes estratégias', '{"quimica": 1, "adm": 1, "dev": 3, "logistica": 1, "eletronica": 2}'),
+	(114, 5, 'Tentar descobrir por que algo apresenta determinado comportamento', '{"eletronica": 3, "quimica": 2, "dev": 2, "logistica": 1, "adm": 1}'),
+	(115, 5, 'Conversar com pessoas, trocar ideias e tentar aproximar opiniões diferentes', '{"logistica": 2, "quimica": 1, "dev": 1, "adm": 3, "eletronica": 1}');
 
 -- Copiando estrutura para tabela tcc.usuarios
 DROP TABLE IF EXISTS `usuarios`;
