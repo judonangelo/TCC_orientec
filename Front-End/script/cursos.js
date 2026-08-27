@@ -1,25 +1,25 @@
-        const API_BASE = "http://localhost:3000";
+const API_BASE = "http://localhost:3000";
 
-        async function carregarCursos() {
-            const grid = document.getElementById('cursos-grid');
+async function carregarCursos() {
+    const grid = document.getElementById('cursos-grid');
 
-            try {
-                const response = await fetch(`${API_BASE}/cursos`);
+    try {
+        const response = await fetch(`${API_BASE}/cursos`);
 
-                if (!response.ok) {
-                    throw new Error(`Erro ao buscar cursos: ${response.status}`);
-                }
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar cursos: ${response.status}`);
+        }
 
-                const cursos = await response.json();
+        const cursos = await response.json();
 
-                const cursosAtivos = cursos.filter(c => c.status === "ativo");
+        const cursosAtivos = cursos.filter(c => c.status === "ativo");
 
-                if (cursosAtivos.length === 0) {
-                    grid.innerHTML = '<p class="sem-cursos">Nenhum curso ativo no momento.</p>';
-                    return;
-                }
+        if (cursosAtivos.length === 0) {
+            grid.innerHTML = '<p class="sem-cursos">Nenhum curso ativo no momento.</p>';
+            return;
+        }
 
-                grid.innerHTML = cursosAtivos.map(curso => `
+        grid.innerHTML = cursosAtivos.map(curso => `
                     <div class="curso-card">
                         <h3>${curso.nome}</h3>
                         <p class="curso-desc">${curso.resumo}</p>
@@ -29,17 +29,17 @@
                     </div>
                 `).join('');
 
-                document.querySelectorAll('.btn-saiba-mais').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const id = btn.getAttribute('data-id');
-                        window.location.href = `saiba-mais.html?id=${id}`;
-                    });
-                });
+        document.querySelectorAll('.btn-saiba-mais').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                window.location.href = `saiba-mais.html?id=${id}`;
+            });
+        });
 
-            } catch (error) {
-                console.error(error);
-                grid.innerHTML = '<p class="sem-cursos">Erro ao carregar cursos. Tente novamente mais tarde.</p>';
-            }
-        }
+    } catch (error) {
+        console.error(error);
+        grid.innerHTML = '<p class="sem-cursos">Erro ao carregar cursos. Tente novamente mais tarde.</p>';
+    }
+}
 
-        carregarCursos();
+carregarCursos();

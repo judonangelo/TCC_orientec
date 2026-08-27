@@ -35,36 +35,6 @@
         <p>© 2026 Orientec - Todos os direitos reservados</p>
     </footer>
 
-    <!-- Overlay e Painel Lateral -->
-    <div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
-
-    <aside class="profile-panel" id="profilePanel">
-        <div class="panel-header">
-            <button class="panel-close" onclick="closePanel()">✕</button>
-            <div class="panel-avatar" id="panelInitials">??</div>
-            <div class="panel-user-name" id="panelName">Estudante X</div>
-            <div class="panel-user-email" id="panelEmail">estudante@email.com</div>
-        </div>
-        <div class="panel-body">
-            <div id="sectionInfo">
-                <p class="panel-section-title">Informações da Conta</p>
-                <div id="viewMode">
-                    <div class="info-field">
-                        <label>Nome completo</label>
-                        <span id="viewName">Estudante da Silva</span>
-                    </div>
-                    <div class="info-field">
-                        <label>E-mail</label>
-                        <span id="viewEmail">estudante@email.com</span>
-                    </div>
-                </div>
-            </div>
-            <hr style="margin: 24px 0; border-color: #e2e8f0;">
-            <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar
-                senha</button>
-            <button class="btn-danger-outline" onclick="logout()">Sair da conta</button>
-        </div>
-    </aside>
 
 
     <script>
@@ -72,8 +42,8 @@
     </script>
 
     <script src="/Front-End/script/autenticacao.js"></script>
+    <script src="/Front-End/script/perfil-components.js"></script>
     <script src="/Front-End/script/cursos.js"></script>
-    <script src="/Front-End/script/home.js"></script>
 </body>
 
 </html>

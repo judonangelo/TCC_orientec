@@ -373,6 +373,30 @@ a:hover {
     background: #fee2e2;
 }
 
+.panel-avatar {
+    cursor: pointer;
+    position: relative;
+    transition: filter 0.2s, transform 0.2s;
+}
+
+.panel-avatar:hover {
+    filter: brightness(0.85);
+    transform: scale(1.03);
+}
+
+.panel-avatar::after {
+    content: "📷";
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: #0c3470;
+    color: white;
+    font-size: 10px;
+    padding: 3px;
+    border-radius: 50%;
+    line-height: 1;
+}
+
 @media (max-width: 768px) {
     .profile-panel {
         width: 100vw;

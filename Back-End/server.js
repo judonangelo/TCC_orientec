@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const server = express()
 server.use(cors())
-server.use(express.json())
+server.use(express.json({ limit: '10mb' }))
 const pool = require('./db.js')
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./swagger.json')
@@ -109,7 +109,7 @@ server.post("/login", async (req, res) => {
   const { email, senha } = req.body;
   try {
     const [conferir] = await pool.execute(
-      `SELECT email, senha, nivel, nome FROM usuarios WHERE email = ?`, [email]
+      `SELECT email, senha, nivel, nome, foto FROM usuarios WHERE email = ?`, [email]
     );
 
     if (conferir.length === 0) {
@@ -132,8 +132,9 @@ server.post("/login", async (req, res) => {
     res.json({
       mensagem: "Acesso Liberado",
       token: token,
-      nivel: usuario.nivel,   //  importante para o front decidir o fluxo
-      nome: usuario.nome
+      nivel: usuario.nivel,
+      nome: usuario.nome,
+      foto: usuario.foto || null
     });
   } catch (error) {
     console.log(error);
@@ -203,7 +204,7 @@ server.put("/redefinir_senha_sem_email", async (req, res) => {
 
 
 
-// ─── CURSOS ───────────────────────────────────────────────────────────────────
+// ─── USUÁRIOS ───────────────────────────────────────────────────────────────────
 
 // GET /cursos → lista todos os cursos
 server.get("/cursos", async (req, res) => {
@@ -232,7 +233,6 @@ server.get("/cursos/:id", async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao buscar curso" });
   }
 });
-
 
 // Rota de criação de curso
 server.post("/cursos", verificarAdmin, async (req, res) => {
@@ -307,9 +307,6 @@ server.delete("/cursos/:id", verificarAdmin, async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao excluir curso" });
   }
 });
-
-
-// ─── Teste ─────────────────────────────────────────────────────────
 
 server.get('/perguntas', async (req, res) => {
   try {
@@ -411,6 +408,43 @@ server.delete('/perguntas/:id', verificarAdmin, async (req, res) => {
   }
 })
 
+// Buscar dados completos do perfil do usuário logado
+server.get("/perfil", verificarToken, async (req, res) => {
+  try {
+    const email = req.usuario.email;
+    const [usuarios] = await pool.execute(
+      `SELECT nome, email, foto FROM usuarios WHERE email = ?`,
+      [email]
+    );
+
+    if (usuarios.length === 0) {
+      return res.status(404).json({ mensagem: "Usuário não encontrado." });
+    }
+
+    res.json(usuarios[0]);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao carregar perfil." });
+  }
+});
+
+// Atualizar a foto do usuário logado
+server.put("/perfil/foto", verificarToken, async (req, res) => {
+  try {
+    const email = req.usuario.email;
+    const { foto } = req.body;
+
+    await pool.execute(
+      `UPDATE usuarios SET foto = ? WHERE email = ?`,
+      [foto || null, email]
+    );
+
+    res.json({ mensagem: "Foto atualizada com sucesso!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao salvar foto no banco de dados." });
+  }
+});
 
 
 
