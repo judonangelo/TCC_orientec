@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="/Front-End/CSS/teste.css">
     <link rel="icon" href="/Front-End/assets/Orientec-Borda.png" type="image/png">
 </head>
+
 <body>
 
     <header class="default-header">
@@ -29,7 +31,19 @@
             <p>Responda às perguntas abaixo com sinceridade para analisarmos seu perfil profissional.</p>
         </section>
 
-        <section id="quiz-container" class="quiz-card">
+        <section id="intro-container" class="quiz-card">
+            <div class="intro-box">
+                <h2>Como Funciona o Teste?</h2>
+                <p>
+                    Este teste vocacional foi desenvolvido para mapear suas afinidades e sugerir qual área técnica do
+                    SENAI mais se alinha ao seu perfil.
+                    Serão apresentadas perguntas simples sobre suas preferências e hábitos.
+                </p>
+                <button id="start-btn" class="btn-primary-quiz">Iniciar Teste</button>
+            </div>
+        </section>
+
+        <section id="quiz-container" class="quiz-card" style="display: none;">
             <div class="progress-container">
                 <div class="progress-info">
                     <span id="progress-text">Pergunta 1 de 10</span>
@@ -55,7 +69,7 @@
             <hr class="divider">
             <h3 style="color: #0c3470; margin-bottom: 12px;">Seu Desempenho por Área</h3>
             <div id="ranking-completo" class="ranking-list"></div>
-            
+
             <div class="result-actions">
                 <button id="restart-btn" class="btn-secondary">Refazer Teste</button>
             </div>
@@ -90,7 +104,8 @@
                 </div>
             </div>
             <hr style="margin: 24px 0; border-color: #e2e8f0;">
-            <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar senha</button>
+            <button class="btn-save" onclick="window.location.href='alterar_senha.html'" style="margin-top:12px;">Trocar
+                senha</button>
             <button class="btn-danger-outline" onclick="logout()">Sair da conta</button>
         </div>
     </aside>
@@ -102,4 +117,5 @@
     <script src="/Front-End/script/home.js"></script>
     <script src="/Front-End/script/teste.js"></script>
 </body>
+
 </html>

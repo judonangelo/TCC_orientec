@@ -4,10 +4,14 @@ let perguntaAtual = 0;
 let perguntas = [];
 let respostasSelecionadas = [];
 
-const questionElement = document.getElementById('question');
-const answersElement = document.getElementById('answers');
+// Elementos do DOM
+const introContainer = document.getElementById('intro-container');
 const quizContainer = document.getElementById('quiz-container');
 const resultContainer = document.getElementById('result-container');
+
+const startBtn = document.getElementById('start-btn');
+const questionElement = document.getElementById('question');
+const answersElement = document.getElementById('answers');
 const progressText = document.getElementById('progress-text');
 const progressBar = document.getElementById('progress-bar');
 const prevBtn = document.getElementById('prev-btn');
@@ -34,6 +38,8 @@ async function iniciarQuiz() {
   perguntaAtual = 0;
   respostasSelecionadas = [];
   
+  // Esconde a introdução e mostra o quiz
+  if (introContainer) introContainer.style.display = 'none';
   quizContainer.style.display = 'block';
   resultContainer.style.display = 'none';
 
@@ -70,7 +76,6 @@ function mostrarPergunta() {
     const button = document.createElement('button');
     button.className = 'answer-btn';
     
-    // Marca como selecionada caso o usuário já tenha marcado essa opção antes
     if (respostasSelecionadas[perguntaAtual] === index) {
       button.classList.add('selected');
     }
@@ -80,7 +85,6 @@ function mostrarPergunta() {
     answersElement.appendChild(button);
   });
 
-  // Atualiza visibilidade e estado dos botões
   if (prevBtn) {
     prevBtn.style.display = perguntaAtual === 0 ? 'none' : 'inline-block';
   }
@@ -93,7 +97,6 @@ function mostrarPergunta() {
 function selecionarOpcao(index) {
   respostasSelecionadas[perguntaAtual] = index;
   
-  // Atualiza borda de seleção nos botões
   const botoes = answersElement.querySelectorAll('.answer-btn');
   botoes.forEach((btn, idx) => {
     if (idx === index) {
@@ -146,24 +149,22 @@ function finalizarQuiz() {
   const cursoVencedorKey = ranking[0][0];
   const maiorPontuacao = Math.max(...Object.values(pontuacaoCursos), 1);
 
-// Renderiza o cabeçalho do curso vencedor
-const resultadoPrincipal = document.getElementById('resultado-principal');
-if (resultadoPrincipal) {
-  resultadoPrincipal.innerHTML = `
-    <div class="curso-vencedor">
-      <h2>Seu Perfil Ideal É:</h2>
-      <h1>${nomesCursos[cursoVencedorKey] || cursoVencedorKey.toUpperCase()}</h1>
-      <p class="vencedor-descricao">
-        ${descricoesCursos[cursoVencedorKey] || 'Seu perfil demonstrou maior afinidade com esta área.'}
-      </p>
-      <button class="btn-primary-quiz" onclick="window.location.href='cursos.html#curso-${cursoVencedorKey}'" style="margin-top: 16px;">
-        Conhecer Cursos
-      </button>
-    </div>
-  `;
-}
+  const resultadoPrincipal = document.getElementById('resultado-principal');
+  if (resultadoPrincipal) {
+    resultadoPrincipal.innerHTML = `
+      <div class="curso-vencedor">
+        <h2>Seu Perfil Ideal É:</h2>
+        <h1>${nomesCursos[cursoVencedorKey] || cursoVencedorKey.toUpperCase()}</h1>
+        <p class="vencedor-descricao">
+          ${descricoesCursos[cursoVencedorKey] || 'Seu perfil demonstrou maior afinidade com esta área.'}
+        </p>
+        <button class="btn-primary-quiz" onclick="window.location.href='cursos.html#curso-${cursoVencedorKey}'" style="margin-top: 16px;">
+          Conhecer Cursos
+        </button>
+      </div>
+    `;
+  }
 
-  // Renderiza as barras de ranking
   const rankingContainer = document.getElementById('ranking-completo');
   if (rankingContainer) {
     rankingContainer.innerHTML = '';
@@ -189,7 +190,8 @@ if (resultadoPrincipal) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  iniciarQuiz();
+  // O quiz só inicia ao clicar no botão "Iniciar Teste"
+  if (startBtn) startBtn.addEventListener('click', iniciarQuiz);
   if (nextBtn) nextBtn.addEventListener('click', proximaPergunta);
   if (prevBtn) prevBtn.addEventListener('click', anteriorPergunta);
   if (restartBtn) restartBtn.addEventListener('click', iniciarQuiz);

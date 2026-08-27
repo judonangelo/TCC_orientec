@@ -27,6 +27,54 @@ html {
     opacity: 0.85;
 }
 
+/* Container e Card de Introdução */
+#intro-container {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.intro-box {
+    padding: 24px 16px;
+    height: 465px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.intro-box h2 {
+    color: #0c3470;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.intro-box p {
+    color: #475569;
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 650px;
+    margin: 0 auto 32px;
+}
+
+/* Animação suave para a transição entre telas */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#quiz-container,
+#result-container {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
 /* Card Principal do Quiz */
 .quiz-card {
     background: #fff;
