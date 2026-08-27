@@ -51,35 +51,59 @@ const verificarAdmin = (req, res, next) => {
 // ─── LOGINS ────────────────────────────────────────────────────────────────
 
 server.post("/cadastro", async (req, res) => {
-  const { email, senha, nome, cpf } = req.body;
+  const { email, senha, nome, cpf } = req.body
   try {
 
-    const SoNome = /^[A-Za-zÀ-ÿ\s]+$/;
+    const SoNome = /^[A-Za-zÀ-ÿ\s]+$/
     if (!SoNome.test(nome.trim())) {
-      return res.status(400).json({ mensagem: "O nome deve conter apenas letras." });
+      return res.status(400).json({ mensagem: "O nome deve conter apenas letras." })
     }
 
-    const [conferir] = await pool.execute(`SELECT email FROM usuarios WHERE email = ?`, [email]);
-    if (conferir.length > 0) {
-      return res.status(400).json({ mensagem: "Este e-mail já está cadastrado!" });
+    if (!cpf || cpf.length !== 11) {
+      return res.status(400).json({ mensagem: "CPF inválido!" })
     }
 
-    if (cpf.length !== 11) {
-      return res.status(400).json({ mensagem: "CPF inválido" })
+    const [existentes] = await pool.execute(
+      `SELECT email, cpf FROM usuarios WHERE email = ? OR cpf = ?`,
+      [email, cpf]
+    )
+
+    if (existentes.length > 0) {
+      const emailJaExiste = existentes.some(u => u.email === email)
+      const cpfJaExiste = existentes.some(u => u.cpf === cpf)
+
+      if (emailJaExiste) {
+        return res.status(400).json({ mensagem: "E-mail já cadastrado!" })
+      }
+
+      if (cpfJaExiste) {
+        return res.status(400).json({ mensagem: "CPF já cadastrado!" })
+      }
     }
 
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
+    const senhaCriptografada = await bcrypt.hash(senha, 10)
 
     await pool.execute(
       `INSERT INTO usuarios (email, senha, nome, cpf, nivel) VALUES (?, ?, ?, ?, 'aluno')`,
       [email, senhaCriptografada, nome, cpf]
-    );
-    res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" });
+    )
+
+    res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" })
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ mensagem: "Erro ao cadastrar usuário!" });
+    console.log(error)
+
+    if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+      if (error.sqlMessage && error.sqlMessage.includes('email')) {
+        return res.status(400).json({ mensagem: "E-mail já cadastrado!" })
+      }
+      if (error.sqlMessage && error.sqlMessage.includes('cpf')) {
+        return res.status(400).json({ mensagem: "CPF já cadastrado!" })
+      }
+    }
+
+    return res.status(500).json({ mensagem: "Erro ao cadastrar usuário!" })
   }
-});
+})
 
 server.post("/login", async (req, res) => {
   const { email, senha } = req.body;
