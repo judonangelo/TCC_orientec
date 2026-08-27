@@ -141,20 +141,63 @@ server.post("/login", async (req, res) => {
   }
 });
 
-server.put("/trocar_senha", async (req, res) => {
+server.put("/alterar_senha", verificarToken, async (req, res) => {
   try {
-    const { email, senha } = req.body;
+    const { senhaAtual, novaSenha } = req.body
+    const email = req.usuario.email
 
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
+    if (!senhaAtual || !novaSenha || novaSenha.length < 6) {
+      return res.status(400).json({ mensagem: "Informe a senha atual e uma nova senha com no mínimo 6 caracteres." })
+    }
 
-    await pool.query('UPDATE usuarios SET senha = ? WHERE email = ?', [senhaCriptografada, email]);
+    const [usuarios] = await pool.execute(`SELECT senha FROM usuarios WHERE email = ?`, [email])
+    if (usuarios.length === 0) {
+      return res.status(404).json({ mensagem: "Usuário não encontrado." })
+    }
 
-    res.json({ mensagem: "Senha alterada com sucesso!" });
+    const usuario = usuarios[0]
+    const senhaCorreta = await bcrypt.compare(senhaAtual, usuario.senha)
+
+    if (!senhaCorreta) {
+      return res.status(401).json({ mensagem: "Senha atual incorreta!" })
+    }
+
+    const senhaCriptografada = await bcrypt.hash(novaSenha, 10)
+    await pool.execute('UPDATE usuarios SET senha = ? WHERE email = ?', [senhaCriptografada, email])
+
+    res.json({ mensagem: "Senha alterada com sucesso!" })
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ mensagem: "Erro ao alterar senha" });
+    console.log(error)
+    res.status(500).json({ mensagem: "Erro ao alterar senha." })
   }
-});
+})
+
+server.put("/redefinir_senha_sem_email", async (req, res) => {
+  try {
+    const { email, cpf, novaSenha } = req.body
+
+    if (!email || !cpf || !novaSenha || novaSenha.length < 6) {
+      return res.status(400).json({ mensagem: "Preencha E-mail, CPF e uma nova senha válida." })
+    }
+
+    const [usuarios] = await pool.execute(
+      `SELECT id FROM usuarios WHERE email = ? AND cpf = ?`,
+      [email, cpf]
+    )
+
+    if (usuarios.length === 0) {
+      return res.status(400).json({ mensagem: "Dados incorretos. Verifique o E-mail e o CPF digitados." })
+    }
+
+    const senhaCriptografada = await bcrypt.hash(novaSenha, 10)
+    await pool.execute('UPDATE usuarios SET senha = ? WHERE email = ? AND cpf = ?', [senhaCriptografada, email, cpf])
+
+    res.json({ mensagem: "Senha redefinida com sucesso!" })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ mensagem: "Erro ao redefinir senha." })
+  }
+})
 
 
 

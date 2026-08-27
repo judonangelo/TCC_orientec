@@ -544,7 +544,7 @@ function renderizarFormularioRespostas(respostasExistentes = []) {
 
         divBox.innerHTML = `
       <div class="form-group" style="margin-bottom: 5px;">
-        <label><b>Opção ${i + 1}:</b></label>
+        <label><b>Alternativa ${i + 1}:</b></label>
         <input type="text" class="input-resposta-texto" value="${resp.texto}" placeholder="Texto da alternativa" required style="width:100%;">
       </div>
       <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center;">

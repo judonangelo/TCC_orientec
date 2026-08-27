@@ -22,7 +22,7 @@ const nomesCursos = {
   dev: 'Desenvolvimento de Sistemas',
   quimica: 'Química',
   logistica: 'Logística',
-  eletronica: 'Eletrônica',
+  eletronica: 'Eletroeletrônica',
   adm: 'Administração'
 };
 
@@ -37,8 +37,7 @@ const descricoesCursos = {
 async function iniciarQuiz() {
   perguntaAtual = 0;
   respostasSelecionadas = [];
-  
-  // Esconde a introdução e mostra o quiz
+    
   if (introContainer) introContainer.style.display = 'none';
   quizContainer.style.display = 'block';
   resultContainer.style.display = 'none';
@@ -190,7 +189,6 @@ function finalizarQuiz() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // O quiz só inicia ao clicar no botão "Iniciar Teste"
   if (startBtn) startBtn.addEventListener('click', iniciarQuiz);
   if (nextBtn) nextBtn.addEventListener('click', proximaPergunta);
   if (prevBtn) prevBtn.addEventListener('click', anteriorPergunta);

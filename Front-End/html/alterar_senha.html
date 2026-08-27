@@ -21,22 +21,33 @@
         <h2 style="text-align:center; color:#0c3470; margin-bottom:20px;">Redefinir Senha</h2>
 
         <form id="formTrocarSenha">
-            <div class="form-group">
-                <label>E-mail cadastrado</label>
-                <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            <div class="form-group" id="groupSenhaAtual">
+                <label>Senha Atual</label>
+                <input type="password" id="senhaAtual" placeholder="Digite sua senha atual">
             </div>
+
+            <div class="form-group" id="groupEmail" style="display: none;">
+                <label>E-mail cadastrado</label>
+                <input type="email" id="email" placeholder="Digite seu e-mail">
+            </div>
+
+            <div class="form-group" id="groupCPF" style="display: none;">
+                <label>CPF cadastrado</label>
+                <input type="text" id="cpf" placeholder="Apenas os 11 números" maxlength="14">
+            </div>
+
             <div class="form-group">
                 <label>Nova senha</label>
                 <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" required minlength="6">
             </div>
+
             <div class="form-group">
                 <label>Confirmar nova senha</label>
                 <input type="password" id="confirmarSenha" placeholder="Repita a nova senha" required>
             </div>
 
-            <button type="submit" class="btn-entrar">Alterar Senha</button>
-            <button type="button" class="btn-voltar" onclick="window.location.href='login.html'">Voltar para
-                Login</button>
+            <button type="submit" class="btn-entrar" id="btnSubmit">Salvar Alteração</button>
+            <button type="button" class="btn-voltar" onclick="voltarPagina()">Voltar</button>
         </form>
 
     </div>
