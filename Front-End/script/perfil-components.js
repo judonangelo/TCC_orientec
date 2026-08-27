@@ -20,8 +20,8 @@ function injetarPainelPerfil() {
 
                 <!-- Mini Menu de Opções -->
                 <div class="avatar-menu" id="avatarMenu" style="display: none;">
-                    <button type="button" onclick="selecionarNovaFoto()">📷 Alterar foto</button>
-                    <button type="button" class="btn-remove-photo" id="btnRemovePhoto" onclick="removerFotoPerfil()">🗑️ Remover foto</button>
+                    <button type="button" onclick="selecionarNovaFoto()">Alterar foto</button>
+                    <button type="button" class="btn-remove-photo" id="btnRemovePhoto" onclick="removerFotoPerfil()">Remover foto</button>
                 </div>
             </div>
 
@@ -52,7 +52,6 @@ function injetarPainelPerfil() {
   document.body.insertAdjacentHTML('beforeend', htmlPainel)
   document.getElementById('overlay')?.addEventListener('click', closePanel)
   
-  // Fecha o mini menu ao clicar fora dele
   document.addEventListener('click', (e) => {
     const wrapper = document.querySelector('.panel-avatar-wrapper')
     if (wrapper && !wrapper.contains(e.target)) {
@@ -63,7 +62,6 @@ function injetarPainelPerfil() {
   carregarDadosPerfil()
 }
 
-// Alterna a exibição do mini menu
 function toggleAvatarMenu(event) {
   event.stopPropagation()
   const menu = document.getElementById('avatarMenu')
@@ -140,7 +138,7 @@ async function carregarDadosPerfil() {
           ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
           : (usuario.nome[0] || '?').toUpperCase()
         elInitials.textContent = iniciais
-        if (btnRemove) btnRemove.style.display = 'none' // Esconde a opção de remover se não houver foto
+        if (btnRemove) btnRemove.style.display = 'none' 
       }
     }
 
@@ -154,7 +152,6 @@ async function carregarDadosPerfil() {
   }
 }
 
-// Função para comprimir a imagem antes de enviar
 function comprimirImagem(file, maxWidth = 300, maxHeight = 300, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const img = new Image()
