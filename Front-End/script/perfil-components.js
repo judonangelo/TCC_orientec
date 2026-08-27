@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://localhost:3000'
 
 function injetarPainelPerfil() {
   if (document.getElementById('profilePanel')) return
@@ -12,8 +12,17 @@ function injetarPainelPerfil() {
 
             <input type="file" id="avatarInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" onchange="alterarFotoPerfil(event)">
 
-            <div class="panel-avatar" id="panelInitials" onclick="document.getElementById('avatarInput').click()" title="Clique para alterar a foto">
-                ??
+            <!-- Avatar com Wrapper para o Mini Menu -->
+            <div class="panel-avatar-wrapper">
+                <div class="panel-avatar" id="panelInitials" onclick="toggleAvatarMenu(event)" title="Opções da foto">
+                    ??
+                </div>
+
+                <!-- Mini Menu de Opções -->
+                <div class="avatar-menu" id="avatarMenu" style="display: none;">
+                    <button type="button" onclick="selecionarNovaFoto()">📷 Alterar foto</button>
+                    <button type="button" class="btn-remove-photo" id="btnRemovePhoto" onclick="removerFotoPerfil()">🗑️ Remover foto</button>
+                </div>
             </div>
 
             <div class="panel-user-name" id="panelName">Carregando...</div>
@@ -42,8 +51,60 @@ function injetarPainelPerfil() {
 
   document.body.insertAdjacentHTML('beforeend', htmlPainel)
   document.getElementById('overlay')?.addEventListener('click', closePanel)
+  
+  // Fecha o mini menu ao clicar fora dele
+  document.addEventListener('click', (e) => {
+    const wrapper = document.querySelector('.panel-avatar-wrapper')
+    if (wrapper && !wrapper.contains(e.target)) {
+      fecharAvatarMenu()
+    }
+  })
 
   carregarDadosPerfil()
+}
+
+// Alterna a exibição do mini menu
+function toggleAvatarMenu(event) {
+  event.stopPropagation()
+  const menu = document.getElementById('avatarMenu')
+  if (menu) {
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block'
+  }
+}
+
+function fecharAvatarMenu() {
+  const menu = document.getElementById('avatarMenu')
+  if (menu) menu.style.display = 'none'
+}
+
+function selecionarNovaFoto() {
+  fecharAvatarMenu()
+  document.getElementById('avatarInput').click()
+}
+
+async function removerFotoPerfil() {
+  fecharAvatarMenu()
+  if (!confirm("Tem certeza que deseja remover sua foto de perfil?")) return
+
+  const token = localStorage.getItem('tokenIntranet')
+  try {
+    const resposta = await fetch(`${API_URL}/perfil/foto`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ foto: null })
+    })
+
+    if (resposta.ok) {
+      carregarDadosPerfil()
+    } else {
+      alert('Erro ao remover a foto de perfil.')
+    }
+  } catch (error) {
+    console.error('Erro ao remover foto:', error)
+  }
 }
 
 async function carregarDadosPerfil() {
@@ -67,16 +128,19 @@ async function carregarDadosPerfil() {
     const elEmail = document.getElementById('panelEmail')
     const elViewName = document.getElementById('viewName')
     const elViewEmail = document.getElementById('viewEmail')
+    const btnRemove = document.getElementById('btnRemovePhoto')
 
     if (elInitials) {
       if (usuario.foto) {
         elInitials.innerHTML = `<img src="${usuario.foto}" alt="Foto de Perfil" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
+        if (btnRemove) btnRemove.style.display = 'block'
       } else {
         const partes = (usuario.nome || 'Estudante').trim().split(' ')
-        const iniciais = partes.length > 1
+        const iniciais = partes.length > 1 
           ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
           : (usuario.nome[0] || '?').toUpperCase()
         elInitials.textContent = iniciais
+        if (btnRemove) btnRemove.style.display = 'none' // Esconde a opção de remover se não houver foto
       }
     }
 
@@ -90,11 +154,12 @@ async function carregarDadosPerfil() {
   }
 }
 
+// Função para comprimir a imagem antes de enviar
 function comprimirImagem(file, maxWidth = 300, maxHeight = 300, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.src = URL.createObjectURL(file)
-
+    
     img.onload = () => {
       const canvas = document.createElement('canvas')
       let width = img.width
@@ -127,6 +192,7 @@ function comprimirImagem(file, maxWidth = 300, maxHeight = 300, quality = 0.7) {
 }
 
 async function alterarFotoPerfil(event) {
+  fecharAvatarMenu()
   const arquivo = event.target.files[0]
   if (!arquivo) return
 
@@ -150,7 +216,6 @@ async function alterarFotoPerfil(event) {
     }
   } catch (error) {
     console.error('Erro ao processar imagem:', error)
-    alert('Não foi possível processar a imagem selecionada.')
   }
 }
 
@@ -161,6 +226,7 @@ function openPanel() {
 }
 
 function closePanel() {
+  fecharAvatarMenu()
   document.getElementById('overlay')?.classList.remove('open')
   document.getElementById('profilePanel')?.classList.remove('open')
   document.body.style.overflow = ''
