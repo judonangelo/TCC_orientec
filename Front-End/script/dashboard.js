@@ -5,20 +5,15 @@ const authHeaders = () => ({
     "Authorization": `Bearer ${token}`
 });
 
-// ============================================
-// CONFIGURAÇÃO
-// ============================================
 const API_BASE = "http://localhost:3000";
 
 let usuariosGlobal = [];
 let paginaAtual = 1;
 const ITENS_POR_PAGINA = 10;
 let termoPesquisa = '';
-let filtroNivel = 'todos';  // 'todos', 'admin', 'aluno'
+let filtroNivel = 'todos'; 
 
-// ============================================
-// NAVEGAÇÃO DO SIDEBAR
-// ============================================
+
 document.querySelectorAll('.sidebar-link').forEach(link => {
     link.addEventListener('click', function (e) {
         e.preventDefault();
@@ -34,9 +29,7 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
     });
 });
 
-// ============================================
-// USUÁRIOS - FILTROS COMBINADOS
-// ============================================
+
 
 function renderizarUsuarios(usuarios) {
     const tbody = document.getElementById('usuarios-table-body');
@@ -78,7 +71,6 @@ function atualizarControlesPaginacao(totalItens) {
 
     if (totalPaginas <= 1) return;
 
-    // Botão Anterior
     const btnAnterior = document.createElement('button');
     btnAnterior.textContent = '← Anterior';
     btnAnterior.className = 'btn-paginacao btn-anterior';
@@ -91,13 +83,11 @@ function atualizarControlesPaginacao(totalItens) {
     });
     container.appendChild(btnAnterior);
 
-    // Indicador de página
     const spanPagina = document.createElement('span');
     spanPagina.textContent = ` Página ${paginaAtual} de ${totalPaginas} `;
     spanPagina.style.margin = '0 10px';
     container.appendChild(spanPagina);
 
-    // Botão Próximo
     const btnProximo = document.createElement('button');
     btnProximo.textContent = 'Próximo →';
     btnProximo.className = 'btn-paginacao btn-proximo';
@@ -114,11 +104,10 @@ function atualizarControlesPaginacao(totalItens) {
 function aplicarFiltros() {
     const termo = termoPesquisa.toLowerCase();
     const filtrados = usuariosGlobal.filter(usuario => {
-        // Filtro por nome (startsWith)
+
         const matchNome = usuario.nome.toLowerCase().startsWith(termo);
         if (!matchNome) return false;
 
-        // Filtro por nível
         if (filtroNivel === 'todos') return true;
         return usuario.nivel === filtroNivel;
     });
@@ -126,11 +115,11 @@ function aplicarFiltros() {
 }
 
 function atualizarUsuariosFiltrados() {
-    paginaAtual = 1;  // reset para primeira página ao filtrar
+    paginaAtual = 1;  
     aplicarFiltros();
 }
 
-// Evento do campo de pesquisa
+
 const pesquisaInput = document.getElementById('pesquisa-nome');
 if (pesquisaInput) {
     pesquisaInput.addEventListener('input', function (e) {
@@ -139,7 +128,6 @@ if (pesquisaInput) {
     });
 }
 
-// Evento do filtro de nível
 const filtroSelect = document.getElementById('filtro-tipo-usuario');
 if (filtroSelect) {
     filtroSelect.addEventListener('change', function (e) {
@@ -178,9 +166,7 @@ async function carregarUsuarios() {
     }
 }
 
-// ============================================
-// MODAL EDITAR USUÁRIO
-// ============================================
+
 const formEditar = document.getElementById('form-editar-usuario');
 if (formEditar) {
     formEditar.addEventListener('submit', async function (e) {
@@ -217,9 +203,7 @@ function fecharModalEditarUsuario() {
     document.getElementById('modal-editar-usuario').style.display = 'none';
 }
 
-// ============================================
-// EXCLUSÃO DE USUÁRIO
-// ============================================
+
 let itemParaExcluir = null;
 let tipoExclusao = null;
 
@@ -244,9 +228,7 @@ async function excluirUsuario(id) {
     }
 }
 
-// ============================================
-// CRUD CURSOS
-// ============================================
+
 async function carregarCursos() {
     const tbody = document.getElementById('cursos-table-body');
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
@@ -346,9 +328,6 @@ async function excluirCurso(id) {
     }
 }
 
-// ============================================
-// CONFIRMAÇÃO GENÉRICA (exclusão)
-// ============================================
 const btnConfirmar = document.getElementById('btn-confirmar-exclusao');
 if (btnConfirmar) {
     btnConfirmar.addEventListener('click', async function () {
@@ -365,9 +344,6 @@ function fecharModalConfirmacao() {
     tipoExclusao = null;
 }
 
-// ============================================
-// SUBMIT DO FORMULÁRIO DE CURSO
-// ============================================
 const formCurso = document.getElementById('form-curso');
 if (formCurso) {
     formCurso.addEventListener('submit', async function (e) {
@@ -422,9 +398,6 @@ if (formCurso) {
     });
 }
 
-// ============================================
-// RELATÓRIOS
-// ============================================
 async function carregarRelatorios() {
     try {
         const response = await fetch(`${API_BASE}/relatorios`, { headers: authHeaders() });
@@ -439,9 +412,6 @@ async function carregarRelatorios() {
     }
 }
 
-// ============================================
-// FUNÇÕES AUXILIARES
-// ============================================
 function mostrarMensagem(elementoId, texto, tipo) {
     const elemento = document.getElementById(elementoId);
     if (!elemento) return;
@@ -463,9 +433,6 @@ function logout() {
     }
 }
 
-// ============================================
-// INICIALIZAÇÃO
-// ============================================
 carregarUsuarios();
 carregarCursos();
 

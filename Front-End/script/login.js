@@ -2,7 +2,6 @@ const API_BASE = 'http://localhost:3000';
 
 // ── Popup de escolha para admin ──────────────────────────────────────────────
 function criarPopupAdmin(nome) {
-  // Overlay
   const overlay = document.createElement('div');
   overlay.id = 'adminOverlay';
   overlay.style.cssText = `
@@ -69,7 +68,6 @@ function criarPopupAdmin(nome) {
     window.location.href = 'home.html';
   });
 
-  // Fechar clicando fora do modal
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) fecharPopup();
   });
@@ -80,7 +78,6 @@ function fecharPopup() {
   if (overlay) overlay.remove();
 }
 
-// ── Submit do formulário ─────────────────────────────────────────────────────
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -101,7 +98,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const dados = await resposta.json();
 
     if (resposta.ok && dados.token) {
-      // Salva dados na sessão
       localStorage.setItem('tokenIntranet', dados.token);
       localStorage.setItem('emailUsuario', email);
       localStorage.setItem('nomeUsuario', dados.nome);
@@ -111,10 +107,8 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       mensagemDiv.textContent = "Login realizado com sucesso!";
 
       if (dados.nivel === 'admin') {
-        // Admin → mostra popup de escolha
         criarPopupAdmin(dados.nome);
       } else {
-        // Aluno → vai direto para home
         setTimeout(() => {
           window.location.href = "home.html";
         }, 1000);
