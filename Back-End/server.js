@@ -17,7 +17,7 @@ server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 server.listen(PORT, () => {
   console.log(`Server rodando no http://localhost:${PORT}/`)
-  console.log(`Acesse o Swagger em: http://localhost:${PORT}/api-docs`);
+  console.log(`Acesse o Swagger em: http://localhost:${PORT}/api-docs`)//ou 10.111.9.35
 })
 
 
