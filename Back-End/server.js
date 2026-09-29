@@ -2,11 +2,6 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const server = express()
-server.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'bypass-tunnel-reminder', 'ngrok-skip-browser-warning']
-}));
 server.use(cors())
 server.use(express.json({ limit: '10mb' }))
 const pool = require('./db.js')
