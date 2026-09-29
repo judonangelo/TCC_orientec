@@ -429,7 +429,7 @@ function logout() {
         localStorage.removeItem("tokenIntranet");
         localStorage.removeItem("nomeUsuario");
         localStorage.removeItem("nivelUsuario")
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
     }
 }
 

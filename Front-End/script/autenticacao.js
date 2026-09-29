@@ -15,12 +15,12 @@
     }
 
     if (!token) {
-        bloquearAcesso("Acesso Negado! Faça login para continuar.", "index.html");
+        bloquearAcesso("Acesso Negado! Faça login para continuar.", "../index.html");
     }
 
     if (typeof nivelNecessario !== "undefined" && nivelNecessario !== "any") {
         if (!nivelUsuario) {
-            bloquearAcesso("Sessão inválida. Faça login novamente.", "index.html");
+            bloquearAcesso("Sessão inválida. Faça login novamente.", "../index.html");
         }
         if (nivelUsuario !== nivelNecessario) {
             const destino = (nivelUsuario === "admin") ? "dashboard.html" : "home.html";
