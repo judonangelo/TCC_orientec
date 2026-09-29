@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:3000'
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : 'https://orientec-api.loca.lt'
 
 function injetarPainelPerfil() {
   if (document.getElementById('profilePanel')) return
@@ -86,7 +88,7 @@ async function removerFotoPerfil() {
 
   const token = localStorage.getItem('tokenIntranet')
   try {
-    const resposta = await fetch(`${API_URL}/perfil/foto`, {
+    const resposta = await fetch(`${API_BASE}/perfil/foto`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +112,7 @@ async function carregarDadosPerfil() {
   if (!token) return
 
   try {
-    const resposta = await fetch(`${API_URL}/perfil`, {
+    const resposta = await fetch(`${API_BASE}/perfil`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -197,7 +199,7 @@ async function alterarFotoPerfil(event) {
     const imagemBase64 = await comprimirImagem(arquivo, 300, 300, 0.7)
     const token = localStorage.getItem('tokenIntranet')
 
-    const resposta = await fetch(`${API_URL}/perfil/foto`, {
+    const resposta = await fetch(`${API_BASE}/perfil/foto`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

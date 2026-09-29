@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const PORT = process.env.PORT
-
+// PRA RODAR O TUNNEL (VERCEL), EM OUTRO TERMINAL (NODEMON JA RODANDO) BOTA npx localtunnel --port 3000 --subdomain orientec-api
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 server.listen(PORT, () => {
