@@ -1,6 +1,6 @@
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt'
+  : 'https://orientec-api.loca.lt');
 
 const cpfInput = document.getElementById("cpf");
 
@@ -34,7 +34,8 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             method: "POST",
             headers: {
                 "Accept": "application/json",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "bypass-tunnel-reminder": "true"
             },
             body: JSON.stringify({ email, senha, nome, cpf })
         });

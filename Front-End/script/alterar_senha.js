@@ -1,6 +1,6 @@
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt'
+  : 'https://orientec-api.loca.lt');
 
 document.addEventListener('DOMContentLoaded', () => {
     const tokenLogin = localStorage.getItem('tokenIntranet')
@@ -61,7 +61,8 @@ document.getElementById('formTrocarSenha').addEventListener('submit', async (e) 
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenLogin}`
+                    'Authorization': `Bearer ${tokenLogin}`,
+                    "bypass-tunnel-reminder": "true"
                 },
                 body: JSON.stringify({ senhaAtual, novaSenha })
             })
@@ -80,7 +81,10 @@ document.getElementById('formTrocarSenha').addEventListener('submit', async (e) 
 
             const resposta = await fetch(`${API_BASE}/redefinir_senha_sem_email`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    "bypass-tunnel-reminder": "true"
+                },
                 body: JSON.stringify({ email, cpf, novaSenha })
             })
 

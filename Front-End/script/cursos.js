@@ -1,6 +1,6 @@
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt'
+  : 'https://orientec-api.loca.lt');
 
 async function carregarCursos() {
     const grid = document.getElementById('cursos-grid');

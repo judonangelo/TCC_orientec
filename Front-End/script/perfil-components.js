@@ -1,6 +1,6 @@
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt'
+  : 'https://orientec-api.loca.lt');
 
 function injetarPainelPerfil() {
   if (document.getElementById('profilePanel')) return
@@ -53,7 +53,7 @@ function injetarPainelPerfil() {
 
   document.body.insertAdjacentHTML('beforeend', htmlPainel)
   document.getElementById('overlay')?.addEventListener('click', closePanel)
-  
+
   document.addEventListener('click', (e) => {
     const wrapper = document.querySelector('.panel-avatar-wrapper')
     if (wrapper && !wrapper.contains(e.target)) {
@@ -92,7 +92,8 @@ async function removerFotoPerfil() {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        "bypass-tunnel-reminder": "true"
       },
       body: JSON.stringify({ foto: null })
     })
@@ -115,7 +116,8 @@ async function carregarDadosPerfil() {
     const resposta = await fetch(`${API_BASE}/perfil`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        "bypass-tunnel-reminder": "true"
       }
     })
 
@@ -136,11 +138,11 @@ async function carregarDadosPerfil() {
         if (btnRemove) btnRemove.style.display = 'block'
       } else {
         const partes = (usuario.nome || 'Estudante').trim().split(' ')
-        const iniciais = partes.length > 1 
+        const iniciais = partes.length > 1
           ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
           : (usuario.nome[0] || '?').toUpperCase()
         elInitials.textContent = iniciais
-        if (btnRemove) btnRemove.style.display = 'none' 
+        if (btnRemove) btnRemove.style.display = 'none'
       }
     }
 
@@ -158,7 +160,7 @@ function comprimirImagem(file, maxWidth = 300, maxHeight = 300, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.src = URL.createObjectURL(file)
-    
+
     img.onload = () => {
       const canvas = document.createElement('canvas')
       let width = img.width
@@ -203,7 +205,8 @@ async function alterarFotoPerfil(event) {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        "bypass-tunnel-reminder": "true"
       },
       body: JSON.stringify({ foto: imagemBase64 })
     })
