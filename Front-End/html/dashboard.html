@@ -183,6 +183,14 @@
                         <label>Nome do Curso</label>
                         <input type="text" id="curso-nome" placeholder="Digite o nome do curso" required>
                     </div>
+
+                    <div class="form-group campo-largo">
+                        <label>Tags do Curso (peso de 0 a 3)</label>
+                        <div id="curso-tags-container"></div>
+                        <button type="button" class="btn-secondary" onclick="adicionarLinhaTag()"
+                            style="margin-top: 8px;">+ Adicionar Tag</button>
+                    </div>
+
                     <div class="form-group">
                         <label>Duração (semestres)</label>
                         <input type="number" id="curso-duracao" placeholder="Duração em semestres" required min="1">

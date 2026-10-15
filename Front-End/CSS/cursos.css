@@ -22,10 +22,10 @@
 
 .curso-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;          
-    border-radius: 16px;                 
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
     padding: 24px;
-    transition: box-shadow 0.25s, transform 0.25s; 
+    transition: box-shadow 0.25s, transform 0.25s, background 0.3s, border-color 0.3s;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -35,18 +35,32 @@
 
 
 .curso-card:hover {
-    transform: translateY(-4px);   
+    transform: translateY(-4px);
     box-shadow: 0 8px 28px rgba(12, 52, 112, 0.12);
 }
 
 
 
 
-.curso-card:nth-child(1) { animation-delay: 0.05s; }
-.curso-card:nth-child(2) { animation-delay: 0.1s; }
-.curso-card:nth-child(3) { animation-delay: 0.15s; }
-.curso-card:nth-child(4) { animation-delay: 0.2s; }
-.curso-card:nth-child(5) { animation-delay: 0.25s; }
+.curso-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.curso-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.curso-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.curso-card:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.curso-card:nth-child(5) {
+    animation-delay: 0.25s;
+}
 
 
 .curso-card h3 {
@@ -68,7 +82,8 @@
     flex-grow: 1;
 }
 
-.curso-duracao, .curso-area {
+.curso-duracao,
+.curso-area {
     font-size: 0.85rem;
     color: #4a627a;
     margin-bottom: 8px;
@@ -98,6 +113,35 @@
     box-shadow: 0 6px 14px rgba(12, 52, 112, 0.3);
 }
 
+/* ─── Badges de tags ───────────────────────────────────── */
+.curso-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 14px;
+}
+
+.tag-badge {
+    display: inline-block;
+    background: #e6efff;
+    color: #0c3470;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ─── Destaque do card quando vem do teste ─────────────── */
+.curso-card.curso-destacado {
+    border-color: #0c3470;
+    background: #f8faff;
+    box-shadow:
+        0 0 0 4px rgba(12, 52, 112, 0.15),
+        0 8px 28px rgba(12, 52, 112, 0.20);
+    transform: translateY(-4px);
+}
+
 
 
 @keyframes fadeInUp {
@@ -105,6 +149,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -115,12 +160,15 @@
     .cursos-section {
         padding: 20px 15px;
     }
+
     .cursos-section h2 {
         font-size: 1.8rem;
     }
+
     .cursos-grid {
         grid-template-columns: 1fr;
     }
+
     .curso-card h3 {
         font-size: 1.4rem;
     }

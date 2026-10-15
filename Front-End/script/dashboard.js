@@ -6,14 +6,16 @@ const authHeaders = () => ({
 });
 
 var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt');
+    ? 'http://localhost:3000'
+    : 'https://orientec-api.loca.lt');
 
 let usuariosGlobal = [];
 let paginaAtual = 1;
 const ITENS_POR_PAGINA = 10;
 let termoPesquisa = '';
-let filtroNivel = 'todos'; 
+let filtroNivel = 'todos';
+let tagsGlobais = [];
+let tagsPromise = null;
 
 
 document.querySelectorAll('.sidebar-link').forEach(link => {
@@ -30,6 +32,19 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
         if (section === 'teste') carregarPerguntas()
     });
 });
+
+async function carregarTagsGlobais() {
+    try {
+        const response = await fetch(`${API_BASE}/tags`, { headers: authHeaders() });
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+        tagsGlobais = await response.json();
+        return tagsGlobais;
+    } catch (error) {
+        console.error("Erro ao carregar tags:", error);
+        tagsGlobais = [];
+        return [];
+    }
+}
 
 
 
@@ -117,7 +132,7 @@ function aplicarFiltros() {
 }
 
 function atualizarUsuariosFiltrados() {
-    paginaAtual = 1;  
+    paginaAtual = 1;
     aplicarFiltros();
 }
 
@@ -270,8 +285,84 @@ async function carregarCursos() {
     }
 }
 
-function abrirModalCurso(curso = null) {
+function renderizarLinhasTags(tagsDoCurso = []) {
+    const container = document.getElementById('curso-tags-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (tagsDoCurso.length === 0) {
+        adicionarLinhaTag();
+    } else {
+        tagsDoCurso.forEach(t => adicionarLinhaTag(t.tag_id, t.peso));
+    }
+}
+
+function adicionarLinhaTag(tagId = '', peso = 1) {
+    const container = document.getElementById('curso-tags-container');
+    if (!container) return;
+
+    const div = document.createElement('div');
+    div.className = 'tag-row';
+    div.style.cssText = 'display: flex; gap: 8px; align-items: center; margin-bottom: 8px;';
+
+    const options = tagsGlobais.map(t =>
+        `<option value="${t.id}" ${String(t.id) === String(tagId) ? 'selected' : ''}>${t.nome}</option>`
+    ).join('');
+
+    div.innerHTML = `
+        <select class="input-tag-id"
+            style="flex: 2; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+            <option value="">Selecione uma tag...</option>
+            ${options}
+        </select>
+        <input type="number" class="input-tag-peso" min="0" max="3" value="${peso}"
+            title="Peso de 0 a 3"
+            style="width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+        <button type="button" class="btn-excluir" onclick="removerLinhaTag(this)"
+            style="padding: 8px 12px; cursor: pointer;">×</button>
+    `;
+    container.appendChild(div);
+}
+
+function removerLinhaTag(botao) {
+    const container = document.getElementById('curso-tags-container');
+    botao.parentElement.remove();
+
+    // Garante que sempre exista ao menos uma linha visível
+    if (container && container.querySelectorAll('.tag-row').length === 0) {
+        adicionarLinhaTag();
+    }
+}
+
+function coletarTagsDoFormulario() {
+    const linhas = document.querySelectorAll('#curso-tags-container .tag-row');
+    const tags = [];
+    const vistos = new Set();
+
+    linhas.forEach(linha => {
+        const tagId = parseInt(linha.querySelector('.input-tag-id').value);
+        const peso = parseInt(linha.querySelector('.input-tag-peso').value);
+
+        if (!tagId || vistos.has(tagId)) return;
+        vistos.add(tagId);
+
+        tags.push({
+            tag_id: tagId,
+            peso: Math.max(0, Math.min(3, isNaN(peso) ? 0 : peso))
+        });
+    });
+
+    return tags;
+}
+
+async function abrirModalCurso(curso = null) {
+    // Garante que as tags foram carregadas antes de montar o modal
+    if (tagsGlobais.length === 0 && tagsPromise) {
+        await tagsPromise;
+    }
+
     document.getElementById('modal-curso').style.display = 'flex';
+
     if (curso) {
         document.getElementById('modal-curso-titulo').textContent = 'Editar Curso';
         document.getElementById('curso-id').value = curso.id;
@@ -286,10 +377,12 @@ function abrirModalCurso(curso = null) {
         document.getElementById('curso-mercado').value = curso.mercado ?? '';
         document.getElementById('curso-perfil').value = curso.perfil ?? '';
         document.getElementById('curso-status').value = curso.status;
+        renderizarLinhasTags(curso.tags || []);
     } else {
         document.getElementById('modal-curso-titulo').textContent = 'Novo Curso';
         document.getElementById('form-curso').reset();
         document.getElementById('curso-id').value = '';
+        renderizarLinhasTags([]);
     }
 }
 
@@ -350,7 +443,15 @@ const formCurso = document.getElementById('form-curso');
 if (formCurso) {
     formCurso.addEventListener('submit', async function (e) {
         e.preventDefault();
+
         const id = document.getElementById('curso-id').value;
+
+        const tagsSelecionadas = coletarTagsDoFormulario();
+        if (tagsSelecionadas.length === 0) {
+            mostrarMensagem('cursos-mensagem', 'Selecione pelo menos uma tag para o curso.', 'erro');
+            return;
+        }
+
         const payload = {
             nome: document.getElementById('curso-nome').value.trim(),
             duracao: parseInt(document.getElementById('curso-duracao').value),
@@ -362,7 +463,8 @@ if (formCurso) {
             carga_horaria: document.getElementById('curso-carga-horaria').value.trim() || null,
             salario: document.getElementById('curso-salario').value.trim() || null,
             mercado: document.getElementById('curso-mercado').value.trim() || null,
-            perfil: document.getElementById('curso-perfil').value.trim() || null
+            perfil: document.getElementById('curso-perfil').value.trim() || null,
+            tags: tagsSelecionadas
         };
 
         try {
@@ -435,8 +537,11 @@ function logout() {
     }
 }
 
-carregarUsuarios();
-carregarCursos();
+tagsPromise = carregarTagsGlobais();
+tagsPromise.then(() => {
+    carregarUsuarios();
+    carregarCursos();
+});
 
 window.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal')) {
@@ -445,14 +550,6 @@ window.addEventListener('click', function (e) {
 });
 
 // parte do teste
-
-const CHAVES_CURSOS = [
-    { chave: 'dev', nome: 'Dev' },
-    { chave: 'quimica', nome: 'Química' },
-    { chave: 'logistica', nome: 'Logística' },
-    { chave: 'eletronica', nome: 'Eletrônica' },
-    { chave: 'adm', nome: 'ADM' }
-]
 
 async function carregarPerguntas() {
     const tbody = document.getElementById('perguntas-table-body')
@@ -489,38 +586,42 @@ async function carregarPerguntas() {
 }
 
 function renderizarFormularioRespostas(respostasExistentes = []) {
-    const container = document.getElementById('container-respostas')
-    container.innerHTML = ''
+    const container = document.getElementById('container-respostas');
+    if (!container) return;
+    container.innerHTML = '';
 
-    const numOpcoes = respostasExistentes.length > 0 ? respostasExistentes.length : 5
+    const numOpcoes = respostasExistentes.length > 0 ? respostasExistentes.length : 5;
 
     for (let i = 0; i < numOpcoes; i++) {
-        const resp = respostasExistentes[i] || { texto: '', pesos: { dev: 1, quimica: 1, logistica: 1, eletronica: 1, adm: 1 } }
+        const resp = respostasExistentes[i] || { texto: '', pesos: {} };
 
-        const divBox = document.createElement('div')
-        divBox.style.cssText = 'border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #f9f9f9;'
+        const divBox = document.createElement('div');
+        divBox.style.cssText = 'border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #f9f9f9;';
 
-        let htmlPesos = ''
-        CHAVES_CURSOS.forEach(c => {
-            const val = (resp.pesos && resp.pesos[c.chave] !== undefined) ? resp.pesos[c.chave] : 1
+        let htmlPesos = '';
+        tagsGlobais.forEach(t => {
+            const val = (resp.pesos && resp.pesos[t.chave] !== undefined) ? resp.pesos[t.chave] : 0;
             htmlPesos += `
-        <label style="font-size:11px; margin-right:4px; display:inline-block; margin-top:3px;">
-          ${c.nome}: 
-          <input type="number" min="0" max="3" class="input-peso" data-curso="${c.chave}" value="${val}" style="width: 38px; padding:2px;">
-        </label>
-      `
-        })
+                <label style="font-size:11px; margin-right:4px; display:inline-block; margin-top:3px;">
+                    ${t.nome}:
+                    <input type="number" min="0" max="3" class="input-peso"
+                        data-tag="${t.chave}" value="${val}" style="width: 38px; padding:2px;">
+                </label>
+            `;
+        });
 
         divBox.innerHTML = `
-      <div class="form-group" style="margin-bottom: 5px;">
-        <label><b>Alternativa ${i + 1}:</b></label>
-        <input type="text" class="input-resposta-texto" value="${resp.texto}" placeholder="Texto da alternativa" required style="width:100%;">
-      </div>
-      <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center;">
-        <span style="font-size:11px; font-weight:bold; width: 100%;">Pesos:</span> ${htmlPesos}
-      </div>
-    `
-        container.appendChild(divBox)
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label><b>Alternativa ${i + 1}:</b></label>
+                <input type="text" class="input-resposta-texto" value="${resp.texto}"
+                    placeholder="Texto da alternativa" required style="width:100%;">
+            </div>
+            <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center;">
+                <span style="font-size:11px; font-weight: bold; width: 100%;">Pesos (0 a 3):</span>
+                ${htmlPesos}
+            </div>
+        `;
+        container.appendChild(divBox);
     }
 }
 
@@ -591,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pesos = {}
 
                 inputsPesos.forEach(inp => {
-                    pesos[inp.dataset.curso] = parseInt(inp.value) || 0
+                    pesos[inp.dataset.tag] = parseInt(inp.value) || 0
                 })
 
                 if (texto) {

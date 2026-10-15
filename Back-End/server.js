@@ -206,10 +206,30 @@ server.put("/redefinir_senha_sem_email", async (req, res) => {
 
 // ─── USUÁRIOS ───────────────────────────────────────────────────────────────────
 
-// GET /cursos → lista todos os cursos
+// GET /cursos → lista todos os cursos com suas tags
 server.get("/cursos", async (req, res) => {
   try {
-    const [resultado] = await pool.query(`SELECT * FROM cursos`);
+    const [cursos] = await pool.query(`SELECT * FROM cursos ORDER BY id`);
+    const [vinculos] = await pool.query(
+      `SELECT ct.curso_id, ct.peso, t.id AS tag_id, t.chave, t.nome, t.descricao
+       FROM cursos_tags ct
+       JOIN tags t ON t.id = ct.tag_id
+       ORDER BY t.nome`
+    );
+
+    const resultado = cursos.map(curso => ({
+      ...curso,
+      tags: vinculos
+        .filter(v => v.curso_id === curso.id)
+        .map(v => ({
+          tag_id:    v.tag_id,
+          chave:     v.chave,
+          nome:      v.nome,
+          descricao: v.descricao,
+          peso:      v.peso
+        }))
+    }));
+
     res.json(resultado);
   } catch (error) {
     console.log(error);
@@ -217,83 +237,284 @@ server.get("/cursos", async (req, res) => {
   }
 });
 
-// GET /cursos/:id → busca um curso específico pelo id
+// GET /cursos/:id → busca um curso específico com suas tags
 server.get("/cursos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const [resultado] = await pool.query(`SELECT * FROM cursos WHERE id = ?`, [id]);
 
-    if (resultado.length === 0) {
+    const [cursos] = await pool.query(`SELECT * FROM cursos WHERE id = ?`, [id]);
+    if (cursos.length === 0) {
       return res.status(404).json({ mensagem: "Curso não encontrado" });
     }
 
-    res.json(resultado[0]);
+    const [vinculos] = await pool.query(
+      `SELECT ct.peso, t.id AS tag_id, t.chave, t.nome, t.descricao
+       FROM cursos_tags ct
+       JOIN tags t ON t.id = ct.tag_id
+       WHERE ct.curso_id = ?
+       ORDER BY t.nome`,
+      [id]
+    );
+
+    const curso = cursos[0];
+    curso.tags = vinculos.map(v => ({
+      tag_id:    v.tag_id,
+      chave:     v.chave,
+      nome:      v.nome,
+      descricao: v.descricao,
+      peso:      v.peso
+    }));
+
+    res.json(curso);
   } catch (error) {
     console.log(error);
     res.status(500).json({ mensagem: "Erro ao buscar curso" });
   }
 });
 
-// Rota de criação de curso
+// POST /cursos → criar curso com tags (admin)
 server.post("/cursos", verificarAdmin, async (req, res) => {
+  const connection = await pool.getConnection();
   try {
-    const { nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil } = req.body;
+    const {
+      nome, duracao, vagas, descricao, status, area, resumo,
+      carga_horaria, salario, mercado, perfil, tags
+    } = req.body;
 
-    // Somente os campos essenciais são obrigatórios
     if (!nome || !duracao || !vagas || !status) {
-      return res.status(400).json({ mensagem: "Campos obrigatórios: nome, duracao, vagas, status" });
+      return res.status(400).json({
+        mensagem: "Campos obrigatórios: nome, duracao, vagas, status"
+      });
     }
 
-    const [resultado] = await pool.query(
-      `INSERT INTO cursos (nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil)
+    if (!Array.isArray(tags) || tags.length === 0) {
+      return res.status(400).json({
+        mensagem: "Selecione pelo menos uma tag para o curso."
+      });
+    }
+
+    await connection.beginTransaction();
+
+    const [resultado] = await connection.query(
+      `INSERT INTO cursos
+         (nome, duracao, vagas, descricao, status, area, resumo,
+          carga_horaria, salario, mercado, perfil)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [nome, duracao, vagas, descricao || null, status, area || null, resumo || null, carga_horaria || null, salario || null, mercado || null, perfil || null]
+      [
+        nome, duracao, vagas, descricao || null, status,
+        area || null, resumo || null,
+        carga_horaria || null, salario || null,
+        mercado || null, perfil || null
+      ]
     );
+
+    const cursoId = resultado.insertId;
+
+    for (const t of tags) {
+      if (!t.tag_id) continue;
+      const peso = Math.max(0, Math.min(3, parseInt(t.peso) || 0));
+      await connection.query(
+        `INSERT INTO cursos_tags (curso_id, tag_id, peso) VALUES (?, ?, ?)`,
+        [cursoId, t.tag_id, peso]
+      );
+    }
+
+    await connection.commit();
 
     res.status(201).json({
       mensagem: "Curso criado com sucesso!",
+      id: cursoId
+    });
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao criar curso" });
+  } finally {
+    connection.release();
+  }
+});
+
+// GET /tags → lista o vocabulário global (público, usado pelo quiz e dashboard)
+server.get("/tags", async (req, res) => {
+  try {
+    const [resultado] = await pool.query(
+      `SELECT id, chave, nome, descricao, ativo FROM tags WHERE ativo = 1 ORDER BY nome`
+    );
+    res.json(resultado);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao buscar tags" });
+  }
+});
+
+// GET /tags/todas → lista TODAS (inclusive inativas) — só admin
+server.get("/tags/todas", verificarAdmin, async (req, res) => {
+  try {
+    const [resultado] = await pool.query(
+      `SELECT id, chave, nome, descricao, ativo FROM tags ORDER BY nome`
+    );
+    res.json(resultado);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao buscar tags" });
+  }
+});
+
+// POST /tags → criar nova tag (admin)
+server.post("/tags", verificarAdmin, async (req, res) => {
+  try {
+    const { chave, nome, descricao, ativo } = req.body;
+
+    if (!chave || !nome) {
+      return res.status(400).json({ mensagem: "Chave e nome são obrigatórios." });
+    }
+
+    // Chave só aceita minúsculas, números e underscore
+    if (!/^[a-z0-9_]+$/.test(chave)) {
+      return res.status(400).json({
+        mensagem: "A chave deve conter apenas letras minúsculas, números e underscore."
+      });
+    }
+
+    const [resultado] = await pool.query(
+      `INSERT INTO tags (chave, nome, descricao, ativo) VALUES (?, ?, ?, ?)`,
+      [chave, nome, descricao || null, ativo === 0 ? 0 : 1]
+    );
+
+    res.status(201).json({
+      mensagem: "Tag criada com sucesso!",
       id: resultado.insertId
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ mensagem: "Erro ao criar curso" });
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ mensagem: "Já existe uma tag com essa chave." });
+    }
+    res.status(500).json({ mensagem: "Erro ao criar tag" });
   }
 });
 
-// Rota de atualização de curso 
-server.put("/cursos/:id", verificarAdmin, async (req, res) => {
+// PUT /tags/:id → atualizar tag (admin)
+server.put("/tags/:id", verificarAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, duracao, vagas, descricao, status, area, resumo, carga_horaria, salario, mercado, perfil } = req.body;
+    const { chave, nome, descricao, ativo } = req.body;
 
-    if (!nome || !duracao || !vagas || !status) {
-      return res.status(400).json({ mensagem: "Campos obrigatórios: nome, duracao, vagas, status" });
+    if (!chave || !nome) {
+      return res.status(400).json({ mensagem: "Chave e nome são obrigatórios." });
+    }
+
+    if (!/^[a-z0-9_]+$/.test(chave)) {
+      return res.status(400).json({
+        mensagem: "A chave deve conter apenas letras minúsculas, números e underscore."
+      });
     }
 
     const [resultado] = await pool.query(
-      `UPDATE cursos 
-       SET nome = ?, duracao = ?, vagas = ?, descricao = ?, status = ?, area = ?, resumo = ?, carga_horaria = ?, salario = ?, mercado = ?, perfil = ?
-       WHERE id = ?`,
-      [nome, duracao, vagas, descricao || null, status, area || null, resumo || null, carga_horaria || null, salario || null, mercado || null, perfil || null, id]
+      `UPDATE tags SET chave = ?, nome = ?, descricao = ?, ativo = ? WHERE id = ?`,
+      [chave, nome, descricao || null, ativo === 0 ? 0 : 1, id]
     );
 
     if (resultado.affectedRows === 0) {
-      return res.status(404).json({ mensagem: "Curso não encontrado" });
+      return res.status(404).json({ mensagem: "Tag não encontrada." });
     }
 
-    res.json({ mensagem: "Curso atualizado com sucesso!" });
-
+    res.json({ mensagem: "Tag atualizada com sucesso!" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ mensagem: "Erro ao atualizar curso" });
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ mensagem: "Já existe uma tag com essa chave." });
+    }
+    res.status(500).json({ mensagem: "Erro ao atualizar tag" });
   }
 });
 
-// Rota de exclusão de curso
+// DELETE /tags/:id → excluir tag (admin)
+server.delete("/tags/:id", verificarAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [resultado] = await pool.query(`DELETE FROM tags WHERE id = ?`, [id]);
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({ mensagem: "Tag não encontrada." });
+    }
+
+    res.json({ mensagem: "Tag excluída com sucesso!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao excluir tag" });
+  }
+});
+
+// PUT /cursos/:id → atualizar curso com tags (admin)
+server.put("/cursos/:id", verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  const connection = await pool.getConnection();
+  try {
+    const {
+      nome, duracao, vagas, descricao, status, area, resumo,
+      carga_horaria, salario, mercado, perfil, tags
+    } = req.body;
+
+    if (!nome || !duracao || !vagas || !status) {
+      return res.status(400).json({
+        mensagem: "Campos obrigatórios: nome, duracao, vagas, status"
+      });
+    }
+
+    if (!Array.isArray(tags) || tags.length === 0) {
+      return res.status(400).json({
+        mensagem: "Selecione pelo menos uma tag para o curso."
+      });
+    }
+
+    await connection.beginTransaction();
+
+    const [resultado] = await connection.query(
+      `UPDATE cursos
+       SET nome = ?, duracao = ?, vagas = ?, descricao = ?, status = ?,
+           area = ?, resumo = ?, carga_horaria = ?, salario = ?,
+           mercado = ?, perfil = ?
+       WHERE id = ?`,
+      [
+        nome, duracao, vagas, descricao || null, status,
+        area || null, resumo || null,
+        carga_horaria || null, salario || null,
+        mercado || null, perfil || null, id
+      ]
+    );
+
+    if (resultado.affectedRows === 0) {
+      await connection.rollback();
+      return res.status(404).json({ mensagem: "Curso não encontrado" });
+    }
+
+    // Substitui as tags do curso: apaga tudo e recria
+    await connection.query(`DELETE FROM cursos_tags WHERE curso_id = ?`, [id]);
+
+    for (const t of tags) {
+      if (!t.tag_id) continue;
+      const peso = Math.max(0, Math.min(3, parseInt(t.peso) || 0));
+      await connection.query(
+        `INSERT INTO cursos_tags (curso_id, tag_id, peso) VALUES (?, ?, ?)`,
+        [id, t.tag_id, peso]
+      );
+    }
+
+    await connection.commit();
+    res.json({ mensagem: "Curso atualizado com sucesso!" });
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
+    res.status(500).json({ mensagem: "Erro ao atualizar curso" });
+  } finally {
+    connection.release();
+  }
+});
+
 server.delete("/cursos/:id", verificarAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-
     const [resultado] = await pool.query(`DELETE FROM cursos WHERE id = ?`, [id]);
 
     if (resultado.affectedRows === 0) {
@@ -301,7 +522,6 @@ server.delete("/cursos/:id", verificarAdmin, async (req, res) => {
     }
 
     res.json({ mensagem: "Curso excluído com sucesso!" });
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ mensagem: "Erro ao excluir curso" });

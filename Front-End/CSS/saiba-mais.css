@@ -3,6 +3,7 @@
     margin: 40px auto;
     padding: 0 24px;
 }
+
 .btn-voltar {
     background: #0c3470;
     color: white;
@@ -18,9 +19,11 @@
     align-items: center;
     gap: 8px;
 }
+
 .btn-voltar:hover {
     background: #1a4a8a;
 }
+
 .curso-detalhe-card {
     background: white;
     border-radius: 24px;
@@ -29,6 +32,7 @@
     border: 1px solid #e2e8f0;
     transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .curso-detalhe-card h1 {
     color: #0c3470;
     font-size: 2rem;
@@ -37,6 +41,7 @@
     border-bottom: 3px solid #0c3470;
     display: inline-block;
 }
+
 .info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -46,16 +51,20 @@
     padding: 20px;
     margin-bottom: 30px;
 }
+
 .info-item {
     font-size: 1rem;
     color: #1e2a3b;
 }
+
 .info-item strong {
     color: #0c3470;
 }
+
 .secao {
     margin-bottom: 30px;
 }
+
 .secao h3 {
     color: #0c3470;
     font-size: 1.4rem;
@@ -63,16 +72,19 @@
     border-left: 5px solid #0c3470;
     padding-left: 18px;
 }
+
 .destaque {
     background: #eef2ff;
     border-radius: 16px;
     padding: 20px;
     margin: 25px 0;
 }
+
 .destaque p {
     margin: 0;
     line-height: 1.6;
 }
+
 .erro-card {
     text-align: center;
     padding: 50px 20px;
@@ -80,10 +92,12 @@
     border-radius: 24px;
     border: 1px solid #e2e8f0;
 }
+
 .erro-card h2 {
     color: #c62828;
     margin-bottom: 15px;
 }
+
 .default-footer {
     background: #0c3470;
     color: rgba(255, 255, 255, 0.6);
@@ -91,21 +105,45 @@
     padding: 22px;
     font-size: 13px;
 }
+
+/* ─── Badges de tags ───────────────────────────────────── */
+.curso-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0 18px;
+}
+
+.tag-badge {
+    display: inline-block;
+    background: #e6efff;
+    color: #0c3470;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
 @media (max-width: 768px) {
     .saiba-container {
         padding: 0 16px;
         margin: 20px auto;
     }
+
     .curso-detalhe-card {
         padding: 20px;
     }
+
     .curso-detalhe-card h1 {
         font-size: 1.6rem;
     }
+
     .info-grid {
         grid-template-columns: 1fr;
         gap: 12px;
     }
+
     .secao h3 {
         font-size: 1.2rem;
     }
