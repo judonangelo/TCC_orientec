@@ -28,6 +28,12 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const cpf = document.getElementById("cpf").value.replace(/\D/g, "")
     const mensagemDiv = document.getElementById("mensagem")
 
+    if (senha.length < 6) {
+        mensagemDiv.className = "mensagem erro"
+        mensagemDiv.textContent = "A senha deve ter no mínimo 6 caracteres."
+        return
+    }
+
     try {
         const resposta = await fetch(`${API_BASE}/cadastro`, {
             method: "POST",

@@ -28,7 +28,7 @@ const verificarToken = (req, res, next) => {
   const token = authHeader.split(" ")[1]
   try {
     const payload = jwt.verify(token, api_chave)
-    req.usuario = payload 
+    req.usuario = payload
     next()
   } catch (erro) {
     return res.status(401).json({ mensagem: "Token inválido ou expirado" })
@@ -52,6 +52,10 @@ server.post("/cadastro", async (req, res) => {
     const SoNome = /^[A-Za-zÀ-ÿ\s]+$/
     if (!SoNome.test(nome.trim())) {
       return res.status(400).json({ mensagem: "O nome deve conter apenas letras." })
+    }
+
+    if (!senha || senha.length < 6) {
+      return res.status(400).json({ mensagem: "A senha deve ter no mínimo 6 caracteres." })
     }
 
     if (!cpf || cpf.length !== 11) {
@@ -215,11 +219,11 @@ server.get("/cursos", async (req, res) => {
       tags: vinculos
         .filter(v => v.curso_id === curso.id)
         .map(v => ({
-          tag_id:    v.tag_id,
-          chave:     v.chave,
-          nome:      v.nome,
+          tag_id: v.tag_id,
+          chave: v.chave,
+          nome: v.nome,
           descricao: v.descricao,
-          peso:      v.peso
+          peso: v.peso
         }))
     }))
 
@@ -251,11 +255,11 @@ server.get("/cursos/:id", async (req, res) => {
 
     const curso = cursos[0]
     curso.tags = vinculos.map(v => ({
-      tag_id:    v.tag_id,
-      chave:     v.chave,
-      nome:      v.nome,
+      tag_id: v.tag_id,
+      chave: v.chave,
+      nome: v.nome,
       descricao: v.descricao,
-      peso:      v.peso
+      peso: v.peso
     }))
 
     res.json(curso)
