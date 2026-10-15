@@ -1,17 +1,16 @@
-var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt');
+// area de configuracao
+window.API_BASE = `http://${window.location.hostname}:3000`
 
-// ── Popup de escolha para admin ──────────────────────────────────────────────
+// area de administrador
 function criarPopupAdmin(nome) {
-  const overlay = document.createElement('div');
-  overlay.id = 'adminOverlay';
+  const overlay = document.createElement('div')
+  overlay.id = 'adminOverlay'
   overlay.style.cssText = `
     position:fixed;inset:0;background:rgba(0,0,0,.55);
     backdrop-filter:blur(4px);display:flex;align-items:center;
     justify-content:center;z-index:9999;
     animation:fadeIn .25s ease;
-  `;
+  `
 
   overlay.innerHTML = `
     <div id="adminModal" style="
@@ -56,36 +55,37 @@ function criarPopupAdmin(nome) {
       #btnAdmin:hover  { transform:translateY(-2px);box-shadow:0 8px 20px rgba(26,26,46,.35); }
       #btnAluno:hover  { transform:translateY(-2px);box-shadow:0 8px 20px rgba(26,26,46,.15); }
     </style>
-  `;
+  `
 
-  document.body.appendChild(overlay);
+  document.body.appendChild(overlay)
 
   document.getElementById('btnAdmin').addEventListener('click', () => {
-    fecharPopup();
-    window.location.href = 'dashboard.html';
-  });
+    fecharPopup()
+    window.location.href = 'dashboard.html'
+  })
 
   document.getElementById('btnAluno').addEventListener('click', () => {
-    fecharPopup();
-    window.location.href = 'home.html';
-  });
+    fecharPopup()
+    window.location.href = 'home.html'
+  })
 
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) fecharPopup();
-  });
+    if (e.target === overlay) fecharPopup()
+  })
 }
 
 function fecharPopup() {
-  const overlay = document.getElementById('adminOverlay');
-  if (overlay) overlay.remove();
+  const overlay = document.getElementById('adminOverlay')
+  if (overlay) overlay.remove()
 }
 
+// area de login
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  e.preventDefault()
 
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-  const mensagemDiv = document.getElementById("mensagem");
+  const email = document.getElementById("email").value
+  const senha = document.getElementById("senha").value
+  const mensagemDiv = document.getElementById("mensagem")
 
   try {
     const resposta = await fetch(`${API_BASE}/login`, {
@@ -96,35 +96,35 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         "bypass-tunnel-reminder": "true"
       },
       body: JSON.stringify({ email, senha })
-    });
+    })
 
-    const dados = await resposta.json();
+    const dados = await resposta.json()
 
     if (resposta.ok && dados.token) {
-      localStorage.setItem('tokenIntranet', dados.token);
-      localStorage.setItem('emailUsuario', email);
-      localStorage.setItem('nomeUsuario', dados.nome);
-      localStorage.setItem('nivelUsuario', dados.nivel);
+      localStorage.setItem('tokenIntranet', dados.token)
+      localStorage.setItem('emailUsuario', email)
+      localStorage.setItem('nomeUsuario', dados.nome)
+      localStorage.setItem('nivelUsuario', dados.nivel)
 
-      mensagemDiv.className = "mensagem sucesso";
-      mensagemDiv.textContent = "Login realizado com sucesso!";
+      mensagemDiv.className = "mensagem sucesso"
+      mensagemDiv.textContent = "Login realizado com sucesso!"
 
       if (dados.nivel === 'admin') {
-        criarPopupAdmin(dados.nome);
+        criarPopupAdmin(dados.nome)
       } else {
         setTimeout(() => {
-          window.location.href = "home.html";
-        }, 1000);
+          window.location.href = "home.html"
+        }, 1000)
       }
 
     } else {
-      mensagemDiv.className = "mensagem erro";
-      mensagemDiv.textContent = dados.mensagem || "Usuário ou senha incorretos.";
+      mensagemDiv.className = "mensagem erro"
+      mensagemDiv.textContent = dados.mensagem || "Usuário ou senha incorretos."
     }
 
   } catch (erro) {
-    mensagemDiv.className = "mensagem erro";
-    mensagemDiv.textContent = "Erro de conexão com o servidor.";
-    console.error(erro);
+    mensagemDiv.className = "mensagem erro"
+    mensagemDiv.textContent = "Erro de conexão com o servidor."
+    console.error(erro)
   }
-});
+})

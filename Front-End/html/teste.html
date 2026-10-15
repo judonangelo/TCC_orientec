@@ -35,10 +35,23 @@
             <div class="intro-box">
                 <h2>Como Funciona o Teste?</h2>
                 <p>
-                    Este teste vocacional foi desenvolvido para mapear suas afinidades e sugerir qual área técnica do
-                    SENAI mais se alinha ao seu perfil.
-                    Serão apresentadas perguntas simples sobre suas preferências e hábitos.
+                    Este teste vocacional foi desenvolvido para mapear suas afinidades e sugerir qual
+                    área técnica do SENAI mais se alinha ao seu perfil. Serão apresentadas perguntas
+                    simples sobre suas preferências e hábitos.
                 </p>
+
+                <div class="intro-explicacao">
+                    <p><strong>Como a pontuação é calculada:</strong></p>
+                    <ul>
+                        <li>Cada resposta soma peso (<em>0 a 3</em>) para uma ou mais áreas de interesse.</li>
+                        <li>Suas respostas geram uma <strong>afinidade (%)</strong> por cada área.</li>
+                        <li>Cada curso dá pesos diferentes às áreas que mais importam para ele.</li>
+                        <li>O resultado final é uma <strong>média ponderada</strong> entre sua afinidade e o peso de
+                            cada área no curso.</li>
+                    </ul>
+                    <p>Responda com sinceridade,não existem respostas certas ou erradas.</p>
+                </div>
+
                 <button id="start-btn" class="btn-primary-quiz">Iniciar Teste</button>
             </div>
         </section>
@@ -85,6 +98,7 @@
     <script>
         var nivelNecessario = "any";
     </script>
+    <script src="../script/config.js"></script>
     <script src="../script/autenticacao.js"></script>
     <script src="../script/perfil-components.js"></script>
     <script src="../script/teste.js"></script>

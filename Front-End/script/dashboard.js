@@ -1,66 +1,66 @@
-const token = localStorage.getItem("tokenIntranet");
+// area de configuracao
+window.API_BASE = `http://${window.location.hostname}:3000`
+
+const token = localStorage.getItem("tokenIntranet")
 
 const authHeaders = () => ({
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`
-});
-
-var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:3000'
-    : 'https://orientec-api.loca.lt');
-
-let usuariosGlobal = [];
-let paginaAtual = 1;
-const ITENS_POR_PAGINA = 10;
-let termoPesquisa = '';
-let filtroNivel = 'todos';
-let tagsGlobais = [];
-let tagsPromise = null;
+})
 
 
+let usuariosGlobal = []
+let paginaAtual = 1
+const ITENS_POR_PAGINA = 10
+let termoPesquisa = ''
+let filtroNivel = 'todos'
+let tagsGlobais = []
+let tagsPromise = null
+
+// area de navegacao
 document.querySelectorAll('.sidebar-link').forEach(link => {
     link.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-        const section = this.dataset.section;
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(`${section}-section`).classList.add('active');
+        e.preventDefault()
+        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'))
+        this.classList.add('active')
+        const section = this.dataset.section
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'))
+        document.getElementById(`${section}-section`).classList.add('active')
 
-        if (section === 'relatorios') carregarRelatorios();
-        if (section === 'cursos') carregarCursos();
+        if (section === 'relatorios') carregarRelatorios()
+        if (section === 'cursos') carregarCursos()
         if (section === 'teste') carregarPerguntas()
-    });
-});
+    })
+})
 
+// area de tags
 async function carregarTagsGlobais() {
     try {
-        const response = await fetch(`${API_BASE}/tags`, { headers: authHeaders() });
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        tagsGlobais = await response.json();
-        return tagsGlobais;
+        const response = await fetch(`${API_BASE}/tags`, { headers: authHeaders() })
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
+        tagsGlobais = await response.json()
+        return tagsGlobais
     } catch (error) {
-        console.error("Erro ao carregar tags:", error);
-        tagsGlobais = [];
-        return [];
+        console.error("Erro ao carregar tags:", error)
+        tagsGlobais = []
+        return []
     }
 }
 
-
-
+// area de usuarios
 function renderizarUsuarios(usuarios) {
-    const tbody = document.getElementById('usuarios-table-body');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById('usuarios-table-body')
+    tbody.innerHTML = ''
 
-    const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
-    const fim = inicio + ITENS_POR_PAGINA;
-    const paginaUsuarios = usuarios.slice(inicio, fim);
+    const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA
+    const fim = inicio + ITENS_POR_PAGINA
+    const paginaUsuarios = usuarios.slice(inicio, fim)
 
     if (paginaUsuarios.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum usuário encontrado.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum usuário encontrado.</td></tr>'
     } else {
         paginaUsuarios.forEach(usuario => {
-            const tr = document.createElement('tr');
+            const tr = document.createElement('tr')
             tr.innerHTML = `
                 <td>${usuario.id}</td>
                 <td>${usuario.nome}</td>
@@ -71,163 +71,162 @@ function renderizarUsuarios(usuarios) {
                     <button class="btn-editar" onclick="abrirModalEditarUsuario(${usuario.id}, '${usuario.nivel}')">Editar</button>
                     <button class="btn-excluir" onclick="confirmarExclusaoUsuario(${usuario.id})">Excluir</button>
                 </td>
-            `;
-            tbody.appendChild(tr);
-        });
+            `
+            tbody.appendChild(tr)
+        })
     }
 
-    atualizarControlesPaginacao(usuarios.length);
+    atualizarControlesPaginacao(usuarios.length)
 }
 
 function atualizarControlesPaginacao(totalItens) {
-    const container = document.getElementById('paginacao-container');
-    if (!container) return;
+    const container = document.getElementById('paginacao-container')
+    if (!container) return
 
-    const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
-    container.innerHTML = '';
+    const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA)
+    container.innerHTML = ''
 
-    if (totalPaginas <= 1) return;
+    if (totalPaginas <= 1) return
 
-    const btnAnterior = document.createElement('button');
-    btnAnterior.textContent = '← Anterior';
-    btnAnterior.className = 'btn-paginacao btn-anterior';
-    btnAnterior.disabled = paginaAtual === 1;
+    const btnAnterior = document.createElement('button')
+    btnAnterior.textContent = '← Anterior'
+    btnAnterior.className = 'btn-paginacao btn-anterior'
+    btnAnterior.disabled = paginaAtual === 1
     btnAnterior.addEventListener('click', () => {
         if (paginaAtual > 1) {
-            paginaAtual--;
-            aplicarFiltros();
+            paginaAtual--
+            aplicarFiltros()
         }
-    });
-    container.appendChild(btnAnterior);
+    })
+    container.appendChild(btnAnterior)
 
-    const spanPagina = document.createElement('span');
-    spanPagina.textContent = ` Página ${paginaAtual} de ${totalPaginas} `;
-    spanPagina.style.margin = '0 10px';
-    container.appendChild(spanPagina);
+    const spanPagina = document.createElement('span')
+    spanPagina.textContent = ` Página ${paginaAtual} de ${totalPaginas} `
+    spanPagina.style.margin = '0 10px'
+    container.appendChild(spanPagina)
 
-    const btnProximo = document.createElement('button');
-    btnProximo.textContent = 'Próximo →';
-    btnProximo.className = 'btn-paginacao btn-proximo';
-    btnProximo.disabled = paginaAtual === totalPaginas;
+    const btnProximo = document.createElement('button')
+    btnProximo.textContent = 'Próximo →'
+    btnProximo.className = 'btn-paginacao btn-proximo'
+    btnProximo.disabled = paginaAtual === totalPaginas
     btnProximo.addEventListener('click', () => {
         if (paginaAtual < totalPaginas) {
-            paginaAtual++;
-            aplicarFiltros();
+            paginaAtual++
+            aplicarFiltros()
         }
-    });
-    container.appendChild(btnProximo);
+    })
+    container.appendChild(btnProximo)
 }
 
 function aplicarFiltros() {
-    const termo = termoPesquisa.toLowerCase();
+    const termo = termoPesquisa.toLowerCase()
     const filtrados = usuariosGlobal.filter(usuario => {
 
-        const matchNome = usuario.nome.toLowerCase().startsWith(termo);
-        if (!matchNome) return false;
+        const matchNome = usuario.nome.toLowerCase().startsWith(termo)
+        if (!matchNome) return false
 
-        if (filtroNivel === 'todos') return true;
-        return usuario.nivel === filtroNivel;
-    });
-    renderizarUsuarios(filtrados);
+        if (filtroNivel === 'todos') return true
+        return usuario.nivel === filtroNivel
+    })
+    renderizarUsuarios(filtrados)
 }
 
 function atualizarUsuariosFiltrados() {
-    paginaAtual = 1;
-    aplicarFiltros();
+    paginaAtual = 1
+    aplicarFiltros()
 }
 
-
-const pesquisaInput = document.getElementById('pesquisa-nome');
+const pesquisaInput = document.getElementById('pesquisa-nome')
 if (pesquisaInput) {
     pesquisaInput.addEventListener('input', function (e) {
-        termoPesquisa = e.target.value.trim();
-        atualizarUsuariosFiltrados();
-    });
+        termoPesquisa = e.target.value.trim()
+        atualizarUsuariosFiltrados()
+    })
 }
 
-const filtroSelect = document.getElementById('filtro-tipo-usuario');
+const filtroSelect = document.getElementById('filtro-tipo-usuario')
 if (filtroSelect) {
     filtroSelect.addEventListener('change', function (e) {
-        filtroNivel = e.target.value;
-        atualizarUsuariosFiltrados();
-    });
+        filtroNivel = e.target.value
+        atualizarUsuariosFiltrados()
+    })
 }
 
 async function carregarUsuarios() {
-    const tbody = document.getElementById('usuarios-table-body');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
+    const tbody = document.getElementById('usuarios-table-body')
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>'
 
     try {
-        const response = await fetch(`${API_BASE}/usuarios`, { headers: authHeaders() });
+        const response = await fetch(`${API_BASE}/usuarios`, { headers: authHeaders() })
         if (!response.ok) {
             if (response.status === 401 || response.status === 403) {
-                logout();
-                return;
+                logout()
+                return
             }
-            throw new Error(`Erro HTTP: ${response.status}`);
+            throw new Error(`Erro HTTP: ${response.status}`)
         }
-        const usuarios = await response.json();
-        usuariosGlobal = usuarios;
-        paginaAtual = 1;
-        termoPesquisa = '';
-        filtroNivel = 'todos';
-        if (pesquisaInput) pesquisaInput.value = '';
-        if (filtroSelect) filtroSelect.value = 'todos';
+        const usuarios = await response.json()
+        usuariosGlobal = usuarios
+        paginaAtual = 1
+        termoPesquisa = ''
+        filtroNivel = 'todos'
+        if (pesquisaInput) pesquisaInput.value = ''
+        if (filtroSelect) filtroSelect.value = 'todos'
 
-        atualizarUsuariosFiltrados();
+        atualizarUsuariosFiltrados()
 
-        carregarRelatorios();
+        carregarRelatorios()
     } catch (error) {
-        console.error("Erro ao carregar usuários:", error);
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Erro ao carregar usuários.</td></tr>';
+        console.error("Erro ao carregar usuários:", error)
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Erro ao carregar usuários.</td></tr>'
     }
 }
 
-
-const formEditar = document.getElementById('form-editar-usuario');
+// area de usuarios - editar
+const formEditar = document.getElementById('form-editar-usuario')
 if (formEditar) {
     formEditar.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        const id = document.getElementById('editar-usuario-id').value;
+        e.preventDefault()
+        const id = document.getElementById('editar-usuario-id').value
         const payload = {
             nivel: document.getElementById('editar-usuario-nivel').value,
-        };
+        }
 
         try {
             const response = await fetch(`${API_BASE}/usuarios/${id}`, {
                 method: 'PUT',
                 headers: authHeaders(),
                 body: JSON.stringify(payload)
-            });
-            const dados = await response.json();
-            if (!response.ok) throw new Error(dados.mensagem || 'Erro ao atualizar');
-            await carregarUsuarios();
-            fecharModalEditarUsuario();
-            mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso');
+            })
+            const dados = await response.json()
+            if (!response.ok) throw new Error(dados.mensagem || 'Erro ao atualizar')
+            await carregarUsuarios()
+            fecharModalEditarUsuario()
+            mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso')
         } catch (erro) {
-            mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro');
+            mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro')
         }
-    });
+    })
 }
 
 function abrirModalEditarUsuario(id, nivel) {
-    document.getElementById('editar-usuario-id').value = id;
-    document.getElementById('editar-usuario-nivel').value = nivel;
-    document.getElementById('modal-editar-usuario').style.display = 'flex';
+    document.getElementById('editar-usuario-id').value = id
+    document.getElementById('editar-usuario-nivel').value = nivel
+    document.getElementById('modal-editar-usuario').style.display = 'flex'
 }
 
 function fecharModalEditarUsuario() {
-    document.getElementById('modal-editar-usuario').style.display = 'none';
+    document.getElementById('modal-editar-usuario').style.display = 'none'
 }
 
-
-let itemParaExcluir = null;
-let tipoExclusao = null;
+// area de usuarios - excluir
+let itemParaExcluir = null
+let tipoExclusao = null
 
 function confirmarExclusaoUsuario(id) {
-    itemParaExcluir = id;
-    tipoExclusao = 'usuario';
-    document.getElementById('modal-confirmacao').style.display = 'flex';
+    itemParaExcluir = id
+    tipoExclusao = 'usuario'
+    document.getElementById('modal-confirmacao').style.display = 'flex'
 }
 
 async function excluirUsuario(id) {
@@ -235,35 +234,35 @@ async function excluirUsuario(id) {
         const response = await fetch(`${API_BASE}/usuarios/${id}`, {
             method: 'DELETE',
             headers: authHeaders()
-        });
-        const dados = await response.json();
-        if (!response.ok) throw new Error(dados.mensagem || 'Erro ao excluir');
-        await carregarUsuarios();
-        mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso');
+        })
+        const dados = await response.json()
+        if (!response.ok) throw new Error(dados.mensagem || 'Erro ao excluir')
+        await carregarUsuarios()
+        mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso')
     } catch (erro) {
-        mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro');
+        mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro')
     }
 }
 
-
+// area de cursos
 async function carregarCursos() {
-    const tbody = document.getElementById('cursos-table-body');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
+    const tbody = document.getElementById('cursos-table-body')
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>'
 
     try {
-        const response = await fetch(`${API_BASE}/cursos`, { headers: authHeaders() });
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const cursos = await response.json();
+        const response = await fetch(`${API_BASE}/cursos`, { headers: authHeaders() })
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
+        const cursos = await response.json()
 
-        tbody.innerHTML = '';
+        tbody.innerHTML = ''
         if (cursos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum curso cadastrado.</td></tr>';
-            carregarRelatorios();
-            return;
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum curso cadastrado.</td></tr>'
+            carregarRelatorios()
+            return
         }
 
         cursos.forEach(curso => {
-            const tr = document.createElement('tr');
+            const tr = document.createElement('tr')
             tr.innerHTML = `
                 <td>${curso.id}</td>
                 <td>${curso.nome}</td>
@@ -274,40 +273,41 @@ async function carregarCursos() {
                     <button class="btn-editar" onclick="editarCurso(${curso.id})">Editar</button>
                     <button class="btn-excluir" onclick="confirmarExclusaoCurso(${curso.id})">Excluir</button>
                 </td>
-            `;
-            tbody.appendChild(tr);
-        });
+            `
+            tbody.appendChild(tr)
+        })
 
-        carregarRelatorios();
+        carregarRelatorios()
     } catch (error) {
-        console.error("Erro ao carregar cursos:", error);
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Erro ao carregar cursos.</td></tr>';
+        console.error("Erro ao carregar cursos:", error)
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Erro ao carregar cursos.</td></tr>'
     }
 }
 
+// area de cursos - tags
 function renderizarLinhasTags(tagsDoCurso = []) {
-    const container = document.getElementById('curso-tags-container');
-    if (!container) return;
-    container.innerHTML = '';
+    const container = document.getElementById('curso-tags-container')
+    if (!container) return
+    container.innerHTML = ''
 
     if (tagsDoCurso.length === 0) {
-        adicionarLinhaTag();
+        adicionarLinhaTag()
     } else {
-        tagsDoCurso.forEach(t => adicionarLinhaTag(t.tag_id, t.peso));
+        tagsDoCurso.forEach(t => adicionarLinhaTag(t.tag_id, t.peso))
     }
 }
 
 function adicionarLinhaTag(tagId = '', peso = 1) {
-    const container = document.getElementById('curso-tags-container');
-    if (!container) return;
+    const container = document.getElementById('curso-tags-container')
+    if (!container) return
 
-    const div = document.createElement('div');
-    div.className = 'tag-row';
-    div.style.cssText = 'display: flex; gap: 8px; align-items: center; margin-bottom: 8px;';
+    const div = document.createElement('div')
+    div.className = 'tag-row'
+    div.style.cssText = 'display: flex; gap: 8px; align-items: center; margin-bottom: 8px;'
 
     const options = tagsGlobais.map(t =>
         `<option value="${t.id}" ${String(t.id) === String(tagId) ? 'selected' : ''}>${t.nome}</option>`
-    ).join('');
+    ).join('')
 
     div.innerHTML = `
         <select class="input-tag-id"
@@ -320,92 +320,91 @@ function adicionarLinhaTag(tagId = '', peso = 1) {
             style="width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
         <button type="button" class="btn-excluir" onclick="removerLinhaTag(this)"
             style="padding: 8px 12px; cursor: pointer;">×</button>
-    `;
-    container.appendChild(div);
+    `
+    container.appendChild(div)
 }
 
 function removerLinhaTag(botao) {
-    const container = document.getElementById('curso-tags-container');
-    botao.parentElement.remove();
+    const container = document.getElementById('curso-tags-container')
+    botao.parentElement.remove()
 
-    // Garante que sempre exista ao menos uma linha visível
     if (container && container.querySelectorAll('.tag-row').length === 0) {
-        adicionarLinhaTag();
+        adicionarLinhaTag()
     }
 }
 
 function coletarTagsDoFormulario() {
-    const linhas = document.querySelectorAll('#curso-tags-container .tag-row');
-    const tags = [];
-    const vistos = new Set();
+    const linhas = document.querySelectorAll('#curso-tags-container .tag-row')
+    const tags = []
+    const vistos = new Set()
 
     linhas.forEach(linha => {
-        const tagId = parseInt(linha.querySelector('.input-tag-id').value);
-        const peso = parseInt(linha.querySelector('.input-tag-peso').value);
+        const tagId = parseInt(linha.querySelector('.input-tag-id').value)
+        const peso = parseInt(linha.querySelector('.input-tag-peso').value)
 
-        if (!tagId || vistos.has(tagId)) return;
-        vistos.add(tagId);
+        if (!tagId || vistos.has(tagId)) return
+        vistos.add(tagId)
 
         tags.push({
             tag_id: tagId,
             peso: Math.max(0, Math.min(3, isNaN(peso) ? 0 : peso))
-        });
-    });
+        })
+    })
 
-    return tags;
+    return tags
 }
 
+// area de cursos - modal
 async function abrirModalCurso(curso = null) {
-    // Garante que as tags foram carregadas antes de montar o modal
     if (tagsGlobais.length === 0 && tagsPromise) {
-        await tagsPromise;
+        await tagsPromise
     }
 
-    document.getElementById('modal-curso').style.display = 'flex';
+    document.getElementById('modal-curso').style.display = 'flex'
 
     if (curso) {
-        document.getElementById('modal-curso-titulo').textContent = 'Editar Curso';
-        document.getElementById('curso-id').value = curso.id;
-        document.getElementById('curso-nome').value = curso.nome;
-        document.getElementById('curso-duracao').value = curso.duracao;
-        document.getElementById('curso-vagas').value = curso.vagas ?? '';
-        document.getElementById('curso-descricao').value = curso.descricao ?? '';
-        document.getElementById('curso-area').value = curso.area ?? '';
-        document.getElementById('curso-resumo').value = curso.resumo ?? '';
-        document.getElementById('curso-carga-horaria').value = curso.carga_horaria ?? '';
-        document.getElementById('curso-salario').value = curso.salario ?? '';
-        document.getElementById('curso-mercado').value = curso.mercado ?? '';
-        document.getElementById('curso-perfil').value = curso.perfil ?? '';
-        document.getElementById('curso-status').value = curso.status;
-        renderizarLinhasTags(curso.tags || []);
+        document.getElementById('modal-curso-titulo').textContent = 'Editar Curso'
+        document.getElementById('curso-id').value = curso.id
+        document.getElementById('curso-nome').value = curso.nome
+        document.getElementById('curso-duracao').value = curso.duracao
+        document.getElementById('curso-vagas').value = curso.vagas ?? ''
+        document.getElementById('curso-descricao').value = curso.descricao ?? ''
+        document.getElementById('curso-area').value = curso.area ?? ''
+        document.getElementById('curso-resumo').value = curso.resumo ?? ''
+        document.getElementById('curso-carga-horaria').value = curso.carga_horaria ?? ''
+        document.getElementById('curso-salario').value = curso.salario ?? ''
+        document.getElementById('curso-mercado').value = curso.mercado ?? ''
+        document.getElementById('curso-perfil').value = curso.perfil ?? ''
+        document.getElementById('curso-status').value = curso.status
+        renderizarLinhasTags(curso.tags || [])
     } else {
-        document.getElementById('modal-curso-titulo').textContent = 'Novo Curso';
-        document.getElementById('form-curso').reset();
-        document.getElementById('curso-id').value = '';
-        renderizarLinhasTags([]);
+        document.getElementById('modal-curso-titulo').textContent = 'Novo Curso'
+        document.getElementById('form-curso').reset()
+        document.getElementById('curso-id').value = ''
+        renderizarLinhasTags([])
     }
 }
 
 function fecharModalCurso() {
-    document.getElementById('modal-curso').style.display = 'none';
+    document.getElementById('modal-curso').style.display = 'none'
 }
 
 async function editarCurso(id) {
     try {
-        const response = await fetch(`${API_BASE}/cursos/${id}`, { headers: authHeaders() });
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const curso = await response.json();
-        abrirModalCurso(curso);
+        const response = await fetch(`${API_BASE}/cursos/${id}`, { headers: authHeaders() })
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
+        const curso = await response.json()
+        abrirModalCurso(curso)
     } catch (error) {
-        console.error("Erro ao buscar curso para edição:", error);
-        mostrarMensagem('cursos-mensagem', 'Erro ao carregar dados do curso.', 'erro');
+        console.error("Erro ao buscar curso para edição:", error)
+        mostrarMensagem('cursos-mensagem', 'Erro ao carregar dados do curso.', 'erro')
     }
 }
 
 function confirmarExclusaoCurso(id) {
-    itemParaExcluir = id;
-    tipoExclusao = 'curso';
-    document.getElementById('modal-confirmacao').style.display = 'flex';
+    itemParaExcluir = id
+    tipoExclusao = 'curso'
+    document.getElementById('modal-confirmacao').style.display = 'flex'
 }
 
 async function excluirCurso(id) {
@@ -413,43 +412,45 @@ async function excluirCurso(id) {
         const response = await fetch(`${API_BASE}/cursos/${id}`, {
             method: 'DELETE',
             headers: authHeaders()
-        });
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        await carregarCursos();
-        mostrarMensagem('cursos-mensagem', 'Curso excluído com sucesso!', 'sucesso');
+        })
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
+        await carregarCursos()
+        mostrarMensagem('cursos-mensagem', 'Curso excluído com sucesso!', 'sucesso')
     } catch (error) {
-        console.error("Erro ao excluir curso:", error);
-        mostrarMensagem('cursos-mensagem', 'Erro ao excluir curso.', 'erro');
+        console.error("Erro ao excluir curso:", error)
+        mostrarMensagem('cursos-mensagem', 'Erro ao excluir curso.', 'erro')
     }
 }
 
-const btnConfirmar = document.getElementById('btn-confirmar-exclusao');
+// area de cursos - confirmacao de exclusao
+const btnConfirmar = document.getElementById('btn-confirmar-exclusao')
 if (btnConfirmar) {
     btnConfirmar.addEventListener('click', async function () {
-        if (tipoExclusao === 'usuario') excluirUsuario(itemParaExcluir);
-        else if (tipoExclusao === 'curso') await excluirCurso(itemParaExcluir);
+        if (tipoExclusao === 'usuario') excluirUsuario(itemParaExcluir)
+        else if (tipoExclusao === 'curso') await excluirCurso(itemParaExcluir)
         else if (tipoExclusao === 'pergunta') await excluirPergunta(itemParaExcluir)
-        fecharModalConfirmacao();
-    });
+        fecharModalConfirmacao()
+    })
 }
 
 function fecharModalConfirmacao() {
-    document.getElementById('modal-confirmacao').style.display = 'none';
-    itemParaExcluir = null;
-    tipoExclusao = null;
+    document.getElementById('modal-confirmacao').style.display = 'none'
+    itemParaExcluir = null
+    tipoExclusao = null
 }
 
-const formCurso = document.getElementById('form-curso');
+// area de cursos - formulario
+const formCurso = document.getElementById('form-curso')
 if (formCurso) {
     formCurso.addEventListener('submit', async function (e) {
-        e.preventDefault();
+        e.preventDefault()
 
-        const id = document.getElementById('curso-id').value;
+        const id = document.getElementById('curso-id').value
 
-        const tagsSelecionadas = coletarTagsDoFormulario();
+        const tagsSelecionadas = coletarTagsDoFormulario()
         if (tagsSelecionadas.length === 0) {
-            mostrarMensagem('cursos-mensagem', 'Selecione pelo menos uma tag para o curso.', 'erro');
-            return;
+            mostrarMensagem('cursos-mensagem', 'Selecione pelo menos uma tag para o curso.', 'erro')
+            return
         }
 
         const payload = {
@@ -465,92 +466,94 @@ if (formCurso) {
             mercado: document.getElementById('curso-mercado').value.trim() || null,
             perfil: document.getElementById('curso-perfil').value.trim() || null,
             tags: tagsSelecionadas
-        };
+        }
 
         try {
-            let response;
+            let response
             if (id) {
                 response = await fetch(`${API_BASE}/cursos/${id}`, {
                     method: 'PUT',
                     headers: authHeaders(),
                     body: JSON.stringify(payload)
-                });
+                })
             } else {
                 response = await fetch(`${API_BASE}/cursos`, {
                     method: 'POST',
                     headers: authHeaders(),
                     body: JSON.stringify(payload)
-                });
+                })
             }
 
             if (!response.ok) {
-                const erro = await response.json();
-                throw new Error(erro.mensagem || `Erro HTTP: ${response.status}`);
+                const erro = await response.json()
+                throw new Error(erro.mensagem || `Erro HTTP: ${response.status}`)
             }
 
-            await carregarCursos();
-            fecharModalCurso();
+            await carregarCursos()
+            fecharModalCurso()
             mostrarMensagem(
                 'cursos-mensagem',
                 id ? 'Curso atualizado com sucesso!' : 'Curso cadastrado com sucesso!',
                 'sucesso'
-            );
+            )
         } catch (error) {
-            console.error("Erro ao salvar curso:", error);
-            mostrarMensagem('cursos-mensagem', `Erro: ${error.message}`, 'erro');
+            console.error("Erro ao salvar curso:", error)
+            mostrarMensagem('cursos-mensagem', `Erro: ${error.message}`, 'erro')
         }
-    });
+    })
 }
 
+// area de relatorios
 async function carregarRelatorios() {
     try {
-        const response = await fetch(`${API_BASE}/relatorios`, { headers: authHeaders() });
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const stats = await response.json();
+        const response = await fetch(`${API_BASE}/relatorios`, { headers: authHeaders() })
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
+        const stats = await response.json()
 
-        document.getElementById('total-usuarios').textContent = stats.totalUsuarios;
-        document.getElementById('total-cursos').textContent = stats.totalCursos;
-        document.getElementById('cursos-ativos').textContent = stats.cursosAtivos;
+        document.getElementById('total-usuarios').textContent = stats.totalUsuarios
+        document.getElementById('total-cursos').textContent = stats.totalCursos
+        document.getElementById('cursos-ativos').textContent = stats.cursosAtivos
     } catch (error) {
-        console.error("Erro ao carregar relatórios:", error);
+        console.error("Erro ao carregar relatórios:", error)
     }
 }
 
+// area de utilitarios
 function mostrarMensagem(elementoId, texto, tipo) {
-    const elemento = document.getElementById(elementoId);
-    if (!elemento) return;
-    elemento.textContent = texto;
-    elemento.className = `mensagem ${tipo}`;
+    const elemento = document.getElementById(elementoId)
+    if (!elemento) return
+    elemento.textContent = texto
+    elemento.className = `mensagem ${tipo}`
     setTimeout(() => {
-        elemento.className = 'mensagem';
-        elemento.textContent = '';
-    }, 3000);
+        elemento.className = 'mensagem'
+        elemento.textContent = ''
+    }, 3000)
 }
 
 function logout() {
     if (confirm('Tem certeza que deseja sair?')) {
-        localStorage.removeItem("emailUsuario");
-        localStorage.removeItem("tokenIntranet");
-        localStorage.removeItem("nomeUsuario");
+        localStorage.removeItem("emailUsuario")
+        localStorage.removeItem("tokenIntranet")
+        localStorage.removeItem("nomeUsuario")
         localStorage.removeItem("nivelUsuario")
-        window.location.href = '../index.html';
+        window.location.href = '../index.html'
     }
 }
 
-tagsPromise = carregarTagsGlobais();
+// area de inicializacao
+tagsPromise = carregarTagsGlobais()
 tagsPromise.then(() => {
-    carregarUsuarios();
-    carregarCursos();
-});
+    carregarUsuarios()
+    carregarCursos()
+})
 
 window.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
+        e.target.style.display = 'none'
     }
-});
+})
 
-// parte do teste
-
+// area do teste vocacional - perguntas
 async function carregarPerguntas() {
     const tbody = document.getElementById('perguntas-table-body')
     if (!tbody) return
@@ -585,30 +588,31 @@ async function carregarPerguntas() {
     }
 }
 
+// area do teste vocacional - formulario de respostas
 function renderizarFormularioRespostas(respostasExistentes = []) {
-    const container = document.getElementById('container-respostas');
-    if (!container) return;
-    container.innerHTML = '';
+    const container = document.getElementById('container-respostas')
+    if (!container) return
+    container.innerHTML = ''
 
-    const numOpcoes = respostasExistentes.length > 0 ? respostasExistentes.length : 5;
+    const numOpcoes = respostasExistentes.length > 0 ? respostasExistentes.length : 5
 
     for (let i = 0; i < numOpcoes; i++) {
-        const resp = respostasExistentes[i] || { texto: '', pesos: {} };
+        const resp = respostasExistentes[i] || { texto: '', pesos: {} }
 
-        const divBox = document.createElement('div');
-        divBox.style.cssText = 'border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #f9f9f9;';
+        const divBox = document.createElement('div')
+        divBox.style.cssText = 'border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #f9f9f9;'
 
-        let htmlPesos = '';
+        let htmlPesos = ''
         tagsGlobais.forEach(t => {
-            const val = (resp.pesos && resp.pesos[t.chave] !== undefined) ? resp.pesos[t.chave] : 0;
+            const val = (resp.pesos && resp.pesos[t.chave] !== undefined) ? resp.pesos[t.chave] : 0
             htmlPesos += `
                 <label style="font-size:11px; margin-right:4px; display:inline-block; margin-top:3px;">
                     ${t.nome}:
                     <input type="number" min="0" max="3" class="input-peso"
                         data-tag="${t.chave}" value="${val}" style="width: 38px; padding:2px;">
                 </label>
-            `;
-        });
+            `
+        })
 
         divBox.innerHTML = `
             <div class="form-group" style="margin-bottom: 5px;">
@@ -620,11 +624,12 @@ function renderizarFormularioRespostas(respostasExistentes = []) {
                 <span style="font-size:11px; font-weight: bold; width: 100%;">Pesos (0 a 3):</span>
                 ${htmlPesos}
             </div>
-        `;
-        container.appendChild(divBox);
+        `
+        container.appendChild(divBox)
     }
 }
 
+// area do teste vocacional - modal de pergunta
 function abrirModalPergunta(pergunta = null) {
     document.getElementById('modal-pergunta').style.display = 'flex'
     if (pergunta) {
@@ -655,6 +660,7 @@ async function editarPergunta(id) {
     }
 }
 
+// area do teste vocacional - excluir pergunta
 function confirmarExclusaoPergunta(id) {
     itemParaExcluir = id
     tipoExclusao = 'pergunta'
@@ -675,6 +681,7 @@ async function excluirPergunta(id) {
     }
 }
 
+// area do teste vocacional - submeter formulario
 document.addEventListener('DOMContentLoaded', () => {
     const formPergunta = document.getElementById('form-pergunta')
     if (formPergunta) {

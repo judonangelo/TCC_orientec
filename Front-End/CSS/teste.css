@@ -56,6 +56,32 @@ html {
     max-width: 650px;
     margin: 0 auto 32px;
 }
+/* area do teste vocacional - explicacao da pontuacao */
+.intro-explicacao {
+    max-width: 650px;
+    margin: 0 auto 28px;
+    text-align: left;
+    color: #475569;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.intro-explicacao p {
+    margin: 12px 0;
+}
+
+.intro-explicacao ul {
+    margin: 8px 0 12px 20px;
+    padding: 0;
+}
+
+.intro-explicacao li {
+    margin-bottom: 4px;
+}
+
+.intro-explicacao strong {
+    color: #0c3470;
+}
 
 /* Animação suave para a transição entre telas */
 @keyframes fadeIn {
@@ -200,12 +226,6 @@ html {
 .curso-vencedor {
     text-align: center;
     padding: 20px 10px;
-}
-
-.vencedor-icon {
-    font-size: 48px;
-    color: #0c3470;
-    margin-bottom: 16px;
 }
 
 .curso-vencedor h2 {

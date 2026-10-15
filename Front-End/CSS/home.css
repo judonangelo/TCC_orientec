@@ -5,41 +5,6 @@ body {
     min-height: 100vh;
 }
 
-.home-header {
-    background: #0c3470;
-    padding: 0 24px;
-}
-.home-header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.home-logo {
-    font-size: 22px;
-    font-weight: 700;
-    color: #fff;
-    cursor: pointer;
-}
-.home-nav {
-    display: flex;
-    gap: 8px;
-}
-.home-nav a {
-    color: rgba(255,255,255,0.75);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
-}
-.home-nav a:hover {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-}
 .btn-perfil {
     background: rgba(255,255,255,0.15);
     color: #fff;

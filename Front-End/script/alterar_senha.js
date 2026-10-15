@@ -1,7 +1,7 @@
-var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt');
+// area de configuracao
+window.API_BASE = `http://${window.location.hostname}:3000`
 
+// area de senha
 document.addEventListener('DOMContentLoaded', () => {
     const tokenLogin = localStorage.getItem('tokenIntranet')
 
@@ -11,16 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const titulo = document.querySelector('h2')
 
     groupCPF.addEventListener("input", (e) => {
-        let value = e.target.value.replace(/\D/g, "");
+        let value = e.target.value.replace(/\D/g, "")
 
-        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length > 11) value = value.slice(0, 11)
 
-        value = value.replace(/(\d{3})(\d)/, "$1.$2");
-        value = value.replace(/(\d{3})(\d)/, "$1.$2");
-        value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        value = value.replace(/(\d{3})(\d)/, "$1.$2")
+        value = value.replace(/(\d{3})(\d)/, "$1.$2")
+        value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2")
 
-        e.target.value = value;
-    });
+        e.target.value = value
+    })
 
     if (tokenLogin) {
         titulo.textContent = 'Alterar Senha'
@@ -46,7 +46,7 @@ document.getElementById('formTrocarSenha').addEventListener('submit', async (e) 
     const tokenLogin = localStorage.getItem('tokenIntranet')
     const senhaAtual = document.getElementById('senhaAtual').value
     const email = document.getElementById('email').value.trim()
-    const cpf = document.getElementById("cpf").value.replace(/\D/g, "");
+    const cpf = document.getElementById("cpf").value.replace(/\D/g, "")
     const novaSenha = document.getElementById('novaSenha').value
     const confirmarSenha = document.getElementById('confirmarSenha').value
 

@@ -1,7 +1,7 @@
-var API_BASE = window.API_BASE || ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000'
-  : 'https://orientec-api.loca.lt');
+// area de configuracao
+window.API_BASE = `http://${window.location.hostname}:3000`
 
+// area do estudante - painel de perfil
 function injetarPainelPerfil() {
   if (document.getElementById('profilePanel')) return
 
@@ -64,6 +64,7 @@ function injetarPainelPerfil() {
   carregarDadosPerfil()
 }
 
+// area do estudante - menu do avatar
 function toggleAvatarMenu(event) {
   event.stopPropagation()
   const menu = document.getElementById('avatarMenu')
@@ -108,6 +109,7 @@ async function removerFotoPerfil() {
   }
 }
 
+// area do estudante - dados do perfil
 async function carregarDadosPerfil() {
   const token = localStorage.getItem('tokenIntranet')
   if (!token) return
@@ -156,6 +158,7 @@ async function carregarDadosPerfil() {
   }
 }
 
+// area do estudante - foto de perfil
 function comprimirImagem(file, maxWidth = 300, maxHeight = 300, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const img = new Image()
@@ -221,6 +224,7 @@ async function alterarFotoPerfil(event) {
   }
 }
 
+// area do estudante - abrir e fechar painel
 function openPanel() {
   document.getElementById('overlay')?.classList.add('open')
   document.getElementById('profilePanel')?.classList.add('open')
@@ -241,6 +245,7 @@ function logout() {
   }
 }
 
+// area do estudante - inicializacao
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', injetarPainelPerfil)
 } else {
