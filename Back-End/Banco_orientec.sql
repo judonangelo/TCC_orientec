@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Servidor:                     127.0.0.1
--- Versão do servidor:           10.4.32-MariaDB - mariadb.org binary distribution
+-- Versão do servidor:           12.3.3-MariaDB - MariaDB Server
 -- OS do Servidor:               Win64
 -- HeidiSQL Versão:              12.20.0.7320
 -- --------------------------------------------------------
@@ -17,7 +17,7 @@
 
 -- Copiando estrutura do banco de dados para tcc
 DROP DATABASE IF EXISTS `tcc`;
-CREATE DATABASE IF NOT EXISTS `tcc` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+CREATE DATABASE IF NOT EXISTS `tcc` /*!40100 DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_bin */;
 USE `tcc`;
 
 -- Copiando estrutura para tabela tcc.cursos
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `cursos` (
   `mercado` varchar(250) NOT NULL,
   `perfil` varchar(250) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- Copiando dados para a tabela tcc.cursos: ~5 rows (aproximadamente)
 DELETE FROM `cursos`;
@@ -47,15 +47,71 @@ INSERT INTO `cursos` (`id`, `nome`, `vagas`, `status`, `duracao`, `descricao`, `
 	(4, 'Logística', 32, 'ativo', 4, 'Descubra como os produtos chegam até você e torne-se um especialista em planejar, executar e controlar cadeias de suprimentos. Você aprenderá sobre gestão de estoques, modais de transporte, distribuição, compras e custos logísticos. O curso enfatiza a organização, a visão sistêmica e a resolução de problemas reais do mercado. Com essa formação, você estará apto a atuar em transportadoras, centros de distribuição, indústrias e comércio eletrônico.', 'Coordenador de Logística, Analista de Supply Chain, Transportes', 1200, 'R$ 2.200 a R$ 4.800', 'Gerencie cadeias de suprimentos, transportes e armazenagem. Otimize processos logísticos.', 'Alta demanda em centros de distribuição, transportadoras e indústrias. Atua no controle de estoque, transporte, cadeia de suprimentos e planejamento logístico.', 'Pessoa organizada, prática e que gosta de planejamento. Tem interesse em processos, transporte e organização de sistemas.'),
 	(5, 'Eletroeletrônica', 32, 'ativo', 4, 'Prepare-se para atuar no mundo da tecnologia e da indústria aprendendo sobre instalações elétricas, eletrônica, automação e sistemas de controle. Durante o curso, você desenvolverá conhecimentos para montar, testar, instalar e realizar a manutenção de equipamentos, circuitos e painéis elétricos. A formação combina conhecimentos teóricos com atividades práticas, proporcionando experiência para solucionar problemas e trabalhar com segurança e eficiência. Ao concluir o curso, você estará preparado para buscar oportunidades em indústrias, empresas de manutenção, automação e instalações elétricas, acompanhando as novas tecnologias e as demandas do mercado.', 'Técnico em Eletrônica, Automação, Manutenção Industrial', 1200, 'R$ 2.500 a R$ 5.500', 'Projete e mantenha circuitos elétricos, sistemas eletrônicos e automação industrial.', 'Atuação em indústrias, manutenção industrial e automação. Pode trabalhar com instalação, manutenção de equipamentos e sistemas elétricos.', 'Pessoa prática, técnica e interessada em eletricidade e equipamentos. Gosta de montar, consertar e entender sistemas eletrônicos.');
 
+-- Copiando estrutura para tabela tcc.cursos_tags
+DROP TABLE IF EXISTS `cursos_tags`;
+CREATE TABLE IF NOT EXISTS `cursos_tags` (
+  `curso_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  `peso` tinyint(4) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`curso_id`,`tag_id`),
+  KEY `tag_id` (`tag_id`),
+  CONSTRAINT `FK_cursos_tags_curso` FOREIGN KEY (`curso_id`) REFERENCES `cursos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_cursos_tags_tag` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
+-- Copiando dados para a tabela tcc.cursos_tags: ~40 rows (aproximadamente)
+DELETE FROM `cursos_tags`;
+INSERT INTO `cursos_tags` (`curso_id`, `tag_id`, `peso`) VALUES
+	(1, 1, 3),
+	(1, 2, 3),
+	(1, 3, 2),
+	(1, 4, 1),
+	(1, 5, 0),
+	(1, 6, 2),
+	(1, 7, 2),
+	(1, 8, 3),
+	(2, 1, 3),
+	(2, 2, 2),
+	(2, 3, 1),
+	(2, 4, 1),
+	(2, 5, 0),
+	(2, 6, 2),
+	(2, 7, 3),
+	(2, 8, 2),
+	(3, 1, 2),
+	(3, 2, 2),
+	(3, 3, 1),
+	(3, 4, 3),
+	(3, 5, 3),
+	(3, 6, 3),
+	(3, 7, 1),
+	(3, 8, 2),
+	(4, 1, 2),
+	(4, 2, 3),
+	(4, 3, 1),
+	(4, 4, 1),
+	(4, 5, 1),
+	(4, 6, 3),
+	(4, 7, 2),
+	(4, 8, 2),
+	(5, 1, 3),
+	(5, 2, 3),
+	(5, 3, 2),
+	(5, 4, 0),
+	(5, 5, 0),
+	(5, 6, 2),
+	(5, 7, 3),
+	(5, 8, 2);
+
 -- Copiando estrutura para tabela tcc.perguntas
 DROP TABLE IF EXISTS `perguntas`;
 CREATE TABLE IF NOT EXISTS `perguntas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `texto` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
--- Copiando dados para a tabela tcc.perguntas: ~10 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.perguntas: ~15 rows (aproximadamente)
 DELETE FROM `perguntas`;
 INSERT INTO `perguntas` (`id`, `texto`) VALUES
 	(1, 'Quando algo não funciona como deveria, qual caminho você tende a seguir primeiro?'),
@@ -67,7 +123,12 @@ INSERT INTO `perguntas` (`id`, `texto`) VALUES
 	(7, 'Se uma atividade precisa ser realizada várias vezes durante o dia, o que mais chamaria sua atenção?'),
 	(8, 'Imagine que você recebeu informações de várias fontes e precisa chegar a uma conclusão. Como você agiria?'),
 	(9, 'Em uma situação em que várias coisas precisam acontecer ao mesmo tempo, qual aspecto você observaria primeiro?'),
-	(10, 'Quando você percebe que algo poderia funcionar melhor, qual seria sua tendência?');
+	(10, 'Quando você percebe que algo poderia funcionar melhor, qual seria sua tendência?'),
+	(11, 'Ao trabalhar em um projeto em grupo, qual papel você costuma assumir naturalmente?'),
+	(12, 'Se você pudesse escolher uma tarefa para realizar sozinho, qual escolheria?'),
+	(13, 'Como você reage quando um plano que você montou não dá certo?'),
+	(14, 'Qual característica você mais valoriza em um ambiente de trabalho?'),
+	(15, 'Quando você precisa tomar uma decisão importante, o que pesa mais na sua escolha?');
 
 -- Copiando estrutura para tabela tcc.respostas
 DROP TABLE IF EXISTS `respostas`;
@@ -79,61 +140,110 @@ CREATE TABLE IF NOT EXISTS `respostas` (
   PRIMARY KEY (`id`),
   KEY `pergunta_id` (`pergunta_id`),
   CONSTRAINT `FK_respostas_perguntas` FOREIGN KEY (`pergunta_id`) REFERENCES `perguntas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- Copiando dados para a tabela tcc.respostas: ~75 rows (aproximadamente)
 DELETE FROM `respostas`;
 INSERT INTO `respostas` (`id`, `pergunta_id`, `texto`, `pesos`) VALUES
-	(91, 1, 'Tentar entender o que mudou até encontrar a causa', '{"eletronica": 2, "quimica": 1, "logistica": 2, "adm": 1, "dev": 3}'),
-	(92, 1, 'Observar o que aconteceu e testar possibilidades diferentes', '{"eletronica": 2, "logistica": 1, "dev": 1, "adm": 1, "quimica": 3}'),
-	(93, 1, 'Reunir as pessoas envolvidas e tentar chegar a um acordo', '{"eletronica": 1, "quimica": 1, "logistica": 2, "dev": 1, "adm": 3}'),
-	(94, 1, 'Verificar cada etapa até descobrir onde está o problema', '{"quimica": 1, "logistica": 3, "eletronica": 1, "adm": 2, "dev": 1}'),
-	(95, 1, 'Abrir, observar e tentar entender como as partes trabalham juntas', '{"adm": 1, "eletronica": 3, "logistica": 1, "dev": 2, "quimica": 2}'),
-	(96, 2, 'Um lugar onde diferentes situações precisam ser analisadas antes de tomar decisões', '{"logistica": 1, "quimica": 3, "dev": 1, "eletronica": 2, "adm": 1}'),
-	(97, 2, 'Um ambiente movimentado, onde várias coisas precisam acontecer na ordem certa', '{"quimica": 1, "eletronica": 1, "dev": 1, "logistica": 3, "adm": 2}'),
-	(98, 2, 'Um espaço em que ideias são discutidas e decisões são tomadas em conjunto', '{"adm": 3, "dev": 1, "quimica": 1, "logistica": 2, "eletronica": 1}'),
-	(99, 2, 'Um local em que você possa observar, modificar e testar diferentes possibilidades', '{"adm": 1, "eletronica": 3, "dev": 1, "logistica": 1, "quimica": 2}'),
-	(100, 2, 'Um ambiente tranquilo para se concentrar em desafios que exigem raciocínio', '{"adm": 2, "logistica": 2, "quimica": 1, "dev": 3, "eletronica": 1}'),
-	(101, 3, 'Encontrar uma explicação para algo que inicialmente parece não fazer sentido', '{"eletronica": 2, "quimica": 3, "dev": 1, "logistica": 1, "adm": 1}'),
-	(102, 3, 'Descobrir uma sequência ou estratégia para chegar a uma resposta', '{"logistica": 2, "eletronica": 2, "quimica": 2, "dev": 3, "adm": 1}'),
-	(103, 3, 'Analisar acontecimentos e entender como eles se relacionam', '{"dev": 1, "quimica": 1, "eletronica": 1, "logistica": 3, "adm": 2}'),
-	(104, 3, 'Defender uma ideia de forma que outras pessoas entendam seu ponto de vista', '{"eletronica": 1, "dev": 1, "logistica": 2, "quimica": 1, "adm": 3}'),
-	(105, 3, 'Entender por que determinado fenômeno acontece na prática', '{"logistica": 1, "adm": 1, "eletronica": 3, "quimica": 2, "dev": 2}'),
-	(106, 4, 'Faço perguntas, comparo informações e tento entender o contexto', '{"eletronica": 1, "logistica": 2, "adm": 3, "dev": 1, "quimica": 1}'),
-	(107, 4, 'Vou testando possibilidades até descobrir o que funciona', '{"adm": 1, "quimica": 3, "dev": 1, "logistica": 1, "eletronica": 2}'),
-	(108, 4, 'Organizo as etapas antes de começar para evitar retrabalho', '{"dev": 1, "eletronica": 1, "adm": 2, "quimica": 1, "logistica": 3}'),
-	(109, 4, 'Tento descobrir como as diferentes partes da tarefa se conectam', '{"eletronica": 3, "adm": 1, "logistica": 1, "quimica": 2, "dev": 2}'),
-	(110, 4, 'Analiso as informações disponíveis e procuro uma maneira mais eficiente de fazer', '{"dev": 3, "logistica": 2, "adm": 1, "eletronica": 2, "quimica": 2}'),
-	(111, 5, 'Tentar descobrir uma maneira melhor de organizar alguma coisa do cotidiano', '{"dev": 1, "eletronica": 1, "logistica": 3, "quimica": 1, "adm": 2}'),
-	(112, 5, 'Explorar uma ideia até conseguir entender como ela funciona', '{"logistica": 1, "eletronica": 1, "adm": 1, "quimica": 3, "dev": 1}'),
-	(113, 5, 'Encontrar uma solução para um desafio usando diferentes estratégias', '{"quimica": 1, "adm": 1, "dev": 3, "logistica": 1, "eletronica": 2}'),
-	(114, 5, 'Tentar descobrir por que algo apresenta determinado comportamento', '{"eletronica": 3, "quimica": 2, "dev": 2, "logistica": 1, "adm": 1}'),
-	(115, 5, 'Conversar com pessoas, trocar ideias e tentar aproximar opiniões diferentes', '{"logistica": 2, "quimica": 1, "dev": 1, "adm": 3, "eletronica": 1}'),
-	(136, 6, 'Testar diferentes formas de aprender até encontrar aquela que facilita a compreensão.', '{"eletronica": 1, "quimica": 2, "logistica": 1, "adm": 2, "dev": 3}'),
-	(137, 6, 'Relacionar o conteúdo novo com situações e exemplos que já conheço.', '{"eletronica": 2, "quimica": 3, "logistica": 1, "adm": 1, "dev": 2}'),
-	(138, 6, 'Organizar o assunto em etapas para entender como cada parte funciona.', '{"eletronica": 3, "quimica": 1, "logistica": 2, "adm": 1, "dev": 2}'),
-	(139, 6, 'Conversar sobre o assunto e comparar diferentes formas de interpretar o conteúdo.', '{"eletronica": 1, "quimica": 1, "logistica": 2, "adm": 3, "dev": 2}'),
-	(140, 6, 'Praticar o conteúdo em uma situação concreta para perceber como ele funciona.', '{"eletronica": 2, "quimica": 3, "logistica": 2, "adm": 1, "dev": 1}'),
-	(141, 7, 'Perceber detalhes que mudam conforme a atividade vai sendo realizada.', '{"eletronica": 3, "quimica": 1, "logistica": 2, "adm": 1, "dev": 2}'),
-	(142, 7, 'Acompanhar os resultados e pensar no que poderia tornar a execução mais eficiente.', '{"eletronica": 1, "quimica": 2, "logistica": 3, "adm": 2, "dev": 1}'),
-	(143, 7, 'Observar se as pessoas estão conseguindo manter um bom ritmo durante a atividade.', '{"eletronica": 1, "quimica": 1, "logistica": 2, "adm": 3, "dev": 2}'),
-	(144, 7, 'Investigar se existe algum padrão ou comportamento que explique o que está acontecendo.', '{"eletronica": 2, "quimica": 3, "logistica": 1, "adm": 1, "dev": 2}'),
-	(145, 7, 'Identificar quais ferramentas ou recursos podem facilitar a realização da atividade.', '{"eletronica": 2, "quimica": 1, "logistica": 1, "adm": 2, "dev": 3}'),
-	(146, 8, 'Compararia as informações e procuraria evidências antes de tomar uma decisão.', '{"eletronica": 2, "quimica": 3, "logistica": 1, "adm": 1, "dev": 2}'),
-	(147, 8, 'Tentaria organizar as informações para descobrir como elas se relacionam.', '{"eletronica": 3, "quimica": 1, "logistica": 2, "adm": 1, "dev": 2}'),
-	(148, 8, 'Conversaria com quem possui mais conhecimento sobre o assunto para avaliar as possibilidades.', '{"eletronica": 1, "quimica": 1, "logistica": 2, "adm": 3, "dev": 2}'),
-	(149, 8, 'Analisaria a situação passo a passo até encontrar uma explicação que faça sentido.', '{"eletronica": 1, "quimica": 2, "logistica": 2, "adm": 1, "dev": 3}'),
-	(150, 8, 'Observaria os recursos disponíveis e pensaria na maneira mais prática de resolver.', '{"eletronica": 2, "quimica": 1, "logistica": 3, "adm": 2, "dev": 1}'),
-	(151, 9, 'Qual informação pode indicar que alguma etapa precisa ser ajustada.', '{"eletronica": 2, "quimica": 2, "logistica": 3, "adm": 1, "dev": 1}'),
-	(152, 9, 'Como os diferentes elementos envolvidos podem estar influenciando uns aos outros.', '{"eletronica": 3, "quimica": 2, "logistica": 1, "adm": 1, "dev": 2}'),
-	(153, 9, 'O comportamento das pessoas e a forma como elas estão lidando com a situação.', '{"eletronica": 1, "quimica": 1, "logistica": 2, "adm": 3, "dev": 2}'),
-	(154, 9, 'Quais dados ou características podem ajudar a explicar o que está acontecendo.', '{"eletronica": 1, "quimica": 3, "logistica": 1, "adm": 2, "dev": 2}'),
-	(155, 9, 'Qual parte do problema pode ser analisada ou modificada para encontrar uma solução.', '{"eletronica": 2, "quimica": 1, "logistica": 2, "adm": 1, "dev": 3}'),
-	(156, 10, 'Tentaria descobrir a causa do problema antes de decidir qual mudança fazer.', '{"eletronica": 2, "quimica": 3, "logistica": 1, "adm": 1, "dev": 2}'),
-	(157, 10, 'Organizaria as informações disponíveis para definir uma sequência de ações.', '{"eletronica": 1, "quimica": 1, "logistica": 3, "adm": 2, "dev": 2}'),
-	(158, 10, 'Conversaria com outras pessoas para conhecer diferentes possibilidades de melhoria.', '{"eletronica": 1, "quimica": 2, "logistica": 1, "adm": 3, "dev": 2}'),
-	(159, 10, 'Faria testes e compararia os resultados para descobrir qual alternativa funciona melhor.', '{"eletronica": 3, "quimica": 2, "logistica": 1, "adm": 1, "dev": 2}'),
-	(160, 10, 'Analisaria o funcionamento do problema e procuraria uma solução que pudesse ser aplicada de forma prática.', '{"eletronica": 2, "quimica": 1, "logistica": 2, "adm": 1, "dev": 3}');
+	(1, 1, 'Tentar entender o que mudou até encontrar a causa', '{"raciocinio_logico":3,"resolucao_problemas":2,"precisao":1}'),
+	(2, 1, 'Observar o que aconteceu e testar possibilidades diferentes', '{"resolucao_problemas":3,"adaptabilidade":2,"criatividade":1}'),
+	(3, 1, 'Reunir as pessoas envolvidas e tentar chegar a um acordo', '{"comunicacao":3,"lideranca":2,"organizacao":1}'),
+	(4, 1, 'Verificar cada etapa até descobrir onde está o problema', '{"organizacao":3,"precisao":2,"raciocinio_logico":1}'),
+	(5, 1, 'Abrir, observar e tentar entender como as partes trabalham juntas', '{"precisao":3,"raciocinio_logico":2,"adaptabilidade":1}'),
+	(6, 2, 'Um lugar onde diferentes situações precisam ser analisadas antes de tomar decisões', '{"raciocinio_logico":3,"precisao":2,"organizacao":1}'),
+	(7, 2, 'Um ambiente movimentado, onde várias coisas precisam acontecer na ordem certa', '{"organizacao":3,"adaptabilidade":2,"precisao":1}'),
+	(8, 2, 'Um espaço em que ideias são discutidas e decisões são tomadas em conjunto', '{"comunicacao":3,"lideranca":2,"criatividade":1}'),
+	(9, 2, 'Um local em que você possa observar, modificar e testar diferentes possibilidades', '{"criatividade":3,"adaptabilidade":2,"resolucao_problemas":1}'),
+	(10, 2, 'Um ambiente tranquilo para se concentrar em desafios que exigem raciocínio', '{"precisao":3,"raciocinio_logico":2,"resolucao_problemas":1}'),
+	(11, 3, 'Encontrar uma explicação para algo que inicialmente parece não fazer sentido', '{"raciocinio_logico":3,"resolucao_problemas":2,"precisao":1}'),
+	(12, 3, 'Descobrir uma sequência ou estratégia para chegar a uma resposta', '{"resolucao_problemas":3,"raciocinio_logico":2,"organizacao":1}'),
+	(13, 3, 'Analisar acontecimentos e entender como eles se relacionam', '{"precisao":3,"raciocinio_logico":2,"organizacao":1}'),
+	(14, 3, 'Defender uma ideia de forma que outras pessoas entendam seu ponto de vista', '{"comunicacao":3,"lideranca":2,"criatividade":1}'),
+	(15, 3, 'Entender por que determinado fenômeno acontece na prática', '{"precisao":3,"adaptabilidade":2,"raciocinio_logico":1}'),
+	(16, 4, 'Faço perguntas, comparo informações e tento entender o contexto', '{"comunicacao":3,"raciocinio_logico":2,"organizacao":1}'),
+	(17, 4, 'Vou testando possibilidades até descobrir o que funciona', '{"resolucao_problemas":3,"adaptabilidade":2,"criatividade":1}'),
+	(18, 4, 'Organizo as etapas antes de começar para evitar retrabalho', '{"organizacao":3,"precisao":2,"lideranca":1}'),
+	(19, 4, 'Tento descobrir como as diferentes partes da tarefa se conectam', '{"raciocinio_logico":3,"precisao":2,"adaptabilidade":1}'),
+	(20, 4, 'Analiso as informações disponíveis e procuro uma maneira mais eficiente de fazer', '{"resolucao_problemas":3,"raciocinio_logico":2,"precisao":1}'),
+	(21, 5, 'Tentar descobrir uma maneira melhor de organizar alguma coisa do cotidiano', '{"organizacao":3,"criatividade":2,"precisao":1}'),
+	(22, 5, 'Explorar uma ideia até conseguir entender como ela funciona', '{"raciocinio_logico":3,"precisao":2,"adaptabilidade":1}'),
+	(23, 5, 'Encontrar uma solução para um desafio usando diferentes estratégias', '{"resolucao_problemas":3,"criatividade":2,"adaptabilidade":1}'),
+	(24, 5, 'Tentar descobrir por que algo apresenta determinado comportamento', '{"precisao":3,"raciocinio_logico":2,"resolucao_problemas":1}'),
+	(25, 5, 'Conversar com pessoas, trocar ideias e tentar aproximar opiniões diferentes', '{"comunicacao":3,"lideranca":2,"criatividade":1}'),
+	(26, 6, 'Testar diferentes formas de aprender até encontrar aquela que facilita a compreensão', '{"adaptabilidade":3,"criatividade":2,"resolucao_problemas":1}'),
+	(27, 6, 'Relacionar o conteúdo novo com situações e exemplos que já conheço', '{"raciocinio_logico":3,"adaptabilidade":2,"comunicacao":1}'),
+	(28, 6, 'Organizar o assunto em etapas para entender como cada parte funciona', '{"organizacao":3,"precisao":2,"raciocinio_logico":1}'),
+	(29, 6, 'Conversar sobre o assunto e comparar diferentes formas de interpretar o conteúdo', '{"comunicacao":3,"lideranca":2,"adaptabilidade":1}'),
+	(30, 6, 'Praticar o conteúdo em uma situação concreta para perceber como ele funciona', '{"precisao":3,"resolucao_problemas":2,"adaptabilidade":1}'),
+	(31, 7, 'Perceber detalhes que mudam conforme a atividade vai sendo realizada', '{"precisao":3,"raciocinio_logico":2,"organizacao":1}'),
+	(32, 7, 'Acompanhar os resultados e pensar no que poderia tornar a execução mais eficiente', '{"resolucao_problemas":3,"organizacao":2,"criatividade":1}'),
+	(33, 7, 'Observar se as pessoas estão conseguindo manter um bom ritmo durante a atividade', '{"lideranca":3,"comunicacao":2,"organizacao":1}'),
+	(34, 7, 'Investigar se existe algum padrão ou comportamento que explique o que está acontecendo', '{"raciocinio_logico":3,"precisao":2,"resolucao_problemas":1}'),
+	(35, 7, 'Identificar quais ferramentas ou recursos podem facilitar a realização da atividade', '{"organizacao":3,"criatividade":2,"adaptabilidade":1}'),
+	(36, 8, 'Compararia as informações e procuraria evidências antes de tomar uma decisão', '{"precisao":3,"raciocinio_logico":2,"resolucao_problemas":1}'),
+	(37, 8, 'Tentaria organizar as informações para descobrir como elas se relacionam', '{"organizacao":3,"raciocinio_logico":2,"precisao":1}'),
+	(38, 8, 'Conversaria com quem possui mais conhecimento sobre o assunto para avaliar as possibilidades', '{"comunicacao":3,"lideranca":2,"adaptabilidade":1}'),
+	(39, 8, 'Analisaria a situação passo a passo até encontrar uma explicação que faça sentido', '{"raciocinio_logico":3,"resolucao_problemas":2,"precisao":1}'),
+	(40, 8, 'Observaria os recursos disponíveis e pensaria na maneira mais prática de resolver', '{"adaptabilidade":3,"organizacao":2,"resolucao_problemas":1}'),
+	(41, 9, 'Qual informação pode indicar que alguma etapa precisa ser ajustada', '{"organizacao":3,"precisao":2,"resolucao_problemas":1}'),
+	(42, 9, 'Como os diferentes elementos envolvidos podem estar influenciando uns aos outros', '{"raciocinio_logico":3,"precisao":2,"adaptabilidade":1}'),
+	(43, 9, 'O comportamento das pessoas e a forma como elas estão lidando com a situação', '{"lideranca":3,"comunicacao":2,"adaptabilidade":1}'),
+	(44, 9, 'Quais dados ou características podem ajudar a explicar o que está acontecendo', '{"precisao":3,"raciocinio_logico":2,"organizacao":1}'),
+	(45, 9, 'Qual parte do problema pode ser analisada ou modificada para encontrar uma solução', '{"resolucao_problemas":3,"criatividade":2,"raciocinio_logico":1}'),
+	(46, 10, 'Tentaria descobrir a causa do problema antes de decidir qual mudança fazer', '{"raciocinio_logico":3,"precisao":2,"resolucao_problemas":1}'),
+	(47, 10, 'Organizaria as informações disponíveis para definir uma sequência de ações', '{"organizacao":3,"precisao":2,"lideranca":1}'),
+	(48, 10, 'Conversaria com outras pessoas para conhecer diferentes possibilidades de melhoria', '{"comunicacao":3,"lideranca":2,"criatividade":1}'),
+	(49, 10, 'Faria testes e compararia os resultados para descobrir qual alternativa funciona melhor', '{"resolucao_problemas":3,"adaptabilidade":2,"precisao":1}'),
+	(50, 10, 'Analisaria o funcionamento do problema e procuraria uma solução prática', '{"precisao":3,"resolucao_problemas":2,"adaptabilidade":1}'),
+	(51, 11, 'O de quem organiza as etapas e distribui as tarefas', '{"lideranca":3,"organizacao":2,"comunicacao":1}'),
+	(52, 11, 'O de quem propõe ideias novas e alternativas criativas', '{"criatividade":3,"adaptabilidade":2,"comunicacao":1}'),
+	(53, 11, 'O de quem revisa o trabalho procurando erros e detalhes', '{"precisao":3,"raciocinio_logico":2,"organizacao":1}'),
+	(54, 11, 'O de quem resolve os problemas técnicos que aparecem no caminho', '{"resolucao_problemas":3,"raciocinio_logico":2,"adaptabilidade":1}'),
+	(55, 11, 'O de quem integra as pessoas e mantém o grupo alinhado', '{"comunicacao":3,"lideranca":2,"adaptabilidade":1}'),
+	(56, 12, 'Montar um equipamento seguindo um manual técnico detalhado', '{"precisao":3,"organizacao":2,"raciocinio_logico":1}'),
+	(57, 12, 'Escrever um pequeno programa ou script para automatizar algo', '{"raciocinio_logico":3,"resolucao_problemas":2,"adaptabilidade":1}'),
+	(58, 12, 'Planejar uma viagem ou evento com várias etapas e recursos', '{"organizacao":3,"criatividade":2,"lideranca":1}'),
+	(59, 12, 'Criar uma apresentação ou material para convencer alguém de uma ideia', '{"comunicacao":3,"criatividade":2,"lideranca":1}'),
+	(60, 12, 'Investigar um fenômeno ou problema que ninguém ainda explicou', '{"resolucao_problemas":3,"raciocinio_logico":2,"precisao":1}'),
+	(61, 13, 'Analiso friamente o que falhou e refaço o plano com ajustes pontuais', '{"raciocinio_logico":3,"organizacao":2,"precisao":1}'),
+	(62, 13, 'Busco caminhos alternativos e tento uma abordagem diferente', '{"adaptabilidade":3,"criatividade":2,"resolucao_problemas":1}'),
+	(63, 13, 'Reúno as pessoas envolvidas para discutir o que pode ser melhorado', '{"comunicacao":3,"lideranca":2,"organizacao":1}'),
+	(64, 13, 'Testo cada etapa separadamente para isolar o ponto que causou o problema', '{"precisao":3,"resolucao_problemas":2,"raciocinio_logico":1}'),
+	(65, 13, 'Aceito o resultado, aprendo com ele e sigo em frente rapidamente', '{"adaptabilidade":3,"lideranca":2,"comunicacao":1}'),
+	(66, 14, 'Clareza nas regras e processos bem definidos', '{"organizacao":3,"precisao":2,"lideranca":1}'),
+	(67, 14, 'Liberdade para propor ideias e experimentar soluções', '{"criatividade":3,"adaptabilidade":2,"comunicacao":1}'),
+	(68, 14, 'Oportunidade de liderar e influenciar decisões', '{"lideranca":3,"comunicacao":2,"organizacao":1}'),
+	(69, 14, 'Desafios técnicos que exijam raciocínio e precisão', '{"raciocinio_logico":3,"precisao":2,"resolucao_problemas":1}'),
+	(70, 14, 'Contato constante com pessoas e troca de conhecimentos', '{"comunicacao":3,"adaptabilidade":2,"lideranca":1}'),
+	(71, 15, 'As informações concretas e os dados disponíveis', '{"precisao":3,"raciocinio_logico":2,"organizacao":1}'),
+	(72, 15, 'As possibilidades e o que pode dar certo no futuro', '{"criatividade":3,"adaptabilidade":2,"lideranca":1}'),
+	(73, 15, 'O impacto da decisão nas pessoas envolvidas', '{"comunicacao":3,"lideranca":2,"adaptabilidade":1}'),
+	(74, 15, 'O que faz mais sentido do ponto de vista lógico', '{"raciocinio_logico":3,"resolucao_problemas":2,"precisao":1}'),
+	(75, 15, 'A praticidade e a rapidez com que a decisão pode ser executada', '{"resolucao_problemas":3,"organizacao":2,"adaptabilidade":1}');
+
+-- Copiando estrutura para tabela tcc.tags
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE IF NOT EXISTS `tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `chave` varchar(30) NOT NULL,
+  `nome` varchar(80) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `ativo` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `chave` (`chave`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
+-- Copiando dados para a tabela tcc.tags: ~8 rows (aproximadamente)
+DELETE FROM `tags`;
+INSERT INTO `tags` (`id`, `chave`, `nome`, `descricao`, `ativo`) VALUES
+	(1, 'raciocinio_logico', 'Raciocínio Lógico e Analítico', 'Capacidade de interpretar dados, identificar padrões, seguir sequências lógicas e resolver problemas de forma estruturada.', 1),
+	(2, 'resolucao_problemas', 'Resolução de Problemas', 'Habilidade de diagnosticar situações, levantar hipóteses, testar possibilidades e propor soluções eficazes.', 1),
+	(3, 'criatividade', 'Criatividade e Inovação', 'Capacidade de gerar ideias novas, pensar fora da caixa, adaptar soluções e propor melhorias em processos ou produtos.', 1),
+	(4, 'comunicacao', 'Comunicação e Expressão', 'Habilidade de se expressar com clareza, ouvir ativamente, transmitir informações e interagir com diferentes públicos.', 1),
+	(5, 'lideranca', 'Liderança e Trabalho em Equipe', 'Capacidade de coordenar pessoas, colaborar em grupo, motivar a equipe e alcançar objetivos coletivos.', 1),
+	(6, 'organizacao', 'Organização e Planejamento', 'Habilidade de estruturar tarefas, gerir tempo e recursos, seguir etapas e manter o foco em metas e prazos.', 1),
+	(7, 'precisao', 'Precisão e Atenção aos Detalhes', 'Cuidado com detalhes, foco na qualidade, execução minuciosa e consistência em tarefas que exigem exatidão.', 1),
+	(8, 'adaptabilidade', 'Aprendizado Contínuo e Adaptabilidade', 'Disposição para aprender coisas novas, lidar com mudanças, adaptar-se a novos contextos e buscar desenvolvimento constante.', 1);
 
 -- Copiando estrutura para tabela tcc.usuarios
 DROP TABLE IF EXISTS `usuarios`;
@@ -149,12 +259,12 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `cpf` (`cpf`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- Copiando dados para a tabela tcc.usuarios: ~22 rows (aproximadamente)
 DELETE FROM `usuarios`;
 INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `email`, `senha`, `nivel`, `data`, `foto`) VALUES
-	(15, 'João Victor Piacenza de Oliveira Andrade', '12648976000', 'joaoandrade@gmail.com', '$2b$10$ty5H/Da9hN83hq75cnxdnuh1ru5LKuhIf.Ds1BzROEioE2jdN5R.K', 'admin', '2026-05-12 16:30:34', NULL),
+	(15, 'João Victor Piacenza de Oliveira Andrade', '12648976000', 'joaoandrade@gmail.com', '$2b$10$ty5H/Da9hN83hq75cnxdnuh1ru5LKuhIf.Ds1BzROEioE2jdN5R.K', 'admin', '2026-09-29 19:05:19', 'data:image/jpeg;base64,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'),
 	(19, 'João Silva', '12345678901', 'joao.silva@email.com', '123456', 'aluno', '2026-08-27 18:14:17', NULL),
 	(20, 'Maria Oliveira', '12345678902', 'maria.oliveira@email.com', '123456', 'aluno', '2026-05-12 16:49:05', NULL),
 	(21, 'Pedro Santos', '12345678903', 'pedro.santos@email.com', '123456', 'aluno', '2026-05-12 16:49:05', NULL),
