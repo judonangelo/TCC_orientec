@@ -29,6 +29,7 @@ document.querySelectorAll('.sidebar-link').forEach(link => {
 
         if (section === 'relatorios') carregarRelatorios()
         if (section === 'cursos') carregarCursos()
+        if (section === 'tags') carregarTabelaTags()
         if (section === 'teste') carregarPerguntas()
     })
 })
@@ -57,7 +58,7 @@ function renderizarUsuarios(usuarios) {
     const paginaUsuarios = usuarios.slice(inicio, fim)
 
     if (paginaUsuarios.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum usuário encontrado.</td></tr>'
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Nenhum usuário encontrado.</td></tr>'
     } else {
         paginaUsuarios.forEach(usuario => {
             const tr = document.createElement('tr')
@@ -65,6 +66,7 @@ function renderizarUsuarios(usuarios) {
                 <td>${usuario.id}</td>
                 <td>${usuario.nome}</td>
                 <td>${usuario.email}</td>
+                <td>${usuario.cpf}</td>
                 <td>${usuario.nivel}</td>
                 <td>${usuario.data}</td>
                 <td class="acoes">
@@ -202,9 +204,9 @@ if (formEditar) {
             if (!response.ok) throw new Error(dados.mensagem || 'Erro ao atualizar')
             await carregarUsuarios()
             fecharModalEditarUsuario()
-            mostrarMensagem('usuarios-mensagem', dados.mensagem, 'sucesso')
+            mostrarMensagem('editar-usuario-mensagem', dados.mensagem, 'sucesso')
         } catch (erro) {
-            mostrarMensagem('usuarios-mensagem', `Erro: ${erro.message}`, 'erro')
+            mostrarMensagem('editar-usuario-mensagem', `Erro: ${erro.message}`, 'erro')
         }
     })
 }
@@ -429,6 +431,7 @@ if (btnConfirmar) {
         if (tipoExclusao === 'usuario') excluirUsuario(itemParaExcluir)
         else if (tipoExclusao === 'curso') await excluirCurso(itemParaExcluir)
         else if (tipoExclusao === 'pergunta') await excluirPergunta(itemParaExcluir)
+        else if (tipoExclusao === 'tag') await excluirTag(itemParaExcluir)
         fecharModalConfirmacao()
     })
 }
@@ -503,6 +506,146 @@ if (formCurso) {
     })
 }
 
+// area de tags
+async function carregarTabelaTags() {
+    const tbody = document.getElementById('tags-table-body')
+    if (!tbody) return
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>'
+
+    try {
+        const response = await fetch(`${API_BASE}/tags/todas`, { headers: authHeaders() })
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
+        const tags = await response.json()
+
+        tbody.innerHTML = ''
+        if (tags.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhuma tag cadastrada.</td></tr>'
+            return
+        }
+
+        tags.forEach(tag => {
+            const tr = document.createElement('tr')
+            tr.innerHTML = `
+                <td>${tag.id}</td>
+                <td>${tag.chave}</td>
+                <td>${tag.nome}</td>
+                <td>${tag.descricao || '—'}</td>
+                <td><span class="status status-${tag.ativo ? 'ativo' : 'inativo'}">${tag.ativo ? 'Ativa' : 'Inativa'}</span></td>
+                <td class="acoes">
+                    <button class="btn-editar" onclick="editarTag(${tag.id})">Editar</button>
+                    <button class="btn-excluir" onclick="confirmarExclusaoTag(${tag.id})">Excluir</button>
+                </td>
+            `
+            tbody.appendChild(tr)
+        })
+    } catch (error) {
+        console.error("Erro ao carregar tags:", error)
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Erro ao carregar tags.</td></tr>'
+    }
+}
+
+function abrirModalTag(tag = null) {
+    document.getElementById('modal-tag').style.display = 'flex'
+    if (tag) {
+        document.getElementById('modal-tag-titulo').textContent = 'Editar Tag'
+        document.getElementById('tag-id').value = tag.id
+        document.getElementById('tag-chave').value = tag.chave
+        document.getElementById('tag-nome').value = tag.nome
+        document.getElementById('tag-descricao').value = tag.descricao || ''
+        document.getElementById('tag-ativo').value = tag.ativo ? '1' : '0'
+    } else {
+        document.getElementById('modal-tag-titulo').textContent = 'Nova Tag'
+        document.getElementById('form-tag').reset()
+        document.getElementById('tag-id').value = ''
+    }
+}
+
+function fecharModalTag() {
+    document.getElementById('modal-tag').style.display = 'none'
+}
+
+async function editarTag(id) {
+    try {
+        const response = await fetch(`${API_BASE}/tags/todas`, { headers: authHeaders() })
+        const tags = await response.json()
+        const tag = tags.find(t => t.id === id)
+        if (tag) abrirModalTag(tag)
+    } catch (error) {
+        mostrarMensagem('tags-mensagem', 'Erro ao carregar tag para edição.', 'erro')
+    }
+}
+
+function confirmarExclusaoTag(id) {
+    itemParaExcluir = id
+    tipoExclusao = 'tag'
+    document.getElementById('modal-confirmacao').style.display = 'flex'
+}
+
+async function excluirTag(id) {
+    try {
+        const response = await fetch(`${API_BASE}/tags/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        })
+        if (!response.ok) throw new Error()
+        await carregarTabelaTags()
+        await carregarTagsGlobais() // recarrega o cache global que alimenta os seletores
+        mostrarMensagem('tags-mensagem', 'Tag excluída com sucesso!', 'sucesso')
+    } catch (error) {
+        mostrarMensagem('tags-mensagem', 'Erro ao excluir tag.', 'erro')
+    }
+}
+
+// area de tags - formulario
+const formTag = document.getElementById('form-tag')
+if (formTag) {
+    formTag.addEventListener('submit', async function (e) {
+        e.preventDefault()
+        const id = document.getElementById('tag-id').value
+        const payload = {
+            chave: document.getElementById('tag-chave').value.trim(),
+            nome: document.getElementById('tag-nome').value.trim(),
+            descricao: document.getElementById('tag-descricao').value.trim() || null,
+            ativo: parseInt(document.getElementById('tag-ativo').value)
+        }
+
+        try {
+            let response
+            if (id) {
+                response = await fetch(`${API_BASE}/tags/${id}`, {
+                    method: 'PUT',
+                    headers: authHeaders(),
+                    body: JSON.stringify(payload)
+                })
+            } else {
+                response = await fetch(`${API_BASE}/tags`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify(payload)
+                })
+            }
+
+            const dados = await response.json()
+            if (!response.ok) throw new Error(dados.mensagem || 'Erro ao salvar tag')
+
+            await carregarTabelaTags()
+            await carregarTagsGlobais() // recarrega o cache global
+            fecharModalTag()
+            mostrarMensagem('tags-mensagem', id ? 'Tag atualizada com sucesso!' : 'Tag criada com sucesso!', 'sucesso')
+        } catch (error) {
+            mostrarMensagem('tags-mensagem', `Erro: ${error.message}`, 'erro')
+        }
+    })
+}
+
+// area de tags - filtro de caracteres
+const inputTagChave = document.getElementById('tag-chave')
+if (inputTagChave) {
+    inputTagChave.addEventListener('input', function (e) {
+        this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '')
+    })
+}
+
 // area de relatorios
 async function carregarRelatorios() {
     try {
@@ -522,8 +665,12 @@ async function carregarRelatorios() {
 function mostrarMensagem(elementoId, texto, tipo) {
     const elemento = document.getElementById(elementoId)
     if (!elemento) return
+
     elemento.textContent = texto
     elemento.className = `mensagem ${tipo}`
+
+    elemento.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    
     setTimeout(() => {
         elemento.className = 'mensagem'
         elemento.textContent = ''
@@ -589,6 +736,27 @@ async function carregarPerguntas() {
 }
 
 // area do teste vocacional - formulario de respostas
+function adicionarLinhaPeso(container, chave = '', peso = 0) {
+    const div = document.createElement('div')
+    div.className = 'peso-row'
+    div.style.cssText = 'display: flex; gap: 8px; margin-bottom: 5px; align-items: center;'
+
+    const options = tagsGlobais.map(t =>
+        `<option value="${t.chave}" ${t.chave === chave ? 'selected' : ''}>${t.nome}</option>`
+    ).join('')
+
+    div.innerHTML = `
+        <select class="input-peso-tag" style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+            <option value="">Selecione a tag...</option>
+            ${options}
+        </select>
+        <input type="number" class="input-peso-valor" min="0" max="3" value="${peso}" title="Peso (0 a 3)" 
+            style="width: 65px; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+        <button type="button" class="btn-excluir" onclick="this.parentElement.remove()" style="padding: 6px 10px;">×</button>
+    `
+    container.appendChild(div)
+}
+
 function renderizarFormularioRespostas(respostasExistentes = []) {
     const container = document.getElementById('container-respostas')
     if (!container) return
@@ -602,29 +770,27 @@ function renderizarFormularioRespostas(respostasExistentes = []) {
         const divBox = document.createElement('div')
         divBox.style.cssText = 'border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #f9f9f9;'
 
-        let htmlPesos = ''
-        tagsGlobais.forEach(t => {
-            const val = (resp.pesos && resp.pesos[t.chave] !== undefined) ? resp.pesos[t.chave] : 0
-            htmlPesos += `
-                <label style="font-size:11px; margin-right:4px; display:inline-block; margin-top:3px;">
-                    ${t.nome}:
-                    <input type="number" min="0" max="3" class="input-peso"
-                        data-tag="${t.chave}" value="${val}" style="width: 38px; padding:2px;">
-                </label>
-            `
-        })
-
         divBox.innerHTML = `
-            <div class="form-group" style="margin-bottom: 5px;">
+            <div class="form-group" style="margin-bottom: 8px;">
                 <label><b>Alternativa ${i + 1}:</b></label>
                 <input type="text" class="input-resposta-texto" value="${resp.texto}"
                     placeholder="Texto da alternativa" required style="width:100%;">
             </div>
-            <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center;">
-                <span style="font-size:11px; font-weight: bold; width: 100%;">Pesos (0 a 3):</span>
-                ${htmlPesos}
-            </div>
+            <div class="pesos-container" style="margin-top: 8px;"></div>
+            <button type="button" class="btn-secondary" onclick="adicionarLinhaPeso(this.previousElementSibling)" 
+                style="margin-top: 6px; font-size: 12px; padding: 4px 10px;">+ Adicionar Peso de Tag</button>
         `
+
+        const pesosContainer = divBox.querySelector('.pesos-container')
+
+        if (resp.pesos) {
+            Object.entries(resp.pesos).forEach(([chave, peso]) => {
+                if (peso > 0) {
+                    adicionarLinhaPeso(pesosContainer, chave, peso)
+                }
+            })
+        }
+
         container.appendChild(divBox)
     }
 }
@@ -693,19 +859,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const blocosRespostas = document.querySelectorAll('#container-respostas > div')
             const respostas = []
 
+            let temErroValidacao = false
+
             blocosRespostas.forEach(bloco => {
+                if (temErroValidacao) return
+
                 const texto = bloco.querySelector('.input-resposta-texto').value.trim()
-                const inputsPesos = bloco.querySelectorAll('.input-peso')
+                const rows = bloco.querySelectorAll('.peso-row')
                 const pesos = {}
 
-                inputsPesos.forEach(inp => {
-                    pesos[inp.dataset.tag] = parseInt(inp.value) || 0
+                rows.forEach(row => {
+                    const tagChave = row.querySelector('.input-peso-tag').value
+                    const pesoValor = parseInt(row.querySelector('.input-peso-valor').value) || 0
+
+                    if (tagChave && pesoValor > 0) {
+                        pesos[tagChave] = pesoValor
+                    }
                 })
 
                 if (texto) {
+                    if (Object.keys(pesos).length === 0) {
+                        temErroValidacao = true
+                        return
+                    }
                     respostas.push({ texto, pesos })
                 }
             })
+
+            if (temErroValidacao) {
+                mostrarMensagem('teste-mensagem', 'Cada alternativa precisa ter pelo menos uma tag com peso de 1 a 3.', 'erro')
+                return
+            }
 
             const payload = { pergunta: textoPergunta, respostas }
 
@@ -719,13 +903,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(payload)
                 })
 
-                if (!response.ok) throw new Error()
+                if (!response.ok) {
+                    const erro = await response.json()
+                    throw new Error(erro.mensagem || 'Erro ao salvar pergunta')
+                }
 
                 await carregarPerguntas()
                 fecharModalPergunta()
                 mostrarMensagem('teste-mensagem', id ? 'Pergunta atualizada!' : 'Pergunta cadastrada!', 'sucesso')
             } catch (error) {
-                mostrarMensagem('teste-mensagem', 'Erro ao salvar pergunta.', 'erro')
+                mostrarMensagem('teste-mensagem', `Erro: ${error.message}`, 'erro')
             }
         })
     }

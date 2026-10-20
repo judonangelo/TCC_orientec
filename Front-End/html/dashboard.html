@@ -31,6 +31,7 @@
                 <ul>
                     <li><a href="#" class="sidebar-link active" data-section="usuarios">Usuários</a></li>
                     <li><a href="#" class="sidebar-link" data-section="cursos">Cursos</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="tags">Tags</a></li>
                     <li><a href="#" class="sidebar-link" data-section="teste">Teste Vocacional</a></li>
                     <li><a href="#" class="sidebar-link" data-section="relatorios">Relatórios</a></li>
                 </ul>
@@ -65,6 +66,7 @@
                                 <th>ID</th>
                                 <th>Nome</th>
                                 <th>E-mail</th>
+                                <th>CPF</th>
                                 <th>Nivel</th>
                                 <th>Data de Cadastro</th>
                                 <th>Ações</th>
@@ -98,7 +100,6 @@
                         <tbody id="cursos-table-body"></tbody>
                     </table>
                 </div>
-                <div id="cursos-mensagem" class="mensagem"></div>
             </section>
 
             <section id="relatorios-section" class="content-section">
@@ -139,7 +140,28 @@
                         <tbody id="perguntas-table-body"></tbody>
                     </table>
                 </div>
-                <div id="teste-mensagem" class="mensagem"></div>
+            </section>
+
+            <section id="tags-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gerenciamento de Tags</h2>
+                    <button class="btn-primary" onclick="abrirModalTag()">+ Nova Tag</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Chave</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tags-table-body"></tbody>
+                    </table>
+                </div>
             </section>
 
         </main>
@@ -163,6 +185,8 @@
                     </select>
                 </div>
 
+                <div id="editar-usuario-mensagem" class="mensagem"></div>
+
                 <div class="modal-buttons">
                     <button type="submit" class="btn-primary">Salvar Alterações</button>
                     <button type="button" class="btn-cancelar" onclick="fecharModalEditarUsuario()">Cancelar</button>
@@ -174,6 +198,9 @@
     <div id="modal-curso" class="modal">
         <div class="modal-content">
             <h3 id="modal-curso-titulo">Novo Curso</h3>
+
+            <div id="cursos-mensagem" class="mensagem"></div>
+
             <form id="form-curso">
                 <input type="hidden" id="curso-id">
 
@@ -203,12 +230,12 @@
                     </div>
                     <div class="form-group">
                         <label>Carga Horária (horas)</label>
-                        <input type="number" id="curso-carga-horaria" placeholder="Ex: 1200" min="1">
+                        <input type="number" id="curso-carga-horaria" placeholder="Ex: 1200" required min="1">
                     </div>
 
                     <div class="form-group">
                         <label>Salário Médio</label>
-                        <input type="text" id="curso-salario" placeholder="Ex: R$ 2.500 a R$ 5.500">
+                        <input type="text" id="curso-salario" placeholder="Ex: R$ 2.500 a R$ 5.500" required>
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -235,12 +262,12 @@
                     </div>
                     <div class="form-group campo-largo">
                         <label>Mercado de Trabalho</label>
-                        <textarea id="curso-mercado" rows="3" placeholder="Perspectivas do mercado"></textarea>
+                        <textarea id="curso-mercado" rows="3" placeholder="Perspectivas do mercado" required></textarea>
                     </div>
                     <div class="form-group campo-largo">
                         <label>Perfil do Aluno</label>
-                        <textarea id="curso-perfil" rows="3"
-                            placeholder="Características desejáveis do aluno"></textarea>
+                        <textarea id="curso-perfil" rows="3" placeholder="Características desejáveis do aluno"
+                            required></textarea>
                     </div>
                 </div>
 
@@ -262,9 +289,48 @@
         </div>
     </div>
 
+    <div id="modal-tag" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-tag-titulo">Nova Tag</h3>
+
+            <div id="tags-mensagem" class="mensagem"></div>
+
+            <form id="form-tag">
+                <input type="hidden" id="tag-id">
+                <div class="form-group">
+                    <label>Chave (ex: tecnologia)</label>
+                    <input type="text" id="tag-chave" placeholder="Apenas minúsculas, números e _" required>
+                </div>
+                <div class="form-group">
+                    <label>Nome (ex: Tecnologia)</label>
+                    <input type="text" id="tag-nome" placeholder="Como aparecerá no sistema" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <input type="text" id="tag-descricao" placeholder="Breve descrição da área" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="tag-ativo">
+                        <option value="1">Ativa</option>
+                        <option value="0">Inativa</option>
+                    </select>
+                </div>
+        
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-primary">Salvar</button>
+                    <button type="button" class="btn-cancelar" onclick="fecharModalTag()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="modal-pergunta" class="modal">
         <div class="modal-content" style="max-width: 700px;">
             <h3 id="modal-pergunta-titulo">Nova Pergunta</h3>
+
+            <div id="teste-mensagem" class="mensagem"></div>
+
             <form id="form-pergunta">
                 <input type="hidden" id="pergunta-id">
 

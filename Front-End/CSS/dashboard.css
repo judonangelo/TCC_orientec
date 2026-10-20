@@ -176,6 +176,7 @@
     padding: 15px;
     border-bottom: 1px solid #e9ecef;
     color: #495057;
+    vertical-align: middle;
 }
 
 .data-table tbody tr:hover {
@@ -204,16 +205,28 @@
     color: #c62828;
 }
 
-.acoes {
-    display: flex;
-    gap: 8px;
+.data-table td.acoes {
+    white-space: nowrap; 
+}
+
+.data-table td.acoes .btn-editar,
+.data-table td.acoes .btn-excluir {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 6px 12px;
+    min-width: 65px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.data-table td.acoes .btn-editar {
+    margin-right: 8px;
 }
 
 .btn-editar {
     background-color: #2196F3;
     color: white;
     border: none;
-    padding: 6px 12px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 13px;
@@ -230,7 +243,6 @@
     background-color: #f44336;
     color: white;
     border: none;
-    padding: 6px 12px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 13px;
@@ -324,7 +336,6 @@
     margin-top: 10px;
 }
 
-
 .search-box {
     margin-bottom: 20px;
 }
@@ -347,7 +358,6 @@
     box-shadow: 0 0 0 3px rgba(12, 52, 112, 0.1);
 }
 
-
 .btn-paginacao {
     padding: 8px 16px;
     border: 1px solid #ccc;
@@ -368,22 +378,11 @@
     cursor: not-allowed;
 }
 
-
-
 @media (max-width: 768px) {
     .search-form {
         max-width: 100%;
     }
-}
 
-/* Responsivo */
-@media (max-width: 768px) {
-    .search-form {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
     .dashboard-container {
         flex-direction: column;
     }
@@ -420,8 +419,15 @@
         grid-template-columns: 1fr;
     }
 
-    .acoes {
-        flex-direction: column;
+    .data-table td.acoes .btn-editar,
+    .data-table td.acoes .btn-excluir {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .data-table td.acoes .btn-editar {
+        margin-bottom: 8px;
     }
 
     .modal-campos-grid {
@@ -433,15 +439,12 @@
     }
 }
 
-
-/* Layout em 2, 2 e 1 para as alternativas no modal de perguntas */
 #container-respostas {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
 
-/* Faz a 5ª opção ocupar a linha inteira */
 #container-respostas>div:nth-child(5) {
     grid-column: span 2;
 }
@@ -456,10 +459,9 @@
     }
 }
 
-
 #modal-pergunta .modal-content {
-    max-width: 1050px !important; 
-    width: 90%;                 
-    max-height: 85vh;            
-    overflow-y: auto;          
+    max-width: 1050px !important;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
 }

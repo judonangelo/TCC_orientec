@@ -278,9 +278,9 @@ server.post("/cursos", verificarAdmin, async (req, res) => {
       carga_horaria, salario, mercado, perfil, tags
     } = req.body
 
-    if (!nome || !duracao || !vagas || !status) {
+    if (!nome || !duracao || !vagas || !descricao || !status || !area || !resumo ||!mercado || !perfil || !carga_horaria || !salario) {
       return res.status(400).json({
-        mensagem: "Campos obrigatórios: nome, duracao, vagas, status"
+        mensagem: "Campos obrigatórios são necessários"
       })
     }
 
@@ -341,9 +341,9 @@ server.put("/cursos/:id", verificarAdmin, async (req, res) => {
       carga_horaria, salario, mercado, perfil, tags
     } = req.body
 
-    if (!nome || !duracao || !vagas || !status) {
+    if (!nome || !duracao || !vagas || !descricao || !status || !area || !resumo ||!mercado || !perfil || !carga_horaria || !salario) {
       return res.status(400).json({
-        mensagem: "Campos obrigatórios: nome, duracao, vagas, status"
+        mensagem: "Campos obrigatórios são necessários  "
       })
     }
 
@@ -445,8 +445,8 @@ server.post("/tags", verificarAdmin, async (req, res) => {
   try {
     const { chave, nome, descricao, ativo } = req.body
 
-    if (!chave || !nome) {
-      return res.status(400).json({ mensagem: "Chave e nome são obrigatórios." })
+    if (!chave || !nome || !descricao) {
+      return res.status(400).json({ mensagem: "Chave, nome e descrição são obrigatórios." })
     }
 
     if (!/^[a-z0-9_]+$/.test(chave)) {
@@ -555,6 +555,11 @@ server.post('/perguntas', verificarAdmin, async (req, res) => {
   const connection = await pool.getConnection()
   try {
     const { pergunta, respostas } = req.body
+
+    const respostaSemTag = respostas.some(r => !r.pesos || Object.keys(r.pesos).length === 0)
+    if (respostaSemTag) {
+      return res.status(400).json({ mensagem: 'Todas as alternativas precisam ter pelo menos uma tag com peso atribuído.' })
+    }
 
     if (!pergunta || !respostas || !Array.isArray(respostas) || respostas.length === 0) {
       return res.status(400).json({ mensagem: 'Pergunta e respostas sao obrigatorias' })
@@ -722,7 +727,7 @@ server.delete("/usuarios/:id", verificarAdmin, async (req, res) => {
 // ver informações de usuários (apenas para admin)
 server.get("/usuarios", verificarAdmin, async (req, res) => {
   try {
-    const [resultado] = await pool.query(`SELECT id, nome, email, nivel, DATE_FORMAT(data, '%d/%m/%Y') AS data FROM usuarios ORDER BY nome`)
+    const [resultado] = await pool.query(`SELECT id, nome, email, cpf, nivel, DATE_FORMAT(data, '%d/%m/%Y') AS data FROM usuarios ORDER BY nome`)
     res.json(resultado)
   } catch (error) {
     console.log(error)
