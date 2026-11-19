@@ -1,6 +1,3 @@
-// area de configuracao
-window.API_BASE = `http://${window.location.hostname}:3000`
-
 // area de administrador
 function criarPopupAdmin(nome) {
   const overlay = document.createElement('div')

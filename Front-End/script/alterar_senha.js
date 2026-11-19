@@ -1,6 +1,3 @@
-// area de configuracao
-window.API_BASE = `http://${window.location.hostname}:3000`
-
 // area de senha
 document.addEventListener('DOMContentLoaded', () => {
     const tokenLogin = localStorage.getItem('tokenIntranet')

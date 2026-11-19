@@ -1,6 +1,3 @@
-// area de configuracao
-window.API_BASE = `http://${window.location.hostname}:3000`
-
 // area do teste vocacional
 let perguntaAtual = 0
 let perguntas = []
@@ -22,15 +19,20 @@ const restartBtn = document.getElementById('restart-btn')
 
 // area do teste vocacional - fluxo do quiz
 async function iniciarQuiz() {
+  console.log("Iniciando o quiz...") // Ajuda a saber se o botão foi clicado
+
   perguntaAtual = 0
   respostasSelecionadas = []
 
   if (introContainer) introContainer.style.display = 'none'
-  quizContainer.style.display = 'block'
-  resultContainer.style.display = 'none'
+  if (quizContainer) quizContainer.style.display = 'block'
+  if (resultContainer) resultContainer.style.display = 'none'
 
-  questionElement.textContent = 'Carregando perguntas...'
-  answersElement.innerHTML = ''
+  if (questionElement) questionElement.textContent = 'Carregando perguntas...'
+  if (answersElement) answersElement.innerHTML = ''
+  
+  // ESCONDE O BOTÃO PRÓXIMA ENQUANTO CARREGA
+  if (nextBtn) nextBtn.style.display = 'none' 
 
   try {
     const [respPerguntas, respCursos] = await Promise.all([
@@ -41,45 +43,56 @@ async function iniciarQuiz() {
     if (!respPerguntas.ok || !respCursos.ok) throw new Error('Falha ao buscar dados')
 
     perguntas = await respPerguntas.json()
-    cursos = await respCursos.json()
+    
+    // FILTRA APENAS CURSOS ATIVOS
+    const todosCursos = await respCursos.json()
+    cursos = todosCursos.filter(c => c.status === "ativo")
 
     if (perguntas.length === 0) {
-      questionElement.textContent = 'Nenhuma pergunta cadastrada no momento.'
+      if (questionElement) questionElement.textContent = 'Nenhuma pergunta cadastrada no momento.'
+      if (progressText) progressText.textContent = 'Teste indisponível'
       return
     }
+    
     if (cursos.length === 0) {
-      questionElement.textContent = 'Nenhum curso cadastrado no momento.'
+      if (questionElement) questionElement.textContent = 'Nenhum curso ativo cadastrado no momento.'
+      if (progressText) progressText.textContent = 'Teste indisponível'
       return
     }
 
+    // Se passou pelas validações, mostra o botão novamente e inicia o teste
+    if (nextBtn) nextBtn.style.display = 'inline-block'
+    
     respostasSelecionadas = new Array(perguntas.length).fill(null)
     mostrarPergunta()
   } catch (error) {
-    console.error(error)
-    questionElement.textContent = 'Erro ao carregar o teste. Tente novamente mais tarde.'
+    console.error("Erro no teste:", error)
+    if (questionElement) questionElement.textContent = 'Erro ao carregar o teste. Tente novamente mais tarde.'
   }
 }
 
 function mostrarPergunta() {
-  answersElement.innerHTML = ''
+  if (answersElement) answersElement.innerHTML = ''
   const q = perguntas[perguntaAtual]
 
-  questionElement.textContent = `${perguntaAtual + 1}. ${q.pergunta}`
+  if (questionElement) questionElement.textContent = `${perguntaAtual + 1}. ${q.pergunta}`
   if (progressText) progressText.textContent = `Pergunta ${perguntaAtual + 1} de ${perguntas.length}`
   if (progressBar) progressBar.style.width = `${((perguntaAtual + 1) / perguntas.length) * 100}%`
 
-  q.respostas.forEach((resp, index) => {
-    const button = document.createElement('button')
-    button.className = 'answer-btn'
+  if (q.respostas) {
+    q.respostas.forEach((resp, index) => {
+      const button = document.createElement('button')
+      button.className = 'answer-btn'
 
-    if (respostasSelecionadas[perguntaAtual] === index) {
-      button.classList.add('selected')
-    }
+      if (respostasSelecionadas[perguntaAtual] === index) {
+        button.classList.add('selected')
+      }
 
-    button.textContent = resp.texto
-    button.onclick = () => selecionarOpcao(index)
-    answersElement.appendChild(button)
-  })
+      button.textContent = resp.texto
+      button.onclick = () => selecionarOpcao(index)
+      if (answersElement) answersElement.appendChild(button)
+    })
+  }
 
   if (prevBtn) {
     prevBtn.style.display = perguntaAtual === 0 ? 'none' : 'inline-block'
@@ -92,11 +105,13 @@ function mostrarPergunta() {
 function selecionarOpcao(index) {
   respostasSelecionadas[perguntaAtual] = index
 
-  const botoes = answersElement.querySelectorAll('.answer-btn')
-  botoes.forEach((btn, idx) => {
-    if (idx === index) btn.classList.add('selected')
-    else btn.classList.remove('selected')
-  })
+  if (answersElement) {
+    const botoes = answersElement.querySelectorAll('.answer-btn')
+    botoes.forEach((btn, idx) => {
+      if (idx === index) btn.classList.add('selected')
+      else btn.classList.remove('selected')
+    })
+  }
 }
 
 function proximaPergunta() {
@@ -122,6 +137,12 @@ function anteriorPergunta() {
 
 // area do teste vocacional - calculo do resultado
 function finalizarQuiz() {
+  // PROTEÇÃO: Se não tiver curso ou pergunta, evita que o código quebre
+  if (!cursos || cursos.length === 0) {
+    alert('Não foi possível calcular o resultado. Nenhum curso ativo encontrado.')
+    return
+  }
+
   const pontuacaoTags = {}
 
   respostasSelecionadas.forEach((respostaIndex, qIndex) => {
@@ -162,11 +183,14 @@ function finalizarQuiz() {
   })
 
   pontuacaoCursos.sort((a, b) => b.score - a.score)
-  const vencedor = pontuacaoCursos[0]
-  const maiorScore = Math.max(...pontuacaoCursos.map(p => p.score), 0.0001)
+  
+  // PROTEÇÃO EXTRA
+  if (pontuacaoCursos.length === 0) return;
 
-  quizContainer.style.display = 'none'
-  resultContainer.style.display = 'block'
+  const vencedor = pontuacaoCursos[0]
+  
+  if (quizContainer) quizContainer.style.display = 'none'
+  if (resultContainer) resultContainer.style.display = 'block'
 
   const resultadoPrincipal = document.getElementById('resultado-principal')
   if (resultadoPrincipal) {

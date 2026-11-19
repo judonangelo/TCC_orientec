@@ -1,6 +1,3 @@
-// area de configuracao
-window.API_BASE = `http://${window.location.hostname}:3000`
-
 // area do estudante - painel de perfil
 function injetarPainelPerfil() {
   if (document.getElementById('profilePanel')) return

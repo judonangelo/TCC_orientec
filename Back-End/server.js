@@ -11,14 +11,12 @@ const swaggerDocument = require('./swagger.json')
 const api_chave = process.env.API_CHAVE
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const rateLimit = require('express-rate-limit')
 
 const PORT = process.env.PORT
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-server.listen(PORT, () => {
-  console.log(`Server rodando no http://localhost:${PORT}/`)
-  console.log(`Acesse o Swagger em: http://localhost:${PORT}/api-docs`)//ou 10.111.9.35
-})
+
 
 // AREA DE AUTENTICACAO
 const verificarToken = (req, res, next) => {
@@ -44,21 +42,40 @@ const verificarAdmin = (req, res, next) => {
   })
 }
 
+// Limite de tentativa
+const loginLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 5,
+  message: {
+    mensagem: 'Muitas tentativas de login. Aguarde 15 minutos.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+})
+
 // area de cadastro
 server.post("/cadastro", async (req, res) => {
   const { email, senha, nome, cpf } = req.body
   try {
+
+    if (!nome || typeof nome !== "string") {
+      return res.status(400).json({ mensagem: "Nome é obrigatório." })
+    }
 
     const SoNome = /^[A-Za-zÀ-ÿ\s]+$/
     if (!SoNome.test(nome.trim())) {
       return res.status(400).json({ mensagem: "O nome deve conter apenas letras." })
     }
 
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ mensagem: "E-mail inválido." })
+    }
+
     if (!senha || senha.length < 6) {
       return res.status(400).json({ mensagem: "A senha deve ter no mínimo 6 caracteres." })
     }
 
-    if (!cpf || cpf.length !== 11) {
+    if (!cpf || !/^\d{11}$/.test(cpf)) {
       return res.status(400).json({ mensagem: "CPF inválido!" })
     }
 
@@ -105,9 +122,14 @@ server.post("/cadastro", async (req, res) => {
 })
 
 // area de login
-server.post("/login", async (req, res) => {
+server.post("/login", loginLimiter, async (req, res) => {
   const { email, senha } = req.body
   try {
+
+    if (!email || !senha) {
+      return res.status(400).json({ mensagem: "Informe e-mail e senha." })
+    }
+
     const [conferir] = await pool.execute(
       `SELECT email, senha, nivel, nome, foto FROM usuarios WHERE email = ?`, [email]
     )
@@ -143,7 +165,7 @@ server.post("/login", async (req, res) => {
 })
 
 // area de senha
-server.put("/alterar_senha", verificarToken, async (req, res) => {
+server.put("/alterar_senha", verificarToken, loginLimiter, async (req, res) => {
   try {
     const { senhaAtual, novaSenha } = req.body
     const email = req.usuario.email
@@ -174,7 +196,7 @@ server.put("/alterar_senha", verificarToken, async (req, res) => {
   }
 })
 
-server.put("/redefinir_senha_sem_email", async (req, res) => {
+server.put("/redefinir_senha_sem_email", loginLimiter, async (req, res) => {
   try {
     const { email, cpf, novaSenha } = req.body
 
@@ -271,14 +293,16 @@ server.get("/cursos/:id", async (req, res) => {
 
 // criar curso (admin)
 server.post("/cursos", verificarAdmin, async (req, res) => {
-  const connection = await pool.getConnection()
+  let connection
   try {
+    connection = await pool.getConnection()
+
     const {
       nome, duracao, vagas, descricao, status, area, resumo,
       carga_horaria, salario, mercado, perfil, tags
     } = req.body
 
-    if (!nome || !duracao || !vagas || !descricao || !status || !area || !resumo ||!mercado || !perfil || !carga_horaria || !salario) {
+    if (!nome || !duracao || !vagas || !descricao || !status || !area || !resumo || !mercado || !perfil || !carga_horaria || !salario) {
       return res.status(400).json({
         mensagem: "Campos obrigatórios são necessários"
       })
@@ -323,25 +347,26 @@ server.post("/cursos", verificarAdmin, async (req, res) => {
       id: cursoId
     })
   } catch (error) {
-    await connection.rollback()
+    if (connection) await connection.rollback()
     console.log(error)
     res.status(500).json({ mensagem: "Erro ao criar curso" })
   } finally {
-    connection.release()
+    if (connection) connection.release()
   }
 })
 
 // atualizar curso (admin)
 server.put("/cursos/:id", verificarAdmin, async (req, res) => {
   const { id } = req.params
-  const connection = await pool.getConnection()
+  let connection
   try {
+    connection = await pool.getConnection()
     const {
       nome, duracao, vagas, descricao, status, area, resumo,
       carga_horaria, salario, mercado, perfil, tags
     } = req.body
 
-    if (!nome || !duracao || !vagas || !descricao || !status || !area || !resumo ||!mercado || !perfil || !carga_horaria || !salario) {
+    if (!nome || !duracao || !vagas || !descricao || !status || !area || !resumo || !mercado || !perfil || !carga_horaria || !salario) {
       return res.status(400).json({
         mensagem: "Campos obrigatórios são necessários  "
       })
@@ -370,8 +395,8 @@ server.put("/cursos/:id", verificarAdmin, async (req, res) => {
     )
 
     if (resultado.affectedRows === 0) {
-      await connection.rollback()
-      return res.status(404).json({ mensagem: "Curso não encontrado" })
+      const [check] = await connection.query('SELECT id FROM cursos WHERE id = ?', [id])
+      if (check.length === 0) return res.status(404).json({ mensagem: 'Curso não encontrado.' })
     }
 
     // Substitui as tags do curso: apaga tudo e recria
@@ -389,11 +414,11 @@ server.put("/cursos/:id", verificarAdmin, async (req, res) => {
     await connection.commit()
     res.json({ mensagem: "Curso atualizado com sucesso!" })
   } catch (error) {
-    await connection.rollback()
+    if (connection) await connection.rollback()
     console.log(error)
     res.status(500).json({ mensagem: "Erro ao atualizar curso" })
   } finally {
-    connection.release()
+    if (connection) connection.release()
   }
 })
 
@@ -495,7 +520,8 @@ server.put("/tags/:id", verificarAdmin, async (req, res) => {
     )
 
     if (resultado.affectedRows === 0) {
-      return res.status(404).json({ mensagem: "Tag não encontrada." })
+      const [check] = await connection.query('SELECT id FROM tags WHERE id = ?', [id])
+      if (check.length === 0) return res.status(404).json({ mensagem: 'Tag não encontrado.' })
     }
 
     res.json({ mensagem: "Tag atualizada com sucesso!" })
@@ -552,17 +578,18 @@ server.get('/perguntas', async (req, res) => {
 })
 
 server.post('/perguntas', verificarAdmin, async (req, res) => {
-  const connection = await pool.getConnection()
+  let connection
   try {
+    connection = await pool.getConnection()
     const { pergunta, respostas } = req.body
+
+    if (!pergunta || !respostas || !Array.isArray(respostas) || respostas.length === 0) {
+      return res.status(400).json({ mensagem: 'Pergunta e respostas sao obrigatorias' })
+    }
 
     const respostaSemTag = respostas.some(r => !r.pesos || Object.keys(r.pesos).length === 0)
     if (respostaSemTag) {
       return res.status(400).json({ mensagem: 'Todas as alternativas precisam ter pelo menos uma tag com peso atribuído.' })
-    }
-
-    if (!pergunta || !respostas || !Array.isArray(respostas) || respostas.length === 0) {
-      return res.status(400).json({ mensagem: 'Pergunta e respostas sao obrigatorias' })
     }
 
     await connection.beginTransaction()
@@ -583,20 +610,25 @@ server.post('/perguntas', verificarAdmin, async (req, res) => {
     await connection.commit()
     res.status(201).json({ mensagem: 'Pergunta cadastrada com sucesso', id: perguntaId })
   } catch (error) {
-    await connection.rollback()
+    if (connection) await connection.rollback()
     res.status(500).json({ mensagem: 'Erro ao cadastrar pergunta' })
   } finally {
-    connection.release()
+    if (connection) connection.release()
   }
 })
 
 server.put('/perguntas/:id', verificarAdmin, async (req, res) => {
   const { id } = req.params
   const { pergunta, respostas } = req.body
+  let connection
 
-  const connection = await pool.getConnection()
   try {
-    await connection.beginTransaction()
+    const connection = await pool.getConnection()
+    if (!pergunta || !Array.isArray(respostas) || respostas.length === 0) {
+      return res.status(400).json({ mensagem: 'Pergunta e respostas são obrigatórias.' })
+    }
+
+    connection = await pool.getConnection()
 
     await connection.query('UPDATE perguntas SET texto = ? WHERE id = ?', [pergunta, id])
     await connection.query('DELETE FROM respostas WHERE pergunta_id = ?', [id])
@@ -611,10 +643,10 @@ server.put('/perguntas/:id', verificarAdmin, async (req, res) => {
     await connection.commit()
     res.json({ mensagem: 'Pergunta atualizada com sucesso' })
   } catch (error) {
-    await connection.rollback()
+    if (connection) await connection.rollback()
     res.status(500).json({ mensagem: 'Erro ao atualizar pergunta' })
   } finally {
-    connection.release()
+    if (connection) connection.release()
   }
 })
 
@@ -702,7 +734,8 @@ server.put("/usuarios/:id", verificarAdmin, async (req, res) => {
       [nivel, id]
     )
     if (resultado.affectedRows === 0) {
-      return res.status(404).json({ mensagem: "Usuário não encontrado." })
+      const [check] = await connection.query('SELECT id FROM usuarios WHERE id = ?', [id])
+      if (check.length === 0) return res.status(404).json({ mensagem: 'Usuário não encontrado.' })
     }
     res.json({ mensagem: "Usuário atualizado com sucesso!" })
   } catch (error) {
@@ -733,4 +766,10 @@ server.get("/usuarios", verificarAdmin, async (req, res) => {
     console.log(error)
     res.status(500).json({ mensagem: "Erro ao buscar usuários" })
   }
+})
+
+
+server.listen(PORT, () => {
+  console.log(`Server rodando no http://localhost:${PORT}/`)
+  console.log(`Acesse o Swagger em: http://localhost:${PORT}/api-docs`)
 })

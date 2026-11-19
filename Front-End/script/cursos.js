@@ -1,6 +1,3 @@
-// area de configuracao
-window.API_BASE = `http://${window.location.hostname}:3000`
-
 // area de cursos
 async function carregarCursos() {
     const grid = document.getElementById('cursos-grid')

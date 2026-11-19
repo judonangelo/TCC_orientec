@@ -1,6 +1,3 @@
-// area de configuracao
-window.API_BASE = `http://${window.location.hostname}:3000`
-
 // area de cadastro
 const cpfInput = document.getElementById("cpf")
 
