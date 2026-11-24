@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `cursos` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
--- Copiando dados para a tabela tcc.cursos: ~5 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.cursos: ~0 rows (aproximadamente)
 DELETE FROM `cursos`;
 
 -- Copiando estrutura para tabela tcc.cursos_tags
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `cursos_tags` (
   CONSTRAINT `FK_cursos_tags_tag` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
--- Copiando dados para a tabela tcc.cursos_tags: ~40 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.cursos_tags: ~0 rows (aproximadamente)
 DELETE FROM `cursos_tags`;
 
 -- Copiando estrutura para tabela tcc.perguntas
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `perguntas` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
--- Copiando dados para a tabela tcc.perguntas: ~15 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.perguntas: ~0 rows (aproximadamente)
 DELETE FROM `perguntas`;
 
 -- Copiando estrutura para tabela tcc.respostas
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `tags` (
   UNIQUE KEY `chave` (`chave`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
--- Copiando dados para a tabela tcc.tags: ~8 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.tags: ~0 rows (aproximadamente)
 DELETE FROM `tags`;
 
 -- Copiando estrutura para tabela tcc.usuarios
@@ -113,10 +113,10 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
--- Copiando dados para a tabela tcc.usuarios: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela tcc.usuarios: ~1 rows (aproximadamente)
 DELETE FROM `usuarios`;
 INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `email`, `senha`, `nivel`, `data`, `foto`) VALUES
-	(2, 'Testador da Silva', '12345678910', 'testador@gmail.com', '$2b$10$NDik3t7uLnh.9zdMc8eCXeLXHojp9GxBr0w/T9j7MqCcV9Csm245W', 'aluno', '2026-11-19 14:12:29', NULL);
+	(2, 'Testador da Silva', '12345678910', 'testador@gmail.com', '$2b$10$NDik3t7uLnh.9zdMc8eCXeLXHojp9GxBr0w/T9j7MqCcV9Csm245W', 'admin', '2026-11-24 11:29:32', NULL);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
